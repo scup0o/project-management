@@ -1,0 +1,70 @@
+@font-face {
+  font-family: Noto Sans JP;
+  src: url('@/assets/font/Noto Sans Jp/static/NotoSansJP-Light.ttf');
+}
+
+@font-face {
+  font-family: Lobster;
+  src: url('@/assets/font/Lobster/Lobster-Regular.ttf');
+}
+
+@font-face {
+  font-family: Raleway;
+  src: url('@/assets/font/Raleway/static/Raleway-Regular.ttf');
+}
+
+@font-face{
+  font-family: RalewayBold;
+  src: url('@/assets/font/Raleway/static/Raleway-Bold.ttf');
+}
+
+@font-face{
+  font-family: RalewayItalic;
+  src: url('@/assets/font/Raleway/static/Raleway-Italic.ttf');
+}
+
+@font-face{
+  font-family: RalewayBlack;
+  src: url('@/assets/font/Raleway/static/Raleway-Black.ttf');
+}
+
+:root{
+  --main-color: rgb(31, 35, 55);
+  --secondary-color:rgb(97, 103, 122);
+  --third-color: rgb(138, 143, 164);
+  /*--third-color: rgb(216, 217, 218);*/
+  --bg-color: rgb(237, 237, 237);
+}
+
+
+body{
+  font-family: 'Raleway', monospace;
+}
+
+/*
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}*/
