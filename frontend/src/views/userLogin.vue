@@ -15,12 +15,12 @@
                             style="padding:30px">
                             
                             <div class="form-group">
-                                <label for="userLog" style="font-family: 'RalewayBold';">Username</label>
+                                <label for="username" style="font-family: 'RalewayBold';">Username</label>
                                 <Field
-                                    name="userLog"
+                                    name="username"
                                     type="text"
                                     class="form-control"
-                                    v-model="userNew.userLog">
+                                    v-model="userNew.username">
                                 </Field>
                                 <ErrorMessage name="email" class="error-feedback" as="p"></ErrorMessage>
                             </div>
@@ -34,6 +34,7 @@
                                                                         </span></div></div>
                                 <ErrorMessage name="password" class="error-feedback"></ErrorMessage>
                             </div>
+                            <p class="fg" style="text-align: right; padding-top: 10px; font-size:15px" @click="this.$router.push({name: 'forgotpassword'})">Quên mật khẩu?</p>
                             <button class="btn btn-dark form-control"
                                     style="border-radius: 25px 25px 25px 25px;
                                     margin-top: 20px;">

@@ -213,7 +213,7 @@
             <button
               @click="$emit('close'), $emit('refresh')"
               class="btn form-button"
-              style="wstaffIdth: 150px"
+              style="width: 150px"
             >
               Hủy
             </button>
@@ -226,7 +226,7 @@
 <script>
 import "@/assets/css/base.css";
 import * as yup from "yup";
-import { Form, Field, ErrorMessage } from "vee-valstaffIdate";
+import { Form, Field, ErrorMessage } from "vee-validate";
 import ImgService from "@/services/img.service";
 import VueJwtDecode from "vue-jwt-decode";
 import UserService from "@/services/user.service";
@@ -454,7 +454,7 @@ label {
   border-color: var(--secondary-color);
 }
 .form-control {
-  border-wstaffIdth: 1.55px;
+  border-width: 1.55px;
   border-color: var(--secondary-color);
   box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
 }
@@ -466,14 +466,14 @@ label {
   justify-content: center;
   align-items: center;
   height: 100px;
-  wstaffIdth: 100px;
+  width: 100px;
 }
 .modal-mask {
   position: fixed;
   z-index: 9999;
   top: 0;
   left: 0;
-  wstaffIdth: 100%;
+  width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: table;
@@ -486,7 +486,7 @@ label {
 }
 
 .modal-container {
-  wstaffIdth: 600px;
+  width: 600px;
   margin: 0px auto;
   padding: 20px 20px;
   background-color: #fff;

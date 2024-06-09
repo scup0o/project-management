@@ -17,24 +17,24 @@ class UserService {
         return (await this.api.post("/add",data)).data;
     }
 
-    async get(id){
-        return (await this.api.get(`/${id}`)).data;
+    async get(data){
+        return (await this.api.get(`/`,data)).data;
     }
 
     async getAll(){
-        return (await this.api.get("/all/user")).data;
+        return (await this.api.get("/all")).data;
     }
 
-    async delete(id){
-        return (await this.api.delete(`/${id}`)).data
+    async delete(data){
+        return (await this.api.delete(`/`, data)).data
     }
 
-    async update(id,data){
-        return (await this.api.put(`${id}`,data)).data
+    async update(data){
+        return (await this.api.put(`/`,data)).data
     }
 
-    async changePassword(id,data){
-        return (await this.api.put(`/change/${id}`,data)).data
+    async changePassword(data){
+        return (await this.api.put(`/cp`,data)).data
     }
 
     async forgotPassword(data){

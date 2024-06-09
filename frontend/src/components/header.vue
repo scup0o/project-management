@@ -62,7 +62,7 @@ export default {
 </script>
 
 <template>
-     <nav class="navbar navbar-expand bg-light" style="">
+     <nav class="navbar navbar-expand bg-light" :class=" {notlogin:!checkUser}" style="">
         <div class="container-fluid">
             <div class="container">
                 <div class="row" style="padding:5px" >
@@ -82,7 +82,7 @@ export default {
                         <div v-if="!checkUser" class="center-1" id="header-button header-icon">
                             <button 
                                 type="button" 
-                                class="btn btn-outline-dark login-button"
+                                class="btn btn-outline-light login-button"
                                 @click="this.$router.push({ name: 'user.login' })"
                                 style="margin-left:10px">Đăng nhập</button>
                         </div>

@@ -27,6 +27,24 @@ const routes = [
     },
 
     {
+        path:"/forgotpassword",
+        name:"forgotpassword",
+        component:() =>import("@/views/ForgotPassword.vue"),
+        meta:{
+            loginAuth: true,
+        }
+    },
+
+    {
+        path:"/forgotpassword/:username",
+        name:"forgotpasswordid",
+        component:() =>import("@/views/ForgotPassword.vue"),
+        meta:{
+            loginAuth: true,
+        }
+    },
+
+    {
         path:"/",
         name: 'administration',
         component: () => import("@/views/Administration.vue"),

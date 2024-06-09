@@ -1,19 +1,20 @@
 <template>
+    <Header></Header>
     <div class="container-fluid" style="" >
     
         <img src="../assets/img/VinylMePlease_Paul-Miller.jpg" style="position: absolute; z-index:-1; margin:auto; width:100%; margin-top:-30px; margin-left:-30px; height:800px">
 
-            <div class="row mx-auto" style="max-width: 650px; padding:40px;"   v-if="!id">
+            <div class="row mx-auto" style="max-width: 650px; padding:0px;"   v-if="!id">
                 <div class="col" style="background-color: white;  border-radius: 10px 10px 10px 10px;">
                     <div style="padding:50px">
                         <p style="margin:auto; text-align: center; font-family: 'RalewayBlack'; font-size: 27px;">Quên mật khẩu</p>
                         <Form
                             @submit="getPassword"
-                            :validation-schema="FormSchema"
+                            :valusernameation-schema="FormSchema"
                             style="padding:30px">
                             
                             <div class="form-group">
-                                <label for="email" style="font-family: 'RalewayBold';">Nhập E-mail hoặc Tên đăng nhập</label>
+                                <label for="email" style="font-family: 'RalewayBold';">Nhập E-mail hoặc Username</label>
                                 <Field
                                     name="email"
                                     type="text"
@@ -80,6 +81,7 @@
 <script>
     import * as yup from "yup";
     import { Form, Field, ErrorMessage } from "vee-validate";
+    import Header from "@/components/header.vue";
 
     import UserService from "@/services/user.service.js"
 
@@ -88,6 +90,7 @@
             Form,
             Field,
             ErrorMessage,
+            Header
         },
         watch:{
             email(){
@@ -112,7 +115,7 @@
             return{
                 newpassword:'',
                 confirmpassword:'',
-                id: this.$route.params.id,
+                id: this.$route.params.username,
                 email:'',
                 type:'password',
                 showPassword: false,
@@ -128,6 +131,10 @@
       confirmMessage: '',
       passwordMessage: ''
             }
+        },
+
+        mounted(){
+            console.log(this.id);
         },
 
         methods: {
@@ -171,7 +178,8 @@
         this.confirmMessage=''
         this.passwordMessage=''
         data.util='forgot';
-        let check = await UserService.changePassword(this.id, data);
+        data.id=this.id;
+        let check = await UserService.changePassword(data);
             if (check==='wrong') this.confirmMessage='Mật khẩu xác nhận không trùng khớp mật khẩu hiện tại'
             else{
                 this.$toast.open({

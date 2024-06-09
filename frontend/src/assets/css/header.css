@@ -77,7 +77,7 @@
   }
   
   .login-button:hover{
-    background-color: var(--secondary-color);
+    background-color: white;
       transform: scale(1.1);
   }
 
@@ -113,11 +113,6 @@
       margin-top: 20px;
   }
   
-  .login-button{
-      background-color: var(--secondary-color);
-      color:white;
-  }
-  
   .signup-button{
       background-color: var(--main-color);
       color:white;
@@ -137,7 +132,8 @@
 }
 
 .signout-button:hover{
-    background-color: white;
+    background-color: none;
+    border-color:var(--main-color);
     color:var(--main-color);
     transform: scale(1.1);
 }
@@ -198,5 +194,9 @@
 
   .cart-container:hover .cart-icon{
     transform: scale(1.2);
+  }
+
+  .notlogin{
+    background:var(--main-color) !important; 
   }
   

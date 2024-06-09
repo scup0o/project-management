@@ -16,19 +16,19 @@ router.route("/")
 router.route("/forgot")
     .post(userController.forgotPass)
 
-router.route("/username")
+router.route("/")
     .post(userController.get)
 
 router.route("/all")
     .get(userController.getAll)
 
-router.route("/username")
+router.route("/")
     .delete(userController.delete)
 
-router.route("/username")
+router.route("/")
     .put(userController.update)
 
-router.route("/cp/username")
+router.route("/cp")
     .put(userController.changePass);
 
 /*router.route("/secret/:id")

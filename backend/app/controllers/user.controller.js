@@ -5,8 +5,8 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/nodemailer");
 const db = require("../utils/mysql.util");
 
-const createToken = (username, role) => {
-  return jwt.sign({ username, role }, process.env.SECRECT_KEY, {
+const createToken = (id, username, role) => {
+  return jwt.sign({ id, username, role }, process.env.SECRECT_KEY, {
     expiresIn: 3 * 24 * 60 * 60,
   });
 };
@@ -16,7 +16,7 @@ exports.login = async (req, res, next) => {
     console.log(req.body);
     let result = await new Promise((resolve, reject) => {
       db.query(
-        `SELECT username, password, role, staffId FROM users WHERE username = '${req.body.username}'`,
+        `SELECT username, password, role, id FROM users WHERE username = '${req.body.username}'`,
         async function (e, result) {
           if (e) reject(e);
           else resolve(result);
@@ -45,21 +45,12 @@ exports.login = async (req, res, next) => {
             console.log("not verified");
             return next(new ApiError(500, "not verified"));
           }*/
-      const token = createToken(result.username, result.role);
-      const auth = jwt.sign(
-        {
-          staffId: result.staffId,
-          username: result.username,
-          role: result.role,
-        },
-        process.env.SECRECT_KEY,
-        { expiresIn: 3 * 24 * 60 * 60 }
-      );
+      const token = createToken(result.id, result.username, result.role);
       res.cookie("jwt", token, {
         httpOnly: true,
         maxAge: 3 * 24 * 60 * 60 * 1000,
       });
-      res.send(auth);
+      res.send(token);
       console.log("dang nhap thanh cong");
       return result;
     }
@@ -127,8 +118,9 @@ exports.create = async (req, res, next) => {
         } else {
           const salt = await bcrypt.genSalt();
           req.body.password = await bcrypt.hash(req.body.password, salt);
+          const id = await bcrypt.hash(req.body.staffId, salt);
           db.query(
-            `INSERT INTO users (username, staffId, password, phone, email, role, name) VALUES ('${req.body.username}', '${req.body.staffId}','${req.body.password}', '${req.body.phone}','${req.body.email}', '${req.body.role}', '${req.body.name}')`,
+            `INSERT INTO users (username, staffId, password, phone, email, role, name, id) VALUES ('${req.body.username}', '${req.body.staffId}','${req.body.password}', '${req.body.phone}','${req.body.email}', '${req.body.role}', '${req.body.name}', '${id}')`,
             function (e) {
               if (e) throw e;
             }
@@ -235,17 +227,13 @@ exports.get = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    db.query(
-        `SELECT * FROM users`,
-        function (err, result) {
-          if (err) {
-            throw err;
-          } else {
-              res.send(result);
-            
-          }
-        }
-      );
+    db.query(`SELECT * FROM users`, function (err, result) {
+      if (err) {
+        throw err;
+      } else {
+        res.send(result);
+      }
+    });
   } catch (error) {
     res.send(error);
   }
@@ -254,16 +242,15 @@ exports.getAll = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     db.query(
-        `DELETE FROM users WHERE username = '${req.body.username}'`,
-        function (err, result) {
-          if (err) {
-            throw err;
-          } else {
-              res.send(result);
-            
-          }
+      `DELETE FROM users WHERE username = '${req.body.username}'`,
+      function (err, result) {
+        if (err) {
+          throw err;
+        } else {
+          res.send(result);
         }
-      );
+      }
+    );
   } catch (error) {
     res.send(error);
   }
@@ -271,39 +258,74 @@ exports.delete = async (req, res, next) => {
 
 exports.changePass = async (req, res, next) => {
   try {
-    let user = await User.findById(req.params.id);
-    const password = await bcrypt.compare(req.body.password, user.password);
-    if (!password) {
-      res.send("incorrected");
-      console.log("Password incorrected");
-      return next(new ApiError(500, "Password incorrected"));
+    let token;
+    let result = await new Promise((rs, rj) => {
+      db.query(
+        `SELECT * from users WHERE id = '${req.body.id}'`,
+        function (e, r) {
+          if (e) rj(e);
+          else rs(r);
+        }
+      );
+    });
+    if (req.body.util !== "forgot") {
+      const password = await bcrypt.compare(req.body.password, result.password);
+      if (!password) {
+        res.send("incorrected");
+        console.log("Password incorrected");
+        return next(new ApiError(500, "Password incorrected"));
+      }
     } else {
       if (req.body.newpassword !== req.body.confirmpassword) {
         res.send("wrong");
-      } else {
-        const salt = await bcrypt.genSalt();
-        req.body.newpassword = await bcrypt.hash(req.body.newpassword, salt);
-        user = await User.findByIdAndUpdate(req.params.id, {
-          password: req.body.newpassword,
-        });
-        res.send(true);
+        return console.log("password not match");
       }
+      token = createToken(result.id, result.username, result.role);
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+      });
     }
+
+    const salt = await bcrypt.genSalt();
+    req.body.newpassword = await bcrypt.hash(req.body.newpassword, salt);
+    db.query(
+      `UPDATE users SET password = '${req.body.newpassword}' WHERE id = '${req.body.id}'`,
+      function (e) {
+        if (e) throw e;
+        else res.send(token);
+      }
+    );
   } catch (error) {
     console.log(error);
   }
 };
 
-/*exports.decodepass= async (req, res, next) =>{
-    try{
-        const user = await User.findById(req.params.id)
-        const password =  bcrypt.
-        console.log(password);
+exports.forgotPass = async (req, res, next) => {
+  try {
+    console.log(req.body);
+    let result = await new Promise((resolve, reject) => {
+      db.query(
+        `SELECT * FROM users WHERE username = '${req.body.email}' OR email = '${req.body.email}'`,
+        function (e, result) {
+          if (e) reject(e);
+          else resolve(result);
+        }
+      );
+    });
+    console.log(result);
+    if (result.length === 0) {
+      res.send(false);
+      return console.log("not found");
+    } else {
+      const message = `link đổi mật khẩu: http://localhost:3002/forgotpassword/${result[0].id}`;
+      res.send(true);
+      await sendEmail(result[0].email, "Quên mật khẩu", message);
     }
-    catch(error){
-        res.send(error);
-    }
-}*/
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 /*exports.getAll = async (req, res, next) => {
     try{
@@ -425,31 +447,6 @@ exports.changePass = async (req,res,next) =>{
         console.log(error)
     }
 }*/
-
-exports.forgotPass = async (req, res, next) => {
-  try {
-    console.log(req.body);
-    let user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      user = await User.findOne({ username: req.body.email });
-
-      if (!user) return res.send(false);
-      else {
-        console.log("yes");
-        const message = `link đổi mật khẩu: http://localhost:3001/forgotpassword/${user._id}/`;
-        await sendEmail(user.email, "Quên mật khẩu", message);
-        res.send(true);
-      }
-    } else {
-      console.log("yes");
-      const message = `link đổi mật khẩu: http://localhost:3001/forgotpassword/${user._id}/`;
-      await sendEmail(user.email, "Quên mật khẩu", message);
-      res.send(true);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 /*exports.findByEmailOrUsername = async (req, res) =>{
     try{
