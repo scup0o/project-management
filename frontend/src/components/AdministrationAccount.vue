@@ -101,6 +101,7 @@
 <template>
     <div class="container-fluid">  
         <div class="row" style="background-color: var(--third-color); padding:6px">
+            
             <div class="col">
                 <button class="btn btn-outline-secondary" 
                         @click="edit = true"

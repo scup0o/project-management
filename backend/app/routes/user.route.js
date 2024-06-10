@@ -16,8 +16,8 @@ router.route("/")
 router.route("/forgot")
     .post(userController.forgotPass)
 
-router.route("/")
-    .post(userController.get)
+router.route("/:id")
+    .get(userController.get)
 
 router.route("/all")
     .get(userController.getAll)

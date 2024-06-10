@@ -29,7 +29,7 @@ exports.login = async (req, res, next) => {
       res.send("incorrected");
       return console.log("Username incorrected");
     } else {
-      console.log(req.body.password, ",", result[0].password);
+      //console.log(req.body.password, ",", result[0].password);
       const password = await bcrypt.compare(
         req.body.password,
         result[0].password
@@ -45,13 +45,13 @@ exports.login = async (req, res, next) => {
             console.log("not verified");
             return next(new ApiError(500, "not verified"));
           }*/
-      const token = createToken(result.id, result.username, result.role);
+      const token = createToken(result[0].id, result[0].username, result[0].role);
       res.cookie("jwt", token, {
         httpOnly: true,
         maxAge: 3 * 24 * 60 * 60 * 1000,
       });
       res.send(token);
-      console.log("dang nhap thanh cong");
+      console.log(token);
       return result;
     }
   } catch (error) {
@@ -204,18 +204,19 @@ exports.update = async (req, res, next) => {
 
 exports.get = async (req, res, next) => {
   try {
-    //console.log(req.body.username);
+    //console.log(req.params.id);
     db.query(
-      `SELECT * FROM users WHERE username = '${req.body.username}'`,
+      `SELECT * FROM users WHERE id = '${req.params.id}'`,
       function (err, result, fields) {
         if (err) {
           throw err;
         } else {
           if (result.length === 0) {
             res.send(null);
+            console.log("null")
           } else {
             res.send(result[0]);
-            //console.log(result[0]);
+            
           }
         }
       }
@@ -280,7 +281,7 @@ exports.changePass = async (req, res, next) => {
         res.send("wrong");
         return console.log("password not match");
       }
-      token = createToken(result.id, result.username, result.role);
+      token = createToken(result[0].id, result[0].username, result[0].role);
       res.cookie("jwt", token, {
         httpOnly: true,
         maxAge: 3 * 24 * 60 * 60 * 1000,

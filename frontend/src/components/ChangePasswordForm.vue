@@ -3,69 +3,110 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div class="modal-header">
-          <label class="" style="margin: auto; font-size: 20px"
-            >Đổi mật khẩu</label
-          >
+          <p class="title">Đổi mật khẩu</p>
         </div>
         <Form @submit="changePassword" :validation-schema="FormSchema">
           <div class="modal-body">
             <div class="row">
               <div class="form-group">
                 <label for="password">Mật khẩu hiện tại: </label>
+                <div
+                  class="control"
+                  style="display: inline; padding-left: 10px"
+                >
+                  <span class="" @click="toggleShow">
+                    <i
+                      class="fas"
+                      :class="{
+                        'fa-eye-slash': !showPassword,
+                        'fa-eye': showPassword,
+                      }"
+                    ></i>
+                  </span>
+                </div>
                 <div>
                   <Field
                     :type="type"
                     name="password"
-                    class="input form-control"
+                    class="input form-control field"
                     v-model="accountNew.password"
-                    style="max-width: 300px; display: inline"
+                    style=""
                   ></Field>
-                  <div
-                    class="control"
-                    style="display: inline; padding-left: 10px"
-                  >
-                    <span class="" @click="toggleShow">
-                      <i
-                        class="fas"
-                        :class="{
-                          'fa-eye-slash': !showPassword,
-                          'fa-eye': showPassword,
-                        }"
-                      ></i>
-                    </span>
-                  </div>
                 </div>
 
-                <ErrorMessage name="password" style="color: red"></ErrorMessage>
-                <p style="color:red">{{ passwordMessage }}</p>
-
+                <ErrorMessage
+                  name="password"
+                  class="error-feedback"
+                ></ErrorMessage>
+                <p class="error-feedback">{{ passwordMessage }}</p>
               </div>
             </div>
             <div class="row">
-                                <div class="form-group">
-                                    <label for="newpassword">Mật khẩu mới: </label>
-                                    <div>
-                                        <Field :type="typenew" name="newpassword" class="input form-control" v-model="accountNew.newpassword" style="max-width:300px; display: inline;"></Field>
-                                        <div class="control" style="display: inline; padding-left:10px">
-                                                                    <span class=""  @click="toggleShownew">
-                                                                        <i class="fas" :class="{ 'fa-eye-slash': !shownewPassword, 'fa-eye': shownewPassword }"></i>
-                                                                    </span></div></div>
-                                        
-                                    <ErrorMessage name="newpassword" style="color:red"></ErrorMessage>
-                            </div></div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label for="newpassword">Xác nhận mật khẩu mới: </label>
-                                    <div>
-                                        <Field :type="typeconfirm" name="confirmpassword" class="input form-control" v-model="accountNew.confirmpassword" style="max-width:300px; display: inline;"></Field>
-                                        <div class="control" style="display: inline; padding-left:10px">
-                                                                    <span class=""  @click="toggleShowconfirm">
-                                                                        <i class="fas" :class="{ 'fa-eye-slash': !showconfirmPassword, 'fa-eye': showconfirmPassword }"></i>
-                                                                    </span></div></div>
-                                        
-                                    <ErrorMessage name="confirmpassword" style="color:red"></ErrorMessage>
-                                    <p style="color:red">{{ confirmMessage }}</p>
-                            </div></div>
+              <div class="form-group">
+                <label for="newpassword">Mật khẩu mới: </label>
+                <div
+                  class="control"
+                  style="display: inline; padding-left: 10px"
+                >
+                  <span class="" @click="toggleShownew">
+                    <i
+                      class="fas"
+                      :class="{
+                        'fa-eye-slash': !shownewPassword,
+                        'fa-eye': shownewPassword,
+                      }"
+                    ></i>
+                  </span>
+                </div>
+                <div>
+                  <Field
+                    :type="typenew"
+                    name="newpassword"
+                    class="input form-control field"
+                    v-model="accountNew.newpassword"
+                  ></Field>
+                </div>
+
+                <ErrorMessage
+                  name="newpassword"
+                  class="error-feedback"
+                ></ErrorMessage>
+                <p></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <label for="newpassword">Xác nhận mật khẩu mới: </label>
+                <div
+                  class="control"
+                  style="display: inline; padding-left: 10px"
+                >
+                  <span class="" @click="toggleShowconfirm">
+                    <i
+                      class="fas"
+                      :class="{
+                        'fa-eye-slash': !showconfirmPassword,
+                        'fa-eye': showconfirmPassword,
+                      }"
+                    ></i>
+                  </span>
+                </div>
+                <div>
+                  <Field
+                    :type="typeconfirm"
+                    name="confirmpassword"
+                    class="input form-control field"
+                    v-model="accountNew.confirmpassword"
+                  ></Field>
+                </div>
+
+                <ErrorMessage
+                  name="confirmpassword"
+                  class="error-feedback"
+                ></ErrorMessage>
+                <p class="error-feedback">{{ confirmMessage }}</p>
+              </div>
+            </div>
           </div>
           <div class="text-center">
             <button class="btn form-button" style="margin-right: 10px">
@@ -104,14 +145,12 @@ export default {
 
   data() {
     const FormSchema = yup.object({
-      password: yup
-        .string()
-        .required("Mật khẩu không được để trống"),
-        newpassword: yup
+      password: yup.string().required("Mật khẩu không được để trống"),
+      newpassword: yup
         .string()
         .required("Mật khẩu không được để trống")
         .min(6, "Mật khẩu phải ít nhất 6 ký tự"),
-        confirmpassword: yup
+      confirmpassword: yup
         .string()
         .required("Mật khẩu không được để trống")
         .min(6, "Mật khẩu phải ít nhất 6 ký tự"),
@@ -123,11 +162,11 @@ export default {
       FormSchema,
       showPassword: false,
       typenew: "password",
-      shownewPassword:false,
+      shownewPassword: false,
       typeconfirm: "password",
-      showconfirmPassword:false,
-      confirmMessage: '',
-      passwordMessage: ''
+      showconfirmPassword: false,
+      confirmMessage: "",
+      passwordMessage: "",
     };
   },
 
@@ -155,27 +194,28 @@ export default {
       else this.typeconfirm = "password";
     },
 
-    async changePassword(data){
-        this.confirmMessage=''
-        this.passwordMessage=''
-        let check = await UserService.changePassword(this.account._id, data);
-        
-        if (check==='incorrected'){
-            this.passwordMessage='Mật khẩu hiện tại không đúng'
+    async changePassword(data) {
+      this.confirmMessage = "";
+      this.passwordMessage = "";
+      let check = await UserService.changePassword(this.account._id, data);
+
+      if (check === "incorrected") {
+        this.passwordMessage = "Mật khẩu hiện tại không đúng";
+      } else {
+        if (check === "wrong")
+          this.confirmMessage =
+            "Mật khẩu xác nhận không trùng khớp mật khẩu hiện tại";
+        else {
+          this.$toast.open({
+            message: "Đổi mật khẩu thành công",
+            type: "success",
+            duration: 3000,
+            dismissible: true,
+          });
+          this.$emit("close");
         }
-        else{
-            if (check==='wrong') this.confirmMessage='Mật khẩu xác nhận không trùng khớp mật khẩu hiện tại'
-            else{
-                this.$toast.open({
-                                message: "Đổi mật khẩu thành công",
-                                type: "success",
-                                duration: 3000 ,
-                                dismissible: true
-                            });
-                            this.$emit('close');
-            }
-        }
-    }
+      }
+    },
   },
 };
 </script>
@@ -187,15 +227,11 @@ label {
 }
 
 .form-button {
-  background-color: var(--secondary-color);
+  background-color: var(--main-color);
   color: white;
   border-color: var(--secondary-color);
 }
-.form-control {
-  border-width: 1.55px;
-  border-color: var(--secondary-color);
-  box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
-}
+
 .error-feedback {
   color: red;
 }
@@ -240,10 +276,12 @@ label {
 
 .modal-body {
   margin: 20px 0;
-  overflow-y: hidden;
+  overflow-y: visible;
   overflow-x: hidden;
-  height: 300px;
+  height: 325px;
   background-color: white;
   padding: 20px;
+  padding-top: 1vh;
 }
+
 </style>

@@ -16,7 +16,7 @@ export default {
     <!--<Header />-->
     <div style="background-color: var(--bg-color);">
       <router-view :key="$route.fullPath" />
-      <BackToTop></BackToTop>
+      <!--<BackToTop></BackToTop>-->
     </div>
   </div>
 </template>

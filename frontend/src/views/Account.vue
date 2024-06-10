@@ -60,6 +60,7 @@ export default {
   },
 
   mounted() {
+    console.log(this.account)
     this.getUser();
   },
 
@@ -133,89 +134,53 @@ export default {
 <template>
   <div class="container-fluid">
     <div class="row" style="">
-      <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0" style="background-color: var(--main-color)">
+      <div class="col-2 px-0" style="background-color: var(--third-color)">
         <div
           class="d-flex flex-column align-items-sm-start px-3 pt-2 text-white min-vh-100"
         >
-          <div
-            class="row"
-            style="margin-top: 10px; margin-bottom: 10px; width: 250px"
-          >
-            <!--<div class="row">
-                    <div class="col-3">
-                        <img :src="`../../src/assets/img/${user.img}`" alt="hugenerd" width="30" height="30" class="rounded-circle"></div>
-                       <div class="col-9 text-start"    > 
-                        <div class="row"><div class="col-12" style=" margin-top:-5px; font-size:17px">{{ user.name }}</div></div>
-                        <div class="row"><div class="col" style=" margin-top:0px; font-size: 14px; font-family: 'RalewayItalic';">{{ user.userId }}</div></div></div></div>
-                -->
-            <div
-              style="
-                width: 10px;
-                color: white;
-                font-family: Lobster;
-                font-size: 20px;
-              "
-            >
-              <div>APPNAME</div>
-            </div>
-          </div>
+          
 
-          <div
-            class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none"
-          >
-            <span
-              class="fs-5 d-none d-sm-inline"
-              style="margin-top: 10px; margin-bottom: 0px"
-              >Menu</span
-            >
-          </div>
+          
 
           <ul
             class="nav nav-pills flex-column "
-            id="menu"
-            style="margin-top: -10px"
+            style="padding-top:2vh;"
           >
-            <li id="parent-tab">
-              <button
-                @click="
-                  show = false;
-                  show1 = true;
-                  activetab === 'information'
-                "
-                class="nav-link px-0 a"
-              >
-                <i class="fa-regular fa-file-lines"></i>
-                <span class="ms-1 d-none d-sm-inline">Cài đặt</span>
-              </button>
-              <div
-                class="col text-start"
-                :class="{ show: show === true, child: show === false }"
-              >
-                <button
-                  class="form-control btn"
-                  :class="{ btngrad: activetab === 'information' }"
-                  style="padding: 10px; color: white"
+          <li >
+            <button
+                  class="nav-btn"
+                  style="padding: 1vh;"
                   @click="check('information')"
                 >
+                <i
+                      class="fa-solid fa-chevron-right"
+                      style="padding-right: 0.3vw"
+                      v-if="activetab != 'changepass'"
+                    ></i>
                   Thông tin tài khoản
                 </button>
-                <button
-                  class="form-control btn"
-                  :class="{ btngrad: activetab === 'changepass' }"
-                  style="padding: 10px; color: white"
+          </li>
+          <li>
+            <button
+                  class="nav-btn"
+                  style="padding: 1vh;"
                   @click="check('changepass')"
                 >
+                <i
+                      class="fa-solid fa-chevron-right"
+                      style="padding-right: 0.3vw"
+                      v-if="activetab === 'changepass'"
+                    ></i>
                   Đổi mật khẩu
                 </button>
-              </div>
-            </li>
+          </li>
           </ul>
           <hr />
         </div>
       </div>
       <div class="col">
         <div class="row"><Header :title="'Thông tin tài khoản'"></Header></div>
-        <div>
+        <div v-if="activetab!='edit'">
           <img
             :src="`../../src/assets/img/${account.img}`"
             style="
@@ -248,7 +213,7 @@ export default {
                   {{ account.name }}
                 </div>
                 <div class="col text-end">
-                  <button class="btn btn-dark" @click="activetab = 'edit'">
+                  <button class="btn btn-dark" @click="activetab = 'edit'" style="background-color: var(--main-color);">
                     Chỉnh sửa
                     <i
                       class="fa-regular fa-pen-to-square"
@@ -269,7 +234,7 @@ export default {
               >
                 <!--Thông tin cá nhân-->
               </div>
-              <div>
+              <div >
                 <div
                   class="row"
                   style="
@@ -649,7 +614,11 @@ export default {
   border: none;
 }
 
-.btngrad {
+ul, li{
+  width: 100%;
+}
+
+/*.btngrad {
   background-image: linear-gradient(
     to right,
     #ffffff 0%,
@@ -667,9 +636,26 @@ export default {
 }
 
 .btngrad:hover {
-  background-position: right center; /* change the direction of the change here */
+  background-position: right center; /* change the direction of the change here 
   color: #fff;
   text-decoration: none;
+}*/
+
+.nav-btn{
+  border-radius: 5px 5px 5px 5px;
+  border: none;
+  padding: 1vh;
+  background-color: var(--third-color);
+  padding-left: 2vh;
+  width: 100%;
+  text-align: left;
+  color: white;
+}
+
+.nav-btn:hover{
+  /*text-decoration: underline;*/
+  background-color: white;
+  color: black;
 }
 
 .hover-e:hover {

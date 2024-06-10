@@ -17,8 +17,8 @@ class UserService {
         return (await this.api.post("/add",data)).data;
     }
 
-    async get(data){
-        return (await this.api.get(`/`,data)).data;
+    async get(id){
+        return (await this.api.get(`/${id}`)).data;
     }
 
     async getAll(){
