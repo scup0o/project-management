@@ -9,7 +9,7 @@
           <div class="modal-body">
             <div class="row">
               <div class="form-group">
-                <label for="password">Mật khẩu hiện tại: </label>
+                <label for="matkhau">Mật khẩu hiện tại: </label>
                 <div
                   class="control"
                   style="display: inline; padding-left: 10px"
@@ -27,15 +27,15 @@
                 <div>
                   <Field
                     :type="type"
-                    name="password"
+                    name="matkhau"
                     class="input form-control field"
-                    v-model="accountNew.password"
+                    v-model="accountNew.matkhau"
                     style=""
                   ></Field>
                 </div>
 
                 <ErrorMessage
-                  name="password"
+                  name="matkhau"
                   class="error-feedback"
                 ></ErrorMessage>
                 <p class="error-feedback">{{ passwordMessage }}</p>
@@ -145,7 +145,7 @@ export default {
 
   data() {
     const FormSchema = yup.object({
-      password: yup.string().required("Mật khẩu không được để trống"),
+      matkhau: yup.string().required("Mật khẩu không được để trống"),
       newpassword: yup
         .string()
         .required("Mật khẩu không được để trống")
@@ -170,7 +170,9 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    console.log(this.account);
+  },
 
   methods: {
     toggleShow() {
@@ -197,7 +199,8 @@ export default {
     async changePassword(data) {
       this.confirmMessage = "";
       this.passwordMessage = "";
-      let check = await UserService.changePassword(this.account._id, data);
+      data.id=this.account.id;
+      let check = await UserService.changePassword(data);
 
       if (check === "incorrected") {
         this.passwordMessage = "Mật khẩu hiện tại không đúng";

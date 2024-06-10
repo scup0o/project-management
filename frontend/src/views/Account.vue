@@ -21,7 +21,7 @@ export default {
 
   data() {
     const FormSchema = yup.object({
-      name: yup
+      hoten: yup
         .string()
         .required("Tên phải có giá trị.")
         .min(2, "Tên phải ít nhất 2 ký tự.")
@@ -60,7 +60,7 @@ export default {
   },
 
   mounted() {
-    console.log(this.account)
+    console.log(this.account);
     this.getUser();
   },
 
@@ -138,49 +138,43 @@ export default {
         <div
           class="d-flex flex-column align-items-sm-start px-3 pt-2 text-white min-vh-100"
         >
-          
-
-          
-
-          <ul
-            class="nav nav-pills flex-column "
-            style="padding-top:2vh;"
-          >
-          <li >
-            <button
-                  class="nav-btn"
-                  style="padding: 1vh;"
-                  @click="check('information')"
-                >
+          <ul class="nav nav-pills flex-column" style="padding-top: 2vh">
+            <li>
+              <button
+                class="nav-btn"
+                style="padding: 1vh"
+                @click="check('information')"
+              >
                 <i
-                      class="fa-solid fa-chevron-right"
-                      style="padding-right: 0.3vw"
-                      v-if="activetab != 'changepass'"
-                    ></i>
-                  Thông tin tài khoản
-                </button>
-          </li>
-          <li>
-            <button
-                  class="nav-btn"
-                  style="padding: 1vh;"
-                  @click="check('changepass')"
-                >
+                  class="fa-solid fa-chevron-right"
+                  style="padding-right: 0.3vw"
+                  v-if="activetab != 'changepass'"
+                ></i>
+                Thông tin tài khoản
+              </button>
+            </li>
+            <li>
+              <button
+                class="nav-btn"
+                style="padding: 1vh"
+                @click="check('changepass')"
+              >
                 <i
-                      class="fa-solid fa-chevron-right"
-                      style="padding-right: 0.3vw"
-                      v-if="activetab === 'changepass'"
-                    ></i>
-                  Đổi mật khẩu
-                </button>
-          </li>
+                  class="fa-solid fa-chevron-right"
+                  style="padding-right: 0.3vw"
+                  v-if="activetab === 'changepass'"
+                ></i>
+                Đổi mật khẩu
+              </button>
+            </li>
           </ul>
           <hr />
         </div>
       </div>
       <div class="col">
         <div class="row"><Header :title="'Thông tin tài khoản'"></Header></div>
-        <div v-if="activetab!='edit'">
+        <!--trang thong tin-->
+        <div v-if="activetab != 'edit'">
           <img
             :src="`../../src/assets/img/${account.img}`"
             style="
@@ -193,13 +187,7 @@ export default {
               border: 1px solid black;
             "
           />
-          <div
-            class="row"
-            style="
-              padding: 40px;
-              padding-top: 105px;
-            "
-          >
+          <div class="row" style="padding: 40px; padding-top: 105px">
             <div class="box">
               <div class="row">
                 <div
@@ -210,10 +198,14 @@ export default {
                     margin-left: 190px;
                   "
                 >
-                  {{ account.name }}
+                  {{ account.hoten }}
                 </div>
                 <div class="col text-end">
-                  <button class="btn btn-dark" @click="activetab = 'edit'" style="background-color: var(--main-color);">
+                  <button
+                    class="btn btn-dark"
+                    @click="activetab = 'edit'"
+                    style="background-color: var(--main-color)"
+                  >
                     Chỉnh sửa
                     <i
                       class="fa-regular fa-pen-to-square"
@@ -234,7 +226,7 @@ export default {
               >
                 <!--Thông tin cá nhân-->
               </div>
-              <div >
+              <div>
                 <div
                   class="row"
                   style="
@@ -264,7 +256,7 @@ export default {
                 >
                   <div class="col-3">Họ và tên:</div>
                   <div class="col">
-                    {{ account.name }}
+                    {{ account.hoten }}
                   </div>
                 </div>
 
@@ -320,8 +312,9 @@ export default {
             </div>
           </div>
         </div>
+        <!--Trang chinh sua-->
         <div v-if="activetab === 'edit'">
-          <div class="row" style="background-color: rgb(241, 241, 241)">
+          <div class="row">
             <Form @submit="edit" :validation-schema="FormSchema">
               <div>
                 <label
@@ -332,14 +325,14 @@ export default {
                   <img
                     v-if="haveData === true"
                     class="hover-e"
-                    :src="`../../src/assets/img/${account.img}`"
+                    :src="`../../src/assets/img/${account.anhdaidien}`"
                     style="
                       border-radius: 100%;
-                      width: 150px;
-                      height: 150px;
+                      width: 10vw;
+                      height: 10vw;
                       position: absolute;
                       margin-top: 0px;
-                      margin-left: 470px;
+                      margin-left: 30vw;
                       border: 1px solid black;
                     "
                   />
@@ -347,11 +340,11 @@ export default {
                     v-else
                     style="
                       border-radius: 100%;
-                      width: 150px;
-                      height: 150px;
+                      width: 10vw;
+                      height: 10vw;
                       position: absolute;
                       margin-top: 0px;
-                      margin-left: 470px;
+                      margin-left: 30vw;
                       border: 1px solid black;
                     "
                     :src="imagesPreview[0]"
@@ -361,27 +354,27 @@ export default {
                     v-if="img == false"
                     style="
                       border-radius: 100%;
-                      width: 150px;
-                      height: 150px;
+                      width: 10vw;
+                      height: 10vw;
                       position: absolute;
                       margin-top: 0px;
-                      margin-left: 470px;
+                      margin-left: 30vw;
                       border: 1px solid black;
                       background-color: black;
                       opacity: 50%;
                     "
-                  ></div>
-                  <div
-                    v-if="img == false"
-                    style="
-                      position: absolute;
-                      margin-top: 60px;
-                      margin-left: 485px;
-                      color: white;
-                      font-family: 'RalewayBold';
-                    "
                   >
-                    Đổi ảnh đại diện
+                    <div
+                      style="
+                        position: absolute;
+                        padding-top: 8vh;
+                        padding-left: 1vw;
+                        color: white;
+                        font-family: 'RalewayBold';
+                      "
+                    >
+                      Đổi ảnh đại diện
+                    </div>
                   </div>
                 </label>
 
@@ -397,7 +390,7 @@ export default {
               <div
                 class="row"
                 style="
-                  padding: 40px;
+                  padding: 70px;
                   padding-top: 80px;
                   background-color: rgb(241, 241, 241);
                 "
@@ -405,17 +398,11 @@ export default {
                 <div class="box">
                   <div
                     class="row"
-                    style="
-                      padding: 70px;
-                      font-family: 'RalewayBold';
-                      font-size: 20px;
-                      padding-top: 60px;
-                      padding-bottom: 30px;
-                    "
+                    style="font-family: 'RalewayBold'; font-size: 20px"
                   >
-                    Thông tin cá nhân
+                    <!--Thông tin cá nhân-->
                   </div>
-                  <div class="row">
+                  <!--<div class="row">
                     <div
                       class="form-group"
                       style="
@@ -449,100 +436,131 @@ export default {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div
-                      class="form-group"
-                      style="
-                        padding: 70px;
-                        padding-top: 0px;
-                        padding-bottom: 10px;
-                      "
-                    >
-                      <div class="row">
-                        <div class="col-3">
-                          <label for="name" style="display: inline"
-                            >Họ và tên:</label
-                          >
-                        </div>
-                        <div class="col">
+                  </div>-->
+                  <div class="row" style="padding: 5vh; padding-top: 8vh">
+                    <div class="row">
+                      <div class="form-group" style="">
+                        <label for="hoten">Họ và tên</label>
+                        <Field
+                          style="width: 98%; margin: auto"
+                          name="hoten"
+                          type="text"
+                          class="form-control field"
+                          v-model="account.hoten"
+                        >
+                        </Field>
+                        <ErrorMessage
+                          name="hoten"
+                          class="error-feedback"
+                          style="padding-left: 0.5vw"
+                        ></ErrorMessage>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="form-group" style="">
+                          <label for="manhanvien">Mã số nhân viên</label>
                           <Field
-                            style="display: inline"
-                            name="name"
+                            style="width: 98%; margin: auto"
+                            name="manhanvien"
                             type="text"
-                            class="form-control"
-                            v-model="account.name"
+                            class="form-control field"
+                            v-model="account.manhanvien"
                           >
                           </Field>
                           <ErrorMessage
-                            name="name"
-                            style="color: red"
+                            name="manhanvien"
+                            class="error-feedback"
+                            style="padding-left: 0.5vw"
+                          ></ErrorMessage>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-group" style="">
+                          <label for="gioitinh">Giới tính</label>
+                          <div style="margin: auto">
+                            <Field
+                              name="chucvu"
+                              type="radio"
+                              value="male"
+                              v-model="account.gioitinh"
+                              style="margin-left: 30px"
+                            >
+                            </Field>
+                            Nam
+                            <Field
+                              name="chucvu"
+                              type="radio"
+                              value="female"
+                              v-model="account.gioitinh"
+                              style="margin-left: 30px"
+                            >
+                            </Field>
+                            Nữ
+                          </div>
+                          <ErrorMessage
+                            name="manhanvien"
+                            class="error-feedback"
+                            style="padding-left: 0.5vw"
                           ></ErrorMessage>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div
-                      class="form-group"
-                      style="
-                        padding: 70px;
-                        padding-top: 0px;
-                        padding-bottom: 10px;
-                      "
-                    >
-                      <div class="row">
-                        <div class="col-3">
-                          <label for="phone" style="display: inline"
-                            >Số điện thoại:</label
-                          >
-                        </div>
-                        <div class="col">
-                          <Field
-                            style="display: inline"
-                            name="phone"
-                            type="text"
-                            class="form-control"
-                            v-model="account.phone"
-                          >
-                          </Field>
-                          <ErrorMessage
-                            name="phone"
-                            style="color: red"
-                          ></ErrorMessage>
+                    <div class="row">
+                      <div class="form-group" style="">
+                        <div class="row">
+                          <div class="col-3">
+                            <label for="phone" style="display: inline"
+                              >Số điện thoại:</label
+                            >
+                          </div>
+                          <div class="col">
+                            <Field
+                              style="display: inline"
+                              name="phone"
+                              type="text"
+                              class="form-control"
+                              v-model="account.phone"
+                            >
+                            </Field>
+                            <ErrorMessage
+                              name="phone"
+                              style="color: red"
+                            ></ErrorMessage>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div
-                      class="form-group"
-                      style="
-                        padding: 70px;
-                        padding-top: 0px;
-                        padding-bottom: 10px;
-                      "
-                    >
-                      <div class="row">
-                        <div class="col-3">
-                          <label for="address" style="display: inline"
-                            >Địa chỉ:</label
-                          >
-                        </div>
-                        <div class="col">
-                          <Field
-                            style="display: inline; height: 70px"
-                            as="textarea"
-                            name="address"
-                            type="text"
-                            class="form-control"
-                            v-model="account.address"
-                          >
-                          </Field>
-                          <ErrorMessage
-                            name="address"
-                            style="color: red"
-                          ></ErrorMessage>
+                    <div class="row">
+                      <div
+                        class="form-group"
+                        style="
+                          padding: 70px;
+                          padding-top: 0px;
+                          padding-bottom: 10px;
+                        "
+                      >
+                        <div class="row">
+                          <div class="col-3">
+                            <label for="address" style="display: inline"
+                              >Địa chỉ:</label
+                            >
+                          </div>
+                          <div class="col">
+                            <Field
+                              style="display: inline; height: 70px"
+                              as="textarea"
+                              name="address"
+                              type="text"
+                              class="form-control"
+                              v-model="account.address"
+                            >
+                            </Field>
+                            <ErrorMessage
+                              name="address"
+                              style="color: red"
+                            ></ErrorMessage>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -577,32 +595,32 @@ export default {
   ></ChangePasswordForm>
 </template>
 <style scoped>
-#parent-tab:hover #child-tab{
-    visibility:visible;
-    display: block;
+#parent-tab:hover #child-tab {
+  visibility: visible;
+  display: block;
 }
 
-.child{
-    visibility: hidden;
-    display: none;
+.child {
+  visibility: hidden;
+  display: none;
 }
 
-.active2{
-    background-color: rgb(24, 0, 76);
+.active2 {
+  background-color: rgb(24, 0, 76);
 }
 
-.active1{
-    background-color: var(--secondary-color);
+.active1 {
+  background-color: var(--secondary-color);
 }
 
-.show{
-    visibility: visible;
-    display: block;
+.show {
+  visibility: visible;
+  display: block;
 }
 
 .box {
   box-shadow: 0 2px 8px rgba(132, 132, 132, 0.33);
-  padding: 10px;
+  padding: 2vh;
   border-radius: 10px 10px 10px 10px;
   background-color: rgb(255, 255, 255);
 }
@@ -614,7 +632,8 @@ export default {
   border: none;
 }
 
-ul, li{
+ul,
+li {
   width: 100%;
 }
 
@@ -641,7 +660,7 @@ ul, li{
   text-decoration: none;
 }*/
 
-.nav-btn{
+.nav-btn {
   border-radius: 5px 5px 5px 5px;
   border: none;
   padding: 1vh;
@@ -652,7 +671,11 @@ ul, li{
   color: white;
 }
 
-.nav-btn:hover{
+.active {
+  background-color: var(--sub-color);
+}
+
+.nav-btn:hover {
   /*text-decoration: underline;*/
   background-color: white;
   color: black;
@@ -662,16 +685,19 @@ ul, li{
   opacity: 70%;
 }
 
-.a:hover{
-    background-color: white;
-    color:black
-    
+.a:hover {
+  background-color: white;
+  color: black;
 }
 
-.a{
-    padding-right: 20px;
-    width: 13vw;
-    color:black;
-    background-color: white;
+.a {
+  padding-right: 20px;
+  width: 13vw;
+  color: black;
+  background-color: white;
+}
+label {
+  padding-top: 2vh;
+  padding-bottom: 1vh;
 }
 </style>

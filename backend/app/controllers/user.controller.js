@@ -5,8 +5,8 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/nodemailer");
 const db = require("../utils/mysql.util");
 
-const createToken = (id, username, role) => {
-  return jwt.sign({ id, username, role }, process.env.SECRECT_KEY, {
+const createToken = (id, username, chucvu) => {
+  return jwt.sign({ id, username, chucvu }, process.env.SECRECT_KEY, {
     expiresIn: 3 * 24 * 60 * 60,
   });
 };
@@ -16,7 +16,7 @@ exports.login = async (req, res, next) => {
     console.log(req.body);
     let result = await new Promise((resolve, reject) => {
       db.query(
-        `SELECT username, password, role, id FROM users WHERE username = '${req.body.username}'`,
+        `SELECT username, matkhau, chucvu, id FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
         async function (e, result) {
           if (e) reject(e);
           else resolve(result);
@@ -29,15 +29,15 @@ exports.login = async (req, res, next) => {
       res.send("incorrected");
       return console.log("Username incorrected");
     } else {
-      //console.log(req.body.password, ",", result[0].password);
-      const password = await bcrypt.compare(
-        req.body.password,
-        result[0].password
+      //console.log(req.body.matkhau, ",", result[0].matkhau);
+      const matkhau = await bcrypt.compare(
+        req.body.matkhau,
+        result[0].matkhau
       );
-      if (!password) {
+      if (!matkhau) {
         res.send("incorrected");
-        console.log("Password incorrected");
-        return next(new ApiError(500, "Password incorrected"));
+        console.log("matkhau incorrected");
+        return next(new ApiError(500, "matkhau incorrected"));
       }
       /*
           if (result.verify === false) {
@@ -45,7 +45,7 @@ exports.login = async (req, res, next) => {
             console.log("not verified");
             return next(new ApiError(500, "not verified"));
           }*/
-      const token = createToken(result[0].id, result[0].username, result[0].role);
+      const token = createToken(result[0].id, result[0].username, result[0].chucvu);
       res.cookie("jwt", token, {
         httpOnly: true,
         maxAge: 3 * 24 * 60 * 60 * 1000,
@@ -75,7 +75,7 @@ exports.create = async (req, res, next) => {
     //console.log(req.body);
     let result = await new Promise((resolve, reject) => {
       db.query(
-        `SELECT username FROM users WHERE username = '${req.body.username}'`,
+        `SELECT username FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
         function (err, result, fields) {
           if (err) {
             reject(err);
@@ -90,7 +90,7 @@ exports.create = async (req, res, next) => {
     } else {
       result = await new Promise((resolve, reject) => {
         db.query(
-          `SELECT email FROM users WHERE email = '${req.body.email}'`,
+          `SELECT email FROM NHAN_VIEN WHERE email = '${req.body.email}'`,
           function (err, result, fields) {
             if (err) {
               reject(err);
@@ -104,7 +104,7 @@ exports.create = async (req, res, next) => {
       } else {
         result = await new Promise((resolve, reject) => {
           db.query(
-            `SELECT staffId FROM users WHERE staffId = '${req.body.staffId}'`,
+            `SELECT manhanvien FROM NHAN_VIEN WHERE manhanvien = '${req.body.manhanvien}'`,
             function (err, result, fields) {
               if (err) {
                 reject(err);
@@ -113,14 +113,14 @@ exports.create = async (req, res, next) => {
           );
         });
         if (result.length != 0) {
-          res.send("staffId existed");
-          return console.log("staffId existed");
+          res.send("manhanvien existed");
+          return console.log("manhanvien existed");
         } else {
           const salt = await bcrypt.genSalt();
-          req.body.password = await bcrypt.hash(req.body.password, salt);
-          const id = await bcrypt.hash(req.body.staffId, salt);
+          req.body.matkhau = await bcrypt.hash(req.body.matkhau, salt);
+          const id = await bcrypt.hash(req.body.manhanvien, salt);
           db.query(
-            `INSERT INTO users (username, staffId, password, phone, email, role, name, id) VALUES ('${req.body.username}', '${req.body.staffId}','${req.body.password}', '${req.body.phone}','${req.body.email}', '${req.body.role}', '${req.body.name}', '${id}')`,
+            `INSERT INTO NHAN_VIEN (username, manhanvien, matkhau, sodienthoai, email, chucvu, hoten, id, gioitinh, anhdaidien) VALUES ('${req.body.username}', '${req.body.manhanvien}','${req.body.matkhau}', '${req.body.sodienthoai}','${req.body.email}', '${req.body.chucvu}', '${req.body.hoten}', '${id}', '${req.body.gioitinh}', '${req.body.anhdaidien}')`,
             function (e) {
               if (e) throw e;
             }
@@ -141,7 +141,7 @@ exports.update = async (req, res, next) => {
   try {
     let result = await new Promise((resolve, reject) => {
       db.query(
-        `SELECT username FROM users WHERE username = '${req.body.username}'`,
+        `SELECT username FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
         function (err, result) {
           if (err) {
             reject(err);
@@ -156,7 +156,7 @@ exports.update = async (req, res, next) => {
     } else {
       result = await new Promise((resolve, reject) => {
         db.query(
-          `SELECT email FROM users WHERE email = '${req.body.email}'`,
+          `SELECT email FROM NHAN_VIEN WHERE email = '${req.body.email}'`,
           function (err, result) {
             if (err) {
               reject(err);
@@ -170,7 +170,7 @@ exports.update = async (req, res, next) => {
       } else {
         result = await new Promise((resolve, reject) => {
           db.query(
-            `SELECT staffId FROM users WHERE staffId = '${req.body.staffId}'`,
+            `SELECT manhanvien FROM NHAN_VIEN WHERE manhanvien = '${req.body.manhanvien}'`,
             function (err, result) {
               if (err) {
                 reject(err);
@@ -179,16 +179,16 @@ exports.update = async (req, res, next) => {
           );
         });
         if (result.length != 0) {
-          res.send("staffId existed");
-          return console.log("staffId existed");
+          res.send("manhanvien existed");
+          return console.log("manhanvien existed");
         } else {
-          let password = result[0].password;
-          if (req.body.password != null && req.body.password != undefined) {
+          let matkhau = result[0].matkhau;
+          if (req.body.matkhau != null && req.body.matkhau != undefined) {
             const salt = await bcrypt.genSalt();
-            password = await bcrypt.hash(req.body.password, salt);
+            matkhau = await bcrypt.hash(req.body.matkhau, salt);
           }
           db.query(
-            `UPDATE users SET staffId = '${req.body.staffId}' AND password = '${password}' AND phone = '${req.body.phone}' AND email = '${req.body.email}' AND role = '${req.body.role}' AND name = '${req.body.name}' WHERE username = '${req.body.username}'`,
+            `UPDATE NHAN_VIEN SET manhanvien = '${req.body.manhanvien}' AND matkhau = '${matkhau}' AND sodienthoai = '${req.body.sodienthoai}' AND email = '${req.body.email}' AND chucvu = '${req.body.chucvu}' AND hoten = '${req.body.hoten}' AND gioitinh = '${req.body.gioitinh}' AND anhdaidien = '${req.body.anhdaidien}' WHERE username = '${req.body.username}'`,
             function (e) {
               if (e) throw e;
             }
@@ -206,7 +206,7 @@ exports.get = async (req, res, next) => {
   try {
     //console.log(req.params.id);
     db.query(
-      `SELECT * FROM users WHERE id = '${req.params.id}'`,
+      `SELECT * FROM NHAN_VIEN WHERE id = '${req.params.id}'`,
       function (err, result, fields) {
         if (err) {
           throw err;
@@ -228,7 +228,7 @@ exports.get = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    db.query(`SELECT * FROM users`, function (err, result) {
+    db.query(`SELECT * FROM NHAN_VIEN`, function (err, result) {
       if (err) {
         throw err;
       } else {
@@ -243,7 +243,7 @@ exports.getAll = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     db.query(
-      `DELETE FROM users WHERE username = '${req.body.username}'`,
+      `DELETE FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
       function (err, result) {
         if (err) {
           throw err;
@@ -262,26 +262,27 @@ exports.changePass = async (req, res, next) => {
     let token;
     let result = await new Promise((rs, rj) => {
       db.query(
-        `SELECT * from users WHERE id = '${req.body.id}'`,
+        `SELECT * from NHAN_VIEN WHERE id = '${req.body.id}'`,
         function (e, r) {
           if (e) rj(e);
           else rs(r);
         }
       );
     });
+    console.log(req.body)
     if (req.body.util !== "forgot") {
-      const password = await bcrypt.compare(req.body.password, result.password);
-      if (!password) {
+      const matkhau = await bcrypt.compare(req.body.matkhau, result[0].matkhau);
+      if (!matkhau) {
         res.send("incorrected");
-        console.log("Password incorrected");
-        return next(new ApiError(500, "Password incorrected"));
+        console.log("matkhau incorrected");
+        return next(new ApiError(500, "matkhau incorrected"));
       }
     } else {
       if (req.body.newpassword !== req.body.confirmpassword) {
         res.send("wrong");
-        return console.log("password not match");
+        return console.log("matkhau not match");
       }
-      token = createToken(result[0].id, result[0].username, result[0].role);
+      token = createToken(result[0].id, result[0].username, result[0].chucvu);
       res.cookie("jwt", token, {
         httpOnly: true,
         maxAge: 3 * 24 * 60 * 60 * 1000,
@@ -291,7 +292,7 @@ exports.changePass = async (req, res, next) => {
     const salt = await bcrypt.genSalt();
     req.body.newpassword = await bcrypt.hash(req.body.newpassword, salt);
     db.query(
-      `UPDATE users SET password = '${req.body.newpassword}' WHERE id = '${req.body.id}'`,
+      `UPDATE NHAN_VIEN SET matkhau = '${req.body.newpassword}' WHERE id = '${req.body.id}'`,
       function (e) {
         if (e) throw e;
         else res.send(token);
@@ -307,7 +308,7 @@ exports.forgotPass = async (req, res, next) => {
     console.log(req.body);
     let result = await new Promise((resolve, reject) => {
       db.query(
-        `SELECT * FROM users WHERE username = '${req.body.email}' OR email = '${req.body.email}'`,
+        `SELECT * FROM NHAN_VIEN WHERE username = '${req.body.email}' OR email = '${req.body.email}'`,
         function (e, result) {
           if (e) reject(e);
           else resolve(result);
@@ -331,9 +332,9 @@ exports.forgotPass = async (req, res, next) => {
 /*exports.getAll = async (req, res, next) => {
     try{
         console.log('catch')
-        let users = await User.find({});
-        console.log(users);
-        return res.send(users);
+        let NHAN_VIEN = await User.find({});
+        console.log(NHAN_VIEN);
+        return res.send(NHAN_VIEN);
     }
     catch(error){
 
@@ -354,7 +355,7 @@ exports.delete = async (req, res, next) => {
     try{
         //xoa cart
         console.log(req.params.id);
-        let cart = await Cart.findOne({staffId:req.params.id});
+        let cart = await Cart.findOne({manhanvien:req.params.id});
         if (cart) cart = await Cart.findByIdAndRemove(cart._id);
 
         const user = await User.findByIdAndRemove(req.params.id);
@@ -399,12 +400,12 @@ exports.changePass = async (req,res,next) =>{
             else{
                 const salt = await bcrypt.genSalt();
                 req.body.newpassword = await bcrypt.hash(req.body.newpassword, salt);
-                let user = await User.findByIdAndUpdate(req.params.id, {password:req.body.newpassword});
-                const token = createToken(user._id, user.role);
+                let user = await User.findByIdAndUpdate(req.params.id, {matkhau:req.body.newpassword});
+                const token = createToken(user._id, user.chucvu);
         const auth = jwt.sign({
             id: user._id,
             username: user.username,
-            role: user.role,
+            chucvu: user.chucvu,
         }, process.env.SECRECT_KEY, {expiresIn: 3 * 24 * 60 * 60})
         res.cookie('jwt', token, {httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000});
                 res.send(auth);
@@ -413,11 +414,11 @@ exports.changePass = async (req,res,next) =>{
         console.log(req.body)
         if (req.body.newpassword===undefined){
             let user = await User.findById(req.params.id);
-            const password = await bcrypt.compare(req.body.password, user.password);
-            if (!password){
+            const matkhau = await bcrypt.compare(req.body.matkhau, user.matkhau);
+            if (!matkhau){
                 res.send('incorrected')
-                console.log("Password incorrected")
-                return next(new ApiError(500,"Password incorrected"));
+                console.log("matkhau incorrected")
+                return next(new ApiError(500,"matkhau incorrected"));
             }
             else{
                 res.send(true)
@@ -425,11 +426,11 @@ exports.changePass = async (req,res,next) =>{
         }
         else{
         let user = await User.findById(req.params.id);
-        const password = await bcrypt.compare(req.body.password, user.password);
-        if (!password){
+        const matkhau = await bcrypt.compare(req.body.matkhau, user.matkhau);
+        if (!matkhau){
             res.send('incorrected')
-            console.log("Password incorrected")
-            return next(new ApiError(500,"Password incorrected"));
+            console.log("matkhau incorrected")
+            return next(new ApiError(500,"matkhau incorrected"));
         }
         else{
             if (req.body.newpassword !== req.body.confirmpassword){
@@ -438,7 +439,7 @@ exports.changePass = async (req,res,next) =>{
             else{
                 const salt = await bcrypt.genSalt();
                 req.body.newpassword = await bcrypt.hash(req.body.newpassword, salt);
-                user = await User.findByIdAndUpdate(req.params.id, {password:req.body.newpassword});
+                user = await User.findByIdAndUpdate(req.params.id, {matkhau:req.body.newpassword});
                 res.send(true);
             }
         }}
@@ -458,7 +459,7 @@ exports.changePass = async (req,res,next) =>{
 
         if (!user){
             user = await User.find({
-                name: { $regex: new RegExp(req), $options: "i"},
+                hoten: { $regex: new RegExp(req), $options: "i"},
             });
         }
         return user;

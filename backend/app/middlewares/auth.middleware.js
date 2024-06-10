@@ -26,7 +26,7 @@ const checkAuth = (req, res, next) =>{
             console.log(error);
         }
         else{
-            if (decodedToken.role==='admin'){
+            if (decodedToken.chucvu==='admin'){
                 next();
             }else{
         res.send('access denied');
@@ -42,7 +42,7 @@ const AdminOnly = (req, res, next) =>{
             console.log(error);
         }
         else{
-            if (decodedToken.role==='admin'){
+            if (decodedToken.chucvu==='admin'){
                 next();
             }else{
             res.send('access denied');

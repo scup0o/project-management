@@ -42,7 +42,7 @@
             id="menu"
             style="margin-top: -10px; width: 100%"
           >
-            <li id="parent-tab" v-if="user.role != 'admin'">
+            <li id="parent-tab" v-if="user.chucvu != 'admin'">
               <button
                 @click="
                   show = true;
@@ -108,7 +108,7 @@
                 </div>
               </div>
             </li>
-            <li v-if="user.role === 'admin'">
+            <li v-if="user.chucvu === 'admin'">
               <button
                 class="nav-link px-0 align-middle"
                 @click="
@@ -126,7 +126,7 @@
               </button>
             </li>
 
-            <li v-if="user.role === 'admin'">
+            <li v-if="user.chucvu === 'admin'">
               <button
                 :class="{ active1: activeTab === 'user' }"
                 class="nav-link px-0 align-middle"
@@ -224,7 +224,7 @@ export default {
 
   mounted() {
     console.log(this.user);
-    if (this.user.role==='admin') {this.activeTab='project'; this.projectTab='all'}
+    if (this.user.chucvu!=='admin') {this.activeTab='project'; this.projectTab='all'; this.show=true}
     else this.activeTab='doctype'
     //this.getUser();
   },

@@ -52,7 +52,7 @@
                 ></ErrorMessage>
               </div>
               <div class="form-group" style="padding-top: 10px">
-                <label for="password" style="font-family: 'RalewayBold'; padding:1vh"
+                <label for="matkhau" style="font-family: 'RalewayBold'; padding:1vh"
                   >Mật khẩu</label
                 >
                 <div
@@ -71,14 +71,14 @@
                 </div>
                 <Field
                   :type="type"
-                  name="password"
+                  name="matkhau"
                   class="input form-control icon-password field"
                   placeholder="Mật khẩu"
-                  v-model="userNew.password"
+                  v-model="userNew.matkhau"
                   style="display: inline"
                 ></Field>
                 <ErrorMessage
-                  name="password"
+                  name="matkhau"
                   class="error-feedback"
                 ></ErrorMessage>
               </div>
