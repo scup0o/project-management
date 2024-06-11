@@ -26,12 +26,13 @@ export default {
         .required("Tên phải có giá trị.")
         .min(2, "Tên phải ít nhất 2 ký tự.")
         .max(50, "Tên có nhiều nhất 50 ký tự."),
-      username: yup.string().required("Tên đăng nhập không được để trống"),
-      address: yup
+
+      /*username: yup.string().required("Tên đăng nhập không được để trống"),
+      masonhanvien:yup
         .string()
-        .required("Địa chỉ không được để trống")
-        .max(100, "Địa chỉ tối đa 100 ký tự."),
-      phone: yup
+        .required("Mã số nhân viên không được để trống."),*/
+
+      sodienthoai: yup
         .string()
         .required("Số điện thoại không được để trống")
         .min(10, "Số điện thoại không hợp lệ.")
@@ -45,9 +46,6 @@ export default {
       account: VueJwtDecode.decode(localStorage.getItem("auth")),
       activetab: "information",
       activeform: "",
-      onPage: 0,
-      pageNumber: 0,
-      onPageTemp: 1,
       img: true,
       haveData: true,
       img: null,
@@ -56,6 +54,7 @@ export default {
       FormSchema,
       first: true,
       usernameMessage: "",
+      emailMessage: "",
     };
   },
 
@@ -89,14 +88,19 @@ export default {
     },
 
     async edit(data) {
-      this.usernameMessage = "";
-      if (this.images[0]) data.img = this.images[0].name;
-      const check = await UserService.update(this.account._id, data);
-      if (check === "username") {
+      data.util = "staff";
+      data.id = this.account.id;
+      console.log(data);
+      if (this.images[0]) data.anhdaidien = this.images[0].name;
+      else{
+        data.anhdaidien=this.account.anhdaidien;
+      }
+      const check = await UserService.update(data);
+      /*if (check === "username") {
         this.usernameMessage =
           "Tên đăng nhập đã được sử dụng bởi tài khoản khác";
-      }
-      if (check === "success") {
+      }*/
+      if (check === true) {
         this.$toast.open({
           message: "Chỉnh sửa thông tin thành công",
           type: "success",
@@ -105,6 +109,15 @@ export default {
         });
         this.getUser();
         this.activetab = "information";
+      } else {
+        console.log(check);
+        if (check[0] === 1) {
+          this.emailMessage = "Email đã được sử dụng bởi tài khoản khác";
+        }
+        if (check[2] === 1) {
+          this.usernameMessage =
+            "Tên đăng nhập đã được sử dụng bởi tài khoản khác";
+        }
       }
     },
 
@@ -157,7 +170,11 @@ export default {
               <button
                 class="nav-btn"
                 style="padding: 1vh"
-                @click="check('changepass')"
+                @click="
+                  check('changepass'),
+                    (usernameMessage = ''),
+                    (emailMessage = '')
+                "
               >
                 <i
                   class="fa-solid fa-chevron-right"
@@ -176,26 +193,26 @@ export default {
         <!--trang thong tin-->
         <div v-if="activetab != 'edit'">
           <img
-            :src="`../../src/assets/img/${account.img}`"
+            :src="`../../src/assets/img/${account.anhdaidien}`"
             style="
               border-radius: 100%;
-              width: 150px;
-              height: 150px;
+              width: 10vw;
+              height: 10vw;
               position: absolute;
-              margin-top: 20px;
-              margin-left: 50px;
+              margin-top: 1vw;
+              margin-left: 6vw;
               border: 1px solid black;
             "
           />
-          <div class="row" style="padding: 40px; padding-top: 105px">
-            <div class="box">
+          <div class="row" style="padding: 5vw">
+            <div class="box" style="font-family: RalewayBold">
               <div class="row">
                 <div
                   class="col"
                   style="
-                    font-family: 'RalewayBold';
-                    font-size: 25px;
-                    margin-left: 190px;
+                    font-family: 'RalewayBlack';
+                    font-size: 2vw;
+                    margin-left: 13vw;
                   "
                 >
                   {{ account.hoten }}
@@ -214,100 +231,71 @@ export default {
                   </button>
                 </div>
               </div>
-              <div
-                class="row"
-                style="
-                  padding: 70px;
-                  font-family: 'RalewayBold';
-                  font-size: 20px;
-                  padding-top: 60px;
-                  padding-bottom: 30px;
-                "
-              >
+              <div class="row" style="padding: 2vw;">
                 <!--Thông tin cá nhân-->
               </div>
               <div>
-                <div
-                  class="row"
-                  style="
-                    margin: 100px;
-                    margin-top: 0px;
-                    padding-bottom: 10px;
-                    margin-bottom: 0;
-                    border-bottom: 1px solid rgb(186, 186, 186);
-                  "
-                >
-                  <div class="col-3">Tên đăng nhập:</div>
+                <div class="row" style="padding:0vw 3vw 3vw 3vw">
+                  <div class="row line" style="">
                   <div class="col">
-                    {{ account.username }}
+                    <div class="row">
+                      <div class="col-6 lb">Tên đăng nhập:</div>
+                      <div class="col">
+                        {{ account.username }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="row">
+                      <div class="col-6 lb">Mã số nhân viên:</div>
+                      <div class="col">
+                        {{ account.manhanvien }}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div
-                  class="row"
-                  style="
-                    margin: 100px;
-                    margin-top: 0px;
-                    padding-bottom: 10px;
-                    margin-bottom: 0;
-                    padding-top: 20px;
-                    border-bottom: 1px solid rgb(186, 186, 186);
-                  "
-                >
-                  <div class="col-3">Họ và tên:</div>
-                  <div class="col">
-                    {{ account.hoten }}
-                  </div>
-                </div>
-
-                <div
-                  class="row"
-                  style="
-                    margin: 100px;
-                    margin-top: 0px;
-                    padding-bottom: 10px;
-                    margin-bottom: 0;
-                    padding-top: 20px;
-                    border-bottom: 1px solid rgb(186, 186, 186);
-                  "
-                >
-                  <div class="col-3">Email:</div>
+                <div class="row line" style="">
+                  <div class="col-3 lb">Email:</div>
                   <div class="col">
                     {{ account.email }}
                   </div>
                 </div>
-                <div
-                  class="row"
-                  style="
-                    margin: 100px;
-                    margin-top: 0px;
-                    padding-bottom: 10px;
-                    margin-bottom: 0;
-                    padding-top: 20px;
-                    border-bottom: 1px solid rgb(186, 186, 186);
-                  "
-                >
-                  <div class="col-3">Điện thoại:</div>
+                <div class="row line" style="">
+                  <div class="col-3 lb">Điện thoại:</div>
                   <div class="col">
-                    {{ account.phone }}
+                    {{ account.sodienthoai }}
                   </div>
                 </div>
-                <div
-                  class="row"
-                  style="
-                    margin: 100px;
-                    margin-top: 0px;
-                    padding-bottom: 10px;
-                    margin-bottom: 0;
-                    padding-top: 20px;
-                    border-bottom: 1px solid rgb(186, 186, 186);
-                  "
-                >
-                  <div class="col-3">Địa chỉ:</div>
+                <div class="row line" style="">
                   <div class="col">
-                    {{ account.address }}
+                    <div class="row">
+                      <div class="col-6 lb">Chức vụ:</div>
+                      <div class="col" v-if="account.chucvu === 'admin'">
+                        Quản trị
+                      </div>
+                      <div class="col" v-if="account.chucvu === 'hc'">
+                        Nhân viên hành chính
+                      </div>
+                      <div class="col" v-if="account.chucvu === 'kt'">
+                        Nhân viên kỹ thuật
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="row">
+                      <div class="col-6 lb">Giới tính:</div>
+                      <div class="col" v-if="account.gioitinh==='Nu'">
+                        Nữ
+                      </div>
+                      <div class="col" v-else>
+                        Nam
+                      </div>
+                    </div>
                   </div>
                 </div>
+                </div>
+                
               </div>
             </div>
           </div>
@@ -459,6 +447,63 @@ export default {
                     <div class="row">
                       <div class="col">
                         <div class="form-group" style="">
+                          <label for="username">Username</label>
+                          <Field
+                            style="width: 98%; margin: auto"
+                            name="username"
+                            type="text"
+                            class="form-control field"
+                            v-model="account.username"
+                            @click="usernameMessage = ''"
+                          >
+                          </Field>
+                          <ErrorMessage
+                            name="username"
+                            class="error-feedback"
+                            style="padding-left: 0.5vw"
+                          ></ErrorMessage>
+                          <p
+                            v-if="usernameMessage != ''"
+                            class="error-feedback"
+                          >
+                            {{ usernameMessage }}
+                          </p>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-group" style="">
+                          <label for="gioitinh">Giới tính</label>
+                          <div style="margin: auto">
+                            <Field
+                              name="gioitinh"
+                              type="radio"
+                              value="Nam"
+                              v-model="account.gioitinh"
+                              style="margin-left: 2vw"
+                            >
+                            </Field>
+                            Nam
+                            <Field
+                              name="gioitinh"
+                              type="radio"
+                              value="Nu"
+                              v-model="account.gioitinh"
+                              style="margin-left: 2vw"
+                            >
+                            </Field>
+                            Nữ
+                          </div>
+                          <ErrorMessage
+                            name="manhanvien"
+                            class="error-feedback"
+                            style="padding-left: 0.5vw"
+                          ></ErrorMessage>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <!--<div class="col">
+                        <div class="form-group" style="">
                           <label for="manhanvien">Mã số nhân viên</label>
                           <Field
                             style="width: 98%; margin: auto"
@@ -474,107 +519,76 @@ export default {
                             style="padding-left: 0.5vw"
                           ></ErrorMessage>
                         </div>
-                      </div>
+                      </div>-->
+                    </div>
+                    <div class="row">
                       <div class="col">
                         <div class="form-group" style="">
-                          <label for="gioitinh">Giới tính</label>
-                          <div style="margin: auto">
-                            <Field
-                              name="chucvu"
-                              type="radio"
-                              value="male"
-                              v-model="account.gioitinh"
-                              style="margin-left: 30px"
-                            >
-                            </Field>
-                            Nam
-                            <Field
-                              name="chucvu"
-                              type="radio"
-                              value="female"
-                              v-model="account.gioitinh"
-                              style="margin-left: 30px"
-                            >
-                            </Field>
-                            Nữ
-                          </div>
+                          <label for="sodienthoai">Số điện thoại</label>
+                          <Field
+                            style="width: 98%; margin: auto"
+                            name="sodienthoai"
+                            type="text"
+                            class="form-control field"
+                            v-model="account.sodienthoai"
+                          >
+                          </Field>
                           <ErrorMessage
-                            name="manhanvien"
+                            name="sodienthoai"
                             class="error-feedback"
                             style="padding-left: 0.5vw"
                           ></ErrorMessage>
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="form-group" style="">
-                        <div class="row">
-                          <div class="col-3">
-                            <label for="phone" style="display: inline"
-                              >Số điện thoại:</label
-                            >
-                          </div>
-                          <div class="col">
-                            <Field
-                              style="display: inline"
-                              name="phone"
-                              type="text"
-                              class="form-control"
-                              v-model="account.phone"
-                            >
-                            </Field>
-                            <ErrorMessage
-                              name="phone"
-                              style="color: red"
-                            ></ErrorMessage>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div
-                        class="form-group"
-                        style="
-                          padding: 70px;
-                          padding-top: 0px;
-                          padding-bottom: 10px;
-                        "
-                      >
-                        <div class="row">
-                          <div class="col-3">
-                            <label for="address" style="display: inline"
-                              >Địa chỉ:</label
-                            >
-                          </div>
-                          <div class="col">
-                            <Field
-                              style="display: inline; height: 70px"
-                              as="textarea"
-                              name="address"
-                              type="text"
-                              class="form-control"
-                              v-model="account.address"
-                            >
-                            </Field>
-                            <ErrorMessage
-                              name="address"
-                              style="color: red"
-                            ></ErrorMessage>
-                          </div>
+                      <div class="col">
+                        <div class="form-group" style="">
+                          <label for="email">Email</label>
+                          <Field
+                            style="width: 98%; margin: auto"
+                            name="email"
+                            type="text"
+                            class="form-control field"
+                            v-model="account.email"
+                            @click="emailMessage = ''"
+                          >
+                          </Field>
+                          <ErrorMessage
+                            name="email"
+                            class="error-feedback"
+                            style="padding-left: 0.5vw"
+                          ></ErrorMessage>
+                          <p v-if="emailMessage != ''" class="error-feedback">
+                            {{ emailMessage }}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="row" style="padding-top: 10px">
+                  <div class="row" style="padding: 5vh">
                     <div class="col text-center">
-                      <button class="btn btn-dark" style="margin-right: 10px">
+                      <button
+                        class="btn btn-dark"
+                        style="
+                          margin-right: 1vw;
+                          background-color: var(--main-color);
+                        "
+                        @click="(usernameMessage = ''), (emailMessage = '')"
+                      >
                         Lưu thông tin
                       </button>
                       <button
                         class="btn btn-dark"
                         type="button"
-                        @click="getUser(), (activetab = 'information')"
-                        style="width: 110px"
+                        @click="
+                          getUser(),
+                            (activetab = 'information'),
+                            (usernameMessage = ''),
+                            (emailMessage = '')
+                        "
+                        style="
+                          width: 110px;
+                          background-color: var(--main-color);
+                        "
                       >
                         Hủy
                       </button>
@@ -621,15 +635,8 @@ export default {
 .box {
   box-shadow: 0 2px 8px rgba(132, 132, 132, 0.33);
   padding: 2vh;
-  border-radius: 10px 10px 10px 10px;
+  border-radius: 25px 25px 25px 25px;
   background-color: rgb(255, 255, 255);
-}
-
-.active {
-  background-color: rgb(228, 229, 239);
-  width: 400px;
-  margin-left: -20px;
-  border: none;
 }
 
 ul,
@@ -699,5 +706,15 @@ li {
 label {
   padding-top: 2vh;
   padding-bottom: 1vh;
+}
+
+.line {
+  padding-bottom: 1vw;
+  padding-top:1vw;  
+  border-bottom: 1px solid rgb(186, 186, 186);
+}
+
+.lb {
+  color: gray;
 }
 </style>

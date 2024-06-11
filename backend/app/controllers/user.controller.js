@@ -30,10 +30,7 @@ exports.login = async (req, res, next) => {
       return console.log("Username incorrected");
     } else {
       //console.log(req.body.matkhau, ",", result[0].matkhau);
-      const matkhau = await bcrypt.compare(
-        req.body.matkhau,
-        result[0].matkhau
-      );
+      const matkhau = await bcrypt.compare(req.body.matkhau, result[0].matkhau);
       if (!matkhau) {
         res.send("incorrected");
         console.log("matkhau incorrected");
@@ -45,7 +42,11 @@ exports.login = async (req, res, next) => {
             console.log("not verified");
             return next(new ApiError(500, "not verified"));
           }*/
-      const token = createToken(result[0].id, result[0].username, result[0].chucvu);
+      const token = createToken(
+        result[0].id,
+        result[0].username,
+        result[0].chucvu
+      );
       res.cookie("jwt", token, {
         httpOnly: true,
         maxAge: 3 * 24 * 60 * 60 * 1000,
@@ -139,9 +140,11 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
+    console.log(req.body);
+    let error = [0, 0, 0];
     let result = await new Promise((resolve, reject) => {
       db.query(
-        `SELECT username FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
+        `SELECT * FROM NHAN_VIEN WHERE id = '${req.body.id}'`,
         function (err, result) {
           if (err) {
             reject(err);
@@ -149,14 +152,13 @@ exports.update = async (req, res, next) => {
         }
       );
     });
-    console.log(result);
     if (result.length === 0) {
       res.send("not found");
       return console.log("user not existed");
     } else {
       result = await new Promise((resolve, reject) => {
         db.query(
-          `SELECT email FROM NHAN_VIEN WHERE email = '${req.body.email}'`,
+          `SELECT email, id FROM NHAN_VIEN WHERE email = '${req.body.email}'`,
           function (err, result) {
             if (err) {
               reject(err);
@@ -164,37 +166,64 @@ exports.update = async (req, res, next) => {
           }
         );
       });
-      if (result.length != 0) {
-        res.send("email existed");
-        return console.log("email existed");
-      } else {
-        result = await new Promise((resolve, reject) => {
-          db.query(
-            `SELECT manhanvien FROM NHAN_VIEN WHERE manhanvien = '${req.body.manhanvien}'`,
-            function (err, result) {
-              if (err) {
-                reject(err);
-              } else resolve(result);
-            }
-          );
-        });
-        if (result.length != 0) {
-          res.send("manhanvien existed");
-          return console.log("manhanvien existed");
-        } else {
-          let matkhau = result[0].matkhau;
-          if (req.body.matkhau != null && req.body.matkhau != undefined) {
-            const salt = await bcrypt.genSalt();
-            matkhau = await bcrypt.hash(req.body.matkhau, salt);
+      if (result.length != 0 && req.body.id != result[0].id) {
+        error[0] = 1;
+      }
+      result = await new Promise((resolve, reject) => {
+        db.query(
+          `SELECT manhanvien, id FROM NHAN_VIEN WHERE manhanvien = '${req.body.manhanvien}'`,
+          function (err, result) {
+            if (err) {
+              reject(err);
+            } else resolve(result);
           }
+        );
+      });
+      if (result.length != 0 && req.body.id != result[0].id) {
+        error[1] = 1;
+      }
+      result = await new Promise((resolve, reject) => {
+        db.query(
+          `SELECT username, id FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
+          function (err, result) {
+            if (err) {
+              reject(err);
+            } else resolve(result);
+          }
+        );
+      });
+      if (result.length != 0 && req.body.id != result[0].id) {
+        error[2] = 1;
+      }
+      if (error[0] === 0 && error[1] === 0 && error[2] === 0) {
+        let matkhau = result[0].matkhau;
+        if (req.body.matkhau != null && req.body.matkhau != undefined) {
+          const salt = await bcrypt.genSalt();
+          matkhau = await bcrypt.hash(req.body.matkhau, salt);
+        }
+        if (req.body.util === "admin")
           db.query(
-            `UPDATE NHAN_VIEN SET manhanvien = '${req.body.manhanvien}' AND matkhau = '${matkhau}' AND sodienthoai = '${req.body.sodienthoai}' AND email = '${req.body.email}' AND chucvu = '${req.body.chucvu}' AND hoten = '${req.body.hoten}' AND gioitinh = '${req.body.gioitinh}' AND anhdaidien = '${req.body.anhdaidien}' WHERE username = '${req.body.username}'`,
+            `UPDATE NHAN_VIEN SET manhanvien = '${req.body.manhanvien}',matkhau = '${matkhau}',sodienthoai = '${req.body.sodienthoai}',email = '${req.body.email}',chucvu = '${req.body.chucvu}',hoten = '${req.body.hoten}',gioitinh = '${req.body.gioitinh}',anhdaidien = '${req.body.anhdaidien}',username = '${req.body.username}' FROM NHAN_VIEN WHERE id = '${req.body.id}'`,
             function (e) {
               if (e) throw e;
             }
           );
-          res.send(true);
+        else {
+          //console.log(`UPDATE NHAN_VIEN SET sodienthoai = '${req.body.sodienthoai}' AND email = '${req.body.email}' AND hoten = '${req.body.hoten}' AND gioitinh = '${req.body.gioitinh}' AND anhdaidien = '${req.body.anhdaidien}' WHERE id = '${req.body.id}'`)
+          db.query(
+            `UPDATE NHAN_VIEN SET sodienthoai = '${req.body.sodienthoai}',email = '${req.body.email}',hoten = '${req.body.hoten}',gioitinh = '${req.body.gioitinh}',anhdaidien = '${req.body.anhdaidien}',username = '${req.body.username}' WHERE id = '${req.body.id}'`,
+            function (e, r) {
+              if (e) throw e;
+              else{
+                console.log(r)
+              }
+            }
+          );
         }
+        return res.send(true);
+      } else {
+        res.send(error);
+        return console.log(error);
       }
     }
   } catch (error) {
@@ -213,10 +242,9 @@ exports.get = async (req, res, next) => {
         } else {
           if (result.length === 0) {
             res.send(null);
-            console.log("null")
+            console.log("null");
           } else {
             res.send(result[0]);
-            
           }
         }
       }
@@ -243,7 +271,7 @@ exports.getAll = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     db.query(
-      `DELETE FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
+      `DELETE FROM NHAN_VIEN WHERE id = '${req.body.id}'`,
       function (err, result) {
         if (err) {
           throw err;
@@ -269,7 +297,7 @@ exports.changePass = async (req, res, next) => {
         }
       );
     });
-    console.log(req.body)
+    console.log(req.body);
     if (req.body.util !== "forgot") {
       const matkhau = await bcrypt.compare(req.body.matkhau, result[0].matkhau);
       if (!matkhau) {

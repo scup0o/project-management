@@ -49,6 +49,7 @@
                   projectTab = 'all';
                   this.activeTab = 'project';
                   show1 = false;
+                  filterTittle='Danh sách dự án'
                 "
                 :class="{ active1: activeTab === 'project' }"
                 class="nav-link px-0"
@@ -178,7 +179,7 @@
           </div>
           <div class="row">
             <AdministrationDocType
-              v-if="activeTab === 'doctype'"
+              v-if="activeTab === 'docType'"
             ></AdministrationDocType>
 
             <AdministrationAccount
@@ -224,8 +225,8 @@ export default {
 
   mounted() {
     console.log(this.user);
-    if (this.user.chucvu!=='admin') {this.activeTab='project'; this.projectTab='all'; this.show=true}
-    else this.activeTab='doctype'
+    if (this.user.chucvu!=='admin') {this.activeTab='project'; this.projectTab='all'; this.show=true; this.filterTittle="Danh sách dự án"}
+    else {this.activeTab='docType'; this.filterTittle="Danh sách loại tài liệu"}
     //this.getUser();
   },
 
