@@ -7,13 +7,11 @@ import VueJwtDecode from "vue-jwt-decode";
 import FileService from "@/services/file.service";
 
 import ChangePasswordForm from "@/components/ChangePasswordForm.vue";
-import DeleteAccountForm from "@/components/DeleteAccountForm.vue";
 import Header from "@/components/header.vue";
 
 export default {
   components: {
     ChangePasswordForm,
-    DeleteAccountForm,
     Form,
     Field,
     ErrorMessage,

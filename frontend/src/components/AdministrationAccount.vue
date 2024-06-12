@@ -90,7 +90,7 @@ export default {
 </script>
 <template>
   <div class="container-fluid">
-    <div class="row" style="background-color: var(--third-color); padding: 6px">
+    <div class="row" style="background-color: var(--bar-color); padding: 6px">
       <div class="col">
         <button
           class="btn btn-outline-secondary"
@@ -198,13 +198,6 @@ export default {
   </div>
   <AccountForm
     :account="{
-      userId: null,
-      password: null,
-      phone: null,
-      name: null,
-      address: null,
-      role: 'employee',
-      img: null,
     }"
     :e="false"
     v-if="edit === true"

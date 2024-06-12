@@ -8,13 +8,13 @@
             class=""
             style="margin: auto; font-size: 20px"
             >Thêm tài khoản nhân viên</label
-          >
+          > <!--tiêu đề-->
           <label v-else class="" style="margin: auto; font-size: 20px"
-            >Chỉnh sửa tài khoản nhân viên</label
-          >
-        </div>
+            >Chỉnh sửa tài khoản nhân viên</label>
+        </div> <!--tiêu đề-->
         <Form @submit="createAccount" :validation-schema="FormSchema">
           <div class="modal-body">
+            <!--chỉnh view chính từ khúc này-->
             <div class="row">
               <div class="col-3 d-flex align-items-center">
                 <label name="image">Ảnh đại diện</label>
@@ -298,18 +298,20 @@
                 </div>
               </div>
             </div>
+            <!--chỉnh view chính tới khúc này-->
           </div>
           <div class="text-center">
+            
             <button
               v-if="edit === false"
               class="btn btn-dark"
               style="margin-right: 10px"
               type="submit"
             >
-              Thêm tài khoản
+              Thêm tài khoản <!--tên nút -->
             </button>
             <button v-else class="btn btn-dark" style="margin-right: 10px">
-              Lưu tài khoản
+              Lưu tài khoản <!--Tên nút -->
             </button>
             <button
               @click="$emit('close'), $emit('refresh')"
@@ -460,8 +462,8 @@ export default {
               this.passMess = "Mật khẩu phải >= 6 ký tự";
             } else {
               const check = await UserService.create(data);
-              console.log(check)
-              if (check.length===3) {
+              console.log(check);
+              if (check.length === 3) {
                 if (check[0] === 1) {
                   this.emailMessage =
                     "Email đã được sử dụng bởi tài khoản khác";
@@ -476,7 +478,9 @@ export default {
               } else {
                 const headers = { "Content-Type": "multipart/form-data" };
                 if (this.images[0] !== undefined)
-                  await FileService.upload(check + "-pic.png",this.img, { headers });
+                  await FileService.upload(check + "-pic.png", this.img, {
+                    headers,
+                  });
                 this.$toast.open({
                   message: "Thêm tài khoản thành công",
                   type: "success",
@@ -500,9 +504,10 @@ export default {
             }
           }
           data.id = this.accountNew.id;
-          data.util='admin';
-          if (this.images[0] !== undefined) data.anhdaidien=this.accountNew.id+'-pic.png';
-          else data.anhdaidien=this.accountNew.anhdaidien;
+          data.util = "admin";
+          if (this.images[0] !== undefined)
+            data.anhdaidien = this.accountNew.id + "-pic.png";
+          else data.anhdaidien = this.accountNew.anhdaidien;
           const check = await UserService.update(data);
           console.log(check);
           if (check != true) {
@@ -519,7 +524,11 @@ export default {
           } else {
             const headers = { "Content-Type": "multipart/form-data" };
             if (this.images[0] !== undefined)
-              await FileService.upload(this.accountNew.id + "-pic.png",this.img, { headers });
+              await FileService.upload(
+                this.accountNew.id + "-pic.png",
+                this.img,
+                { headers }
+              );
             this.$toast.open({
               message: "Chỉnh sửa tài khoản thành công",
               type: "success",

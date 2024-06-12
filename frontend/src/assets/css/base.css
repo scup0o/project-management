@@ -33,7 +33,8 @@
   --secondary-color: rgb(97, 103, 122);
   --third-color: rgb(169, 176, 207);
   /*--third-color: rgb(216, 217, 218);*/
-  --bg-color: rgb(237, 237, 237);
+  --bar-color: rgb(237, 237, 237);
+  --bg-color: rgb(255, 255, 255);
   --sub-color: rgb(237, 237, 237);
   --field-color: rgb(218, 224, 255);
 }
