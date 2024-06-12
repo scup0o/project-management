@@ -17,12 +17,12 @@ router.route("/forgot")
     .post(userController.forgotPass)
 
 router.route("/:id")
-    .get(userController.get)
+    .post(userController.get)
 
 router.route("/all")
     .get(userController.getAll)
 
-router.route("/")
+router.route("/:id")
     .delete(userController.delete)
 
 router.route("/")

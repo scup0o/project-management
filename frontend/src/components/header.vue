@@ -107,8 +107,7 @@ export default {
                   class="fa-solid fa-user"
                   title="Tài khoản"
                   @click="
-                    this.$router.push({ name: 'account' }),
-                      (title = 'Thông tin tài khoản')
+                    
                   "
                 ></i>
               </div>

@@ -42,7 +42,7 @@ app.use("/api/favorite", favoriteRouter)
 
 
 //upload img
-app.post("/api/img", (req,res) =>{
+app.post("/api/file/:filename", (req,res) =>{
     try{
     if (!req.files || Object.keys(req.files).length === 0) {
         console.log(req);
@@ -51,15 +51,15 @@ app.post("/api/img", (req,res) =>{
       }
     else{
         //console.log(req);
-        let temp = req.files;
-        console.log(temp)
+        //let temp = req.files;
+        //console.log(temp)
         let fileuploaded = Object.values(req.files)[0];
         //let fileuploaded = req.files
         console.log(Object.values(fileuploaded))
         temp=Object.values(fileuploaded);
-        console.log(temp[0].name);
+        //console.log(temp[0].name);
         var uploadedFiles = []
-        if(fileuploaded.length > 1){
+        /*if(fileuploaded.length > 1){
             for (let i = 0; i < fileuploaded.length; i++) {
                 fileuploaded[i].mv(__dirname + '/../frontend/admin/src/assets/img/' + fileuploaded[i].name , function(err) {
                     if (err){
@@ -84,18 +84,9 @@ app.post("/api/img", (req,res) =>{
             }
             res.send(true);
         }
-        else{
+        else{*/
             // Use the mv() method to place the file somewhere on your server
-            fileuploaded.mv(__dirname + '/../frontend/admin/src/assets/img/' + fileuploaded.name , function(err) {
-                if (err){
-                    console.log(err)
-                //return res.status(500).send(err);
-            }
-                
-                console.log(`uploaded at ${this._dirname}`)
-                //res.send(window.alert("I am an alert box!")); 
-            });
-            fileuploaded.mv(__dirname + '/../frontend/user/src/assets/img/' + fileuploaded.name , function(err) {
+            fileuploaded.mv(__dirname + '/../frontend/src/assets/img/' + req.params.filename , function(err) {
                 if (err){
                     console.log(err)
                 //return res.status(500).send(err);
@@ -105,7 +96,7 @@ app.post("/api/img", (req,res) =>{
                 //res.send(window.alert("I am an alert box!")); 
             });
             res.send(true)
-        }
+        //}
     }
     }
     catch(error){

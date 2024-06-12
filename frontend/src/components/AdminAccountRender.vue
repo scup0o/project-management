@@ -25,7 +25,8 @@
             async deleteAccount(data){
                 if (confirm('Bạn có chắc muốn xóa tài khoản?')){
                     let check;
-                    check = await UserService.delete(data._id)
+                    console.log(data)
+                    check = await UserService.delete(data.id)
                 if (check===true){
                     this.$toast.open({
                                 message: "Xóa tài khoản thành công",
@@ -45,29 +46,31 @@
         <div v-for="account in accounts" :key="account" style="padding-bottom: 10px;">
             <div class="box row">
                 <div class="col-2 d-flex" style="margin: auto;">
-                    <img :src="`../../src/assets/img/${account.img}`" style="width: 50px; height: 50px; border-radius: 100%; display: inline;">
-                    <p style="display: inline; margin-left:-10px; margin: auto">{{ account.username }}</p>
+                    <img :src="`../../src/assets/img/${account.anhdaidien}`" style="width: 50px; height: 50px; border-radius: 100%; display: inline;">
+                    <p style="display: inline; margin-left:-10px; margin: auto">{{ account.manhanvien }}</p>
                 </div>
-                <div class="col-2 d-flex" style="margin: auto;">
-                    {{ account.name }}
+                <div class="col d-flex" style="margin: auto;">
+                    {{ account.username }}
                 </div>
-                <div class="col-3" style="margin: auto;">
+                <div class="col-2" style="margin: auto;">
+                    {{ account.hoten }}
+                </div>
+                <div class="col-2" style="margin: auto;">
                     <div>{{ account.email }}</div>
                 </div>
-                <div class="col-1" style="margin: auto;" >
-                    <div style="">{{ account.phone }}</div>
-                </div>
-                <div class="col-2 text-center"  style="margin: auto; text-align: center;">
-                    <p style="margin: auto;" v-if="account.role === 'admin'">Quản lý</p>
-                    <p style="margin: auto;" v-if="account.role === 'hc'">Nhân viên</p>
+                <div class="col-3 text-center"  style="margin: auto; text-align: center;">
+                    <p style="margin: auto;" v-if="account.chucvu === 'admin'">Quản trị</p>
+                    <p style="margin: auto;" v-if="account.chucvu === 'hc'">Nhân viên hành chính</p>
+                    <p style="margin: auto;" v-if="account.chucvu === 'kt'">Nhân viên ký thuật</p>
                 </div>
                 <div class="col text-end" style="margin: auto">
                             <button  class="btn btn-outline-secondary" 
                                     @click="editAccount = account; edit = true"
-                                    style="margin-right:10px">
+                                    style="margin-right:10px; border:none">
                                     <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                             <button class="btn btn-outline-secondary delete-icon"
+                            style="border:none"
                                     @click="deleteAccount(account)">
                                     <i class="fa-solid fa-trash-can"></i>
                             </button>
@@ -75,7 +78,7 @@
                         </div>
             </div>
         </div>
-        <AccountForm :account="editAccount" :e="true" v-if="accountTab==='user' && edit===true" @close="edit=false" @refresh="this.$emit('refresh2')"></AccountForm>
+        <AccountForm :account="editAccount" :e="true" v-if="edit===true" @close="edit=false" @refresh="this.$emit('refresh')"></AccountForm>
 </template>
 <style scoped>
 .box{

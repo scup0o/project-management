@@ -13,20 +13,20 @@ class UserService {
         return (await this.api.post("/login", data)).data;
     }
 
-    async register(data) {
+    async create(data) {
         return (await this.api.post("/add",data)).data;
     }
 
     async get(id){
-        return (await this.api.get(`/${id}`)).data;
+        return (await this.api.post(`/${id}`)).data;
     }
 
     async getAll(){
         return (await this.api.get("/all")).data;
     }
 
-    async delete(data){
-        return (await this.api.delete(`/`, data)).data
+    async delete(id){
+        return (await this.api.delete(`/${id}`)).data
     }
 
     async update(data){

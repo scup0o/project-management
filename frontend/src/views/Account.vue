@@ -4,6 +4,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 
 import UserService from "@/services/user.service.js";
 import VueJwtDecode from "vue-jwt-decode";
+import FileService from "@/services/file.service";
 
 import ChangePasswordForm from "@/components/ChangePasswordForm.vue";
 import DeleteAccountForm from "@/components/DeleteAccountForm.vue";
@@ -27,10 +28,15 @@ export default {
         .min(2, "Tên phải ít nhất 2 ký tự.")
         .max(50, "Tên có nhiều nhất 50 ký tự."),
 
-      /*username: yup.string().required("Tên đăng nhập không được để trống"),
-      masonhanvien:yup
+      username: yup.string().required("Tên đăng nhập không được để trống"),
+      /*masonhanvien:yup
         .string()
         .required("Mã số nhân viên không được để trống."),*/
+      email: yup
+        .string()
+        .required("Email không được để trống")
+        .email("Vui lòng nhập email hợp lệ.")
+        .max(50, "E-mail tối đa 50 ký tự."),
 
       sodienthoai: yup
         .string()
@@ -43,18 +49,20 @@ export default {
     });
 
     return {
+      cacheKey: 1,
       account: VueJwtDecode.decode(localStorage.getItem("auth")),
       activetab: "information",
       activeform: "",
-      img: true,
       haveData: true,
-      img: null,
+      imgS: null,
+      img: true,
       images: [],
       imagesPreview: [],
       FormSchema,
       first: true,
       usernameMessage: "",
       emailMessage: "",
+      a: 0,
     };
   },
 
@@ -65,14 +73,19 @@ export default {
 
   methods: {
     async getUser() {
+      const nowTime = +new Date();
+      this.cacheKey = nowTime;
       this.account = await UserService.get(this.account.id);
+      this.a = this.a++;
+      this.$forceUpdate();
     },
 
     onFileChange(e) {
+      //this.a=!this.a;
       this.haveData = false;
       console.log(e.target.files);
-      this.img = e.target.files;
-      console.log(this.img);
+      this.imgS = e.target.files;
+      console.log(this.imgS);
       let temp = this.images.length;
       var selectedFiles = e.target.files;
 
@@ -91,9 +104,10 @@ export default {
       data.util = "staff";
       data.id = this.account.id;
       console.log(data);
-      if (this.images[0]) data.anhdaidien = this.images[0].name;
-      else{
-        data.anhdaidien=this.account.anhdaidien;
+      if (this.images[0]) {
+        data.anhdaidien = this.account.id + "-pic.png";
+      } else {
+        data.anhdaidien = this.account.anhdaidien;
       }
       const check = await UserService.update(data);
       /*if (check === "username") {
@@ -101,6 +115,13 @@ export default {
           "Tên đăng nhập đã được sử dụng bởi tài khoản khác";
       }*/
       if (check === true) {
+        const headers = { "Content-Type": "multipart/form-data" };
+        if (this.images[0]) {
+          console.log(this.imgS[0].name);
+          await FileService.upload(this.account.id + "-pic.png", this.imgS, {
+            headers,
+          });
+        }
         this.$toast.open({
           message: "Chỉnh sửa thông tin thành công",
           type: "success",
@@ -109,6 +130,7 @@ export default {
         });
         this.getUser();
         this.activetab = "information";
+        this.$forceUpdate();
       } else {
         console.log(check);
         if (check[0] === 1) {
@@ -193,7 +215,7 @@ export default {
         <!--trang thong tin-->
         <div v-if="activetab != 'edit'">
           <img
-            :src="`../../src/assets/img/${account.anhdaidien}`"
+            :src="`../../src/assets/img/${account.anhdaidien}?cache=${cacheKey}`"
             style="
               border-radius: 100%;
               width: 10vw;
@@ -204,6 +226,7 @@ export default {
               border: 1px solid black;
             "
           />
+
           <div class="row" style="padding: 5vw">
             <div class="box" style="font-family: RalewayBold">
               <div class="row">
@@ -231,71 +254,68 @@ export default {
                   </button>
                 </div>
               </div>
-              <div class="row" style="padding: 2vw;">
+              <div class="row" style="padding: 2vw">
                 <!--Thông tin cá nhân-->
               </div>
               <div>
-                <div class="row" style="padding:0vw 3vw 3vw 3vw">
+                <div class="row" style="padding: 0vw 3vw 3vw 3vw">
                   <div class="row line" style="">
-                  <div class="col">
-                    <div class="row">
-                      <div class="col-6 lb">Tên đăng nhập:</div>
-                      <div class="col">
-                        {{ account.username }}
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-6 lb">Tên đăng nhập:</div>
+                        <div class="col">
+                          {{ account.username }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-6 lb">Mã số nhân viên:</div>
+                        <div class="col">
+                          {{ account.manhanvien }}
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col">
-                    <div class="row">
-                      <div class="col-6 lb">Mã số nhân viên:</div>
-                      <div class="col">
-                        {{ account.manhanvien }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
-                <div class="row line" style="">
-                  <div class="col-3 lb">Email:</div>
-                  <div class="col">
-                    {{ account.email }}
+                  <div class="row line" style="">
+                    <div class="col-3 lb">Email:</div>
+                    <div class="col">
+                      {{ account.email }}
+                    </div>
                   </div>
-                </div>
-                <div class="row line" style="">
-                  <div class="col-3 lb">Điện thoại:</div>
-                  <div class="col">
-                    {{ account.sodienthoai }}
+                  <div class="row line" style="">
+                    <div class="col-3 lb">Điện thoại:</div>
+                    <div class="col">
+                      {{ account.sodienthoai }}
+                    </div>
                   </div>
-                </div>
-                <div class="row line" style="">
-                  <div class="col">
-                    <div class="row">
-                      <div class="col-6 lb">Chức vụ:</div>
-                      <div class="col" v-if="account.chucvu === 'admin'">
-                        Quản trị
+                  <div class="row line" style="">
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-6 lb">Chức vụ:</div>
+                        <div class="col" v-if="account.chucvu === 'admin'">
+                          Quản trị
+                        </div>
+                        <div class="col" v-if="account.chucvu === 'hc'">
+                          Nhân viên hành chính
+                        </div>
+                        <div class="col" v-if="account.chucvu === 'kt'">
+                          Nhân viên kỹ thuật
+                        </div>
                       </div>
-                      <div class="col" v-if="account.chucvu === 'hc'">
-                        Nhân viên hành chính
-                      </div>
-                      <div class="col" v-if="account.chucvu === 'kt'">
-                        Nhân viên kỹ thuật
+                    </div>
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-6 lb">Giới tính:</div>
+                        <div class="col" v-if="account.gioitinh === 'Nu'">
+                          Nữ
+                        </div>
+                        <div class="col" v-else>Nam</div>
                       </div>
                     </div>
                   </div>
-                  <div class="col">
-                    <div class="row">
-                      <div class="col-6 lb">Giới tính:</div>
-                      <div class="col" v-if="account.gioitinh==='Nu'">
-                        Nữ
-                      </div>
-                      <div class="col" v-else>
-                        Nam
-                      </div>
-                    </div>
-                  </div>
                 </div>
-                </div>
-                
               </div>
             </div>
           </div>
@@ -313,7 +333,7 @@ export default {
                   <img
                     v-if="haveData === true"
                     class="hover-e"
-                    :src="`../../src/assets/img/${account.anhdaidien}`"
+                    :src="`../../src/assets/img/${account.anhdaidien}?cache=${cacheKey}`"
                     style="
                       border-radius: 100%;
                       width: 10vw;
@@ -365,15 +385,21 @@ export default {
                     </div>
                   </div>
                 </label>
-
-                <input
-                  type="file"
-                  name="fileuploaded"
-                  style="visibility: hidden"
-                  @change="onFileChange"
+                <form
                   encType="multipart/form-data"
-                  id="fileuploaded"
-                />
+                  @submit="this.$emit('submit')"
+                  action="/api/img"
+                  method="post"
+                >
+                  <input
+                    type="file"
+                    name="fileuploaded"
+                    style="visibility: hidden"
+                    @change="onFileChange"
+                    encType="multipart/form-data"
+                    id="fileuploaded"
+                  />
+                </form>
               </div>
               <div
                 class="row"
@@ -583,7 +609,9 @@ export default {
                           getUser(),
                             (activetab = 'information'),
                             (usernameMessage = ''),
-                            (emailMessage = '')
+                            (emailMessage = ''),
+                            (imagesPreview[0] =
+                              '../../src/assets/img/' + this.account.anhdaidien)
                         "
                         style="
                           width: 110px;
@@ -710,7 +738,7 @@ label {
 
 .line {
   padding-bottom: 1vw;
-  padding-top:1vw;  
+  padding-top: 1vw;
   border-bottom: 1px solid rgb(186, 186, 186);
 }
 

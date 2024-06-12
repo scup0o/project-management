@@ -73,7 +73,8 @@ exports.logout = (req, res) => {
 
 exports.create = async (req, res, next) => {
   try {
-    //console.log(req.body);
+    console.log(req.body);
+    let error = [0, 0, 0];
     let result = await new Promise((resolve, reject) => {
       db.query(
         `SELECT username FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
@@ -86,49 +87,51 @@ exports.create = async (req, res, next) => {
     });
     console.log(result);
     if (result.length != 0) {
-      res.send("username existed");
-      return console.log("username existed");
-    } else {
-      result = await new Promise((resolve, reject) => {
-        db.query(
-          `SELECT email FROM NHAN_VIEN WHERE email = '${req.body.email}'`,
-          function (err, result, fields) {
-            if (err) {
-              reject(err);
-            } else resolve(result);
-          }
-        );
-      });
-      if (result.length != 0) {
-        res.send("email existed");
-        return console.log("email existed");
-      } else {
-        result = await new Promise((resolve, reject) => {
-          db.query(
-            `SELECT manhanvien FROM NHAN_VIEN WHERE manhanvien = '${req.body.manhanvien}'`,
-            function (err, result, fields) {
-              if (err) {
-                reject(err);
-              } else resolve(result);
-            }
-          );
-        });
-        if (result.length != 0) {
-          res.send("manhanvien existed");
-          return console.log("manhanvien existed");
-        } else {
-          const salt = await bcrypt.genSalt();
-          req.body.matkhau = await bcrypt.hash(req.body.matkhau, salt);
-          const id = await bcrypt.hash(req.body.manhanvien, salt);
-          db.query(
-            `INSERT INTO NHAN_VIEN (username, manhanvien, matkhau, sodienthoai, email, chucvu, hoten, id, gioitinh, anhdaidien) VALUES ('${req.body.username}', '${req.body.manhanvien}','${req.body.matkhau}', '${req.body.sodienthoai}','${req.body.email}', '${req.body.chucvu}', '${req.body.hoten}', '${id}', '${req.body.gioitinh}', '${req.body.anhdaidien}')`,
-            function (e) {
-              if (e) throw e;
-            }
-          );
-          res.send(true);
+      error[2] = 1;
+    }
+    result = await new Promise((resolve, reject) => {
+      db.query(
+        `SELECT email FROM NHAN_VIEN WHERE email = '${req.body.email}'`,
+        function (err, result, fields) {
+          if (err) {
+            reject(err);
+          } else resolve(result);
         }
-      }
+      );
+    });
+    if (result.length != 0) {
+      error[0] = 1;
+    }
+    result = await new Promise((resolve, reject) => {
+      db.query(
+        `SELECT manhanvien FROM NHAN_VIEN WHERE manhanvien = '${req.body.manhanvien}'`,
+        function (err, result, fields) {
+          if (err) {
+            reject(err);
+          } else resolve(result);
+        }
+      );
+    });
+    if (result.length != 0) {
+      error[1] = 1;
+    } 
+    if (error[0]!=0 || error[1]!=0 || error[2]!=0){
+      return res.send(error);
+    }
+    else {
+      let salt = await bcrypt.genSalt();
+      req.body.matkhau = await bcrypt.hash(req.body.matkhau, salt);
+      salt = await bcrypt.genSalt();
+      let id = await bcrypt.hash(req.body.manhanvien, salt);
+      id = id.replace("/","a");
+      if(req.body.anhdaidien!='user-img.jpg') req.body.anhdaidien=id+'-pic.png'
+      db.query(
+        `INSERT INTO NHAN_VIEN (username, manhanvien, matkhau, sodienthoai, email, chucvu, hoten, id, gioitinh, anhdaidien) VALUES ('${req.body.username}', '${req.body.manhanvien}','${req.body.matkhau}', '${req.body.sodienthoai}','${req.body.email}', '${req.body.chucvu}', '${req.body.hoten}', '${id}', '${req.body.gioitinh}', '${req.body.anhdaidien}')`,
+        function (e) {
+          if (e) throw e;
+        }
+      );
+      res.send(id);
     }
   } catch (error) {
     console.log(error);
@@ -198,24 +201,26 @@ exports.update = async (req, res, next) => {
       if (error[0] === 0 && error[1] === 0 && error[2] === 0) {
         let matkhau = result[0].matkhau;
         if (req.body.matkhau != null && req.body.matkhau != undefined) {
+          console.log("new pass",req.body.matkhau);
           const salt = await bcrypt.genSalt();
           matkhau = await bcrypt.hash(req.body.matkhau, salt);
         }
-        if (req.body.util === "admin")
+        if (req.body.util === "admin"){
+          
           db.query(
-            `UPDATE NHAN_VIEN SET manhanvien = '${req.body.manhanvien}',matkhau = '${matkhau}',sodienthoai = '${req.body.sodienthoai}',email = '${req.body.email}',chucvu = '${req.body.chucvu}',hoten = '${req.body.hoten}',gioitinh = '${req.body.gioitinh}',anhdaidien = '${req.body.anhdaidien}',username = '${req.body.username}' FROM NHAN_VIEN WHERE id = '${req.body.id}'`,
+            `UPDATE NHAN_VIEN SET manhanvien = '${req.body.manhanvien}',matkhau = '${matkhau}',sodienthoai = '${req.body.sodienthoai}',email = '${req.body.email}',chucvu = '${req.body.chucvu}',hoten = '${req.body.hoten}',gioitinh = '${req.body.gioitinh}',anhdaidien = '${req.body.anhdaidien}',username = '${req.body.username}' WHERE id = '${req.body.id}'`,
             function (e) {
               if (e) throw e;
             }
-          );
+          );}
         else {
           //console.log(`UPDATE NHAN_VIEN SET sodienthoai = '${req.body.sodienthoai}' AND email = '${req.body.email}' AND hoten = '${req.body.hoten}' AND gioitinh = '${req.body.gioitinh}' AND anhdaidien = '${req.body.anhdaidien}' WHERE id = '${req.body.id}'`)
           db.query(
             `UPDATE NHAN_VIEN SET sodienthoai = '${req.body.sodienthoai}',email = '${req.body.email}',hoten = '${req.body.hoten}',gioitinh = '${req.body.gioitinh}',anhdaidien = '${req.body.anhdaidien}',username = '${req.body.username}' WHERE id = '${req.body.id}'`,
             function (e, r) {
               if (e) throw e;
-              else{
-                console.log(r)
+              else {
+                console.log(r);
               }
             }
           );
@@ -256,7 +261,7 @@ exports.get = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    db.query(`SELECT * FROM NHAN_VIEN`, function (err, result) {
+    db.query(`SELECT * FROM NHAN_VIEN`, function (err, result, fields) {
       if (err) {
         throw err;
       } else {
@@ -270,13 +275,14 @@ exports.getAll = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
+    console.log(req.params.id);
     db.query(
-      `DELETE FROM NHAN_VIEN WHERE id = '${req.body.id}'`,
+      `DELETE FROM NHAN_VIEN WHERE id = '${req.params.id}'`,
       function (err, result) {
         if (err) {
           throw err;
         } else {
-          res.send(result);
+          res.send(true);
         }
       }
     );
