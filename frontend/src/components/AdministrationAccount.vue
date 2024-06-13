@@ -11,10 +11,14 @@ export default {
   },
 
   watch: {
+    /*filterRoleTab(newVal, oldVal) {
+      this.searchText = newVal;
+    },*/
   },
 
   data() {
     return {
+      filterRoleTab: "",
       onPage: 0,
       pageNumber: 0,
       onPageTemp: 1,
@@ -46,23 +50,31 @@ export default {
 
   computed: {
     accountStrings() {
-        return this.accountlist.map((account) => {
-          const { name, username, manhanvien } = account;
-          return [name, username, manhanvien].join("");
-        });
-      
+      return this.accountlist.map((account) => {
+        const { name, username, manhanvien, chucvu } = account;
+        return [name, username, manhanvien, chucvu].join("");
+      });
     },
 
     filteredAccounts() {
-      if (!this.searchText) return this.accountlist;
+      if (!this.searchText && this.filterRoleTab==='') return this.accountlist;
       else {
         this.onPage = 0;
         this.onPageTemp = 1;
-        return this.accountlist.filter((_account, index) =>
+        let tempList= this.accountlist.filter((_account, index) =>
           this.accountStrings[index]
             .toLowerCase()
             .includes(this.searchText.toLowerCase())
         );
+        if (this.filterRoleTab!=''){
+        let p = [];
+        tempList.forEach((account, index) =>{
+                                if ((account.chucvu === this.filterRoleTab)){
+                                    p.push(account)
+                                }
+                            })
+        return p;}
+        return tempList;
       }
     },
 
@@ -72,15 +84,15 @@ export default {
 
     sliceAccount() {
       //let pL = this.filteredAccounts;
-      let accountListNumber = Math.ceil(this.filteredAccounts.length / 7);
+      let accountListNumber = Math.ceil(this.filteredAccounts.length / 6);
       this.pageNumber = accountListNumber;
       console.log(accountListNumber);
       let count = 0;
       let tempAccounts = [];
       let i;
       for (i = 0; i < accountListNumber; i++) {
-        tempAccounts[i] = this.filteredAccounts.slice(count, count + 7);
-        count = count + 7;
+        tempAccounts[i] = this.filteredAccounts.slice(count, count + 6);
+        count = count + 6;
         console.log(tempAccounts);
       }
       return tempAccounts;
@@ -91,6 +103,20 @@ export default {
 <template>
   <div class="container-fluid">
     <div class="row" style="background-color: var(--bar-color); padding: 6px">
+      <div class="col-2">
+        <select v-model="filterRoleTab" style="
+                        border-width: 1.55px;
+                        border-color: var(--secondary-color);
+                        box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
+                        height: 5vh;
+                        border-radius: 5px 5px 5px 5px;
+                        text-align: center;">
+          <option value="">Tất cả</option>
+          <option value="admin">Quản trị</option>
+          <option value="hc">Nhân viên hành chính</option>
+          <option value="kt">Nhân viên kỹ thuật</option>
+        </select>
+      </div>
       <div class="col">
         <button
           class="btn btn-outline-secondary"
@@ -117,23 +143,12 @@ export default {
       </div>
     </div>
     <div class="row tt" style="margin: auto">
-        <div class="col text-end">
-             MSNV
-        </div>
-        <div class='col d-flex justify-content-center'>
-            Username
-        </div>
-        <div class="col-2 d-flex justify-content-center">
-            Họ tên
-        </div>
-        <div class="col-2 d-flex justify-content-center">
-            Email
-        </div>
-        <div class="col-3 d-flex justify-content-center">
-            Chức vụ
-        </div>
-        <div class="col">
-        </div>
+      <div class="col text-end">MSNV</div>
+      <div class="col d-flex justify-content-center">Username</div>
+      <div class="col-2 d-flex justify-content-center">Họ tên</div>
+      <div class="col-2 d-flex justify-content-center">Email</div>
+      <div class="col-3 d-flex justify-content-center">Chức vụ</div>
+      <div class="col"></div>
     </div>
 
     <div class="row" style="padding-top: 20px; padding: 10px">
@@ -164,8 +179,8 @@ export default {
           class="btn btn-info"
           style="
             margin-right: 10px;
-            background-color: var(--third-color);
-            background-color: black;
+            background-color: var(--bg-color);
+            border: none;
           "
           title="Trang trước"
         >
@@ -186,8 +201,8 @@ export default {
           class="btn btn-info"
           style="
             margin-left: 10px;
-            background-color: var(--third-color);
-            background-color: black;
+            background-color: var(--bg-color);
+            border: none;
           "
           title="Trang sau"
         >
@@ -197,8 +212,7 @@ export default {
     </div>
   </div>
   <AccountForm
-    :account="{
-    }"
+    :account="{}"
     :e="false"
     v-if="edit === true"
     @close="edit = false"
@@ -215,9 +229,9 @@ span {
   margin-left: 10px;
 }
 
-.tt{
-    font-family: RalewayBold;
-    color:gray;
-    padding-top:1vw;
+.tt {
+  font-family: RalewayBold;
+  color: gray;
+  padding-top: 1vw;
 }
 </style>

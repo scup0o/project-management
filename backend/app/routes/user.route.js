@@ -8,7 +8,7 @@ router.route("/login")
     .post(userController.login);
 
 router.route("/add")
-    .post(userController.create);
+    .post(requireAuth, AdminOnly, userController.create);
 
 router.route("/")
     .get(requireAuth, userController.logout)
@@ -17,16 +17,16 @@ router.route("/forgot")
     .post(userController.forgotPass)
 
 router.route("/:id")
-    .post(userController.get)
+    .post(requireAuth, userController.get)
 
 router.route("/all")
-    .get(userController.getAll)
+    .get(requireAuth, AdminOnly, userController.getAll)
 
 router.route("/:id")
-    .delete(userController.delete)
+    .delete(requireAuth, AdminOnly, userController.delete)
 
 router.route("/")
-    .put(userController.update)
+    .put(requireAuth, userController.update)
 
 router.route("/cp")
     .put(userController.changePass);

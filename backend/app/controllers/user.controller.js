@@ -114,17 +114,17 @@ exports.create = async (req, res, next) => {
     });
     if (result.length != 0) {
       error[1] = 1;
-    } 
-    if (error[0]!=0 || error[1]!=0 || error[2]!=0){
-      return res.send(error);
     }
-    else {
+    if (error[0] != 0 || error[1] != 0 || error[2] != 0) {
+      return res.send(error);
+    } else {
       let salt = await bcrypt.genSalt();
       req.body.matkhau = await bcrypt.hash(req.body.matkhau, salt);
       salt = await bcrypt.genSalt();
       let id = await bcrypt.hash(req.body.manhanvien, salt);
-      id = id.replace("/","a");
-      if(req.body.anhdaidien!='user-img.jpg') req.body.anhdaidien=id+'-pic.png'
+      id = id.replace("/", "a");
+      if (req.body.anhdaidien != "user-img.jpg")
+        req.body.anhdaidien = id + "-pic.png";
       db.query(
         `INSERT INTO NHAN_VIEN (username, manhanvien, matkhau, sodienthoai, email, chucvu, hoten, id, gioitinh, anhdaidien) VALUES ('${req.body.username}', '${req.body.manhanvien}','${req.body.matkhau}', '${req.body.sodienthoai}','${req.body.email}', '${req.body.chucvu}', '${req.body.hoten}', '${id}', '${req.body.gioitinh}', '${req.body.anhdaidien}')`,
         function (e) {
@@ -159,6 +159,7 @@ exports.update = async (req, res, next) => {
       res.send("not found");
       return console.log("user not existed");
     } else {
+      let matkhau = result[0].matkhau;
       result = await new Promise((resolve, reject) => {
         db.query(
           `SELECT email, id FROM NHAN_VIEN WHERE email = '${req.body.email}'`,
@@ -199,21 +200,21 @@ exports.update = async (req, res, next) => {
         error[2] = 1;
       }
       if (error[0] === 0 && error[1] === 0 && error[2] === 0) {
-        let matkhau = result[0].matkhau;
-        if (req.body.matkhau != null && req.body.matkhau != undefined) {
-          console.log("new pass",req.body.matkhau);
-          const salt = await bcrypt.genSalt();
-          matkhau = await bcrypt.hash(req.body.matkhau, salt);
-        }
-        if (req.body.util === "admin"){
+        if (req.body.util === "admin") {
           
+          if (req.body.matkhau != null && req.body.matkhau != undefined) {
+            console.log("new pass", req.body.matkhau);
+            const salt = await bcrypt.genSalt();
+            matkhau = await bcrypt.hash(req.body.matkhau, salt);
+          }
+          console.log(matkhau);
           db.query(
             `UPDATE NHAN_VIEN SET manhanvien = '${req.body.manhanvien}',matkhau = '${matkhau}',sodienthoai = '${req.body.sodienthoai}',email = '${req.body.email}',chucvu = '${req.body.chucvu}',hoten = '${req.body.hoten}',gioitinh = '${req.body.gioitinh}',anhdaidien = '${req.body.anhdaidien}',username = '${req.body.username}' WHERE id = '${req.body.id}'`,
             function (e) {
               if (e) throw e;
             }
-          );}
-        else {
+          );
+        } else {
           //console.log(`UPDATE NHAN_VIEN SET sodienthoai = '${req.body.sodienthoai}' AND email = '${req.body.email}' AND hoten = '${req.body.hoten}' AND gioitinh = '${req.body.gioitinh}' AND anhdaidien = '${req.body.anhdaidien}' WHERE id = '${req.body.id}'`)
           db.query(
             `UPDATE NHAN_VIEN SET sodienthoai = '${req.body.sodienthoai}',email = '${req.body.email}',hoten = '${req.body.hoten}',gioitinh = '${req.body.gioitinh}',anhdaidien = '${req.body.anhdaidien}',username = '${req.body.username}' WHERE id = '${req.body.id}'`,

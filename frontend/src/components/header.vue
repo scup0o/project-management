@@ -59,7 +59,7 @@ export default {
     :class="{ notlogin: !checkUser }"
     style=""
   >
-    <div class="container-fluid">
+    <div class="container-fluid" style="height:5vh">
       <div class="container">
         <div class="row" style="padding: 5px">
           <div class="col-5 d-flex justify-content-start" style="margin: auto">

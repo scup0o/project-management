@@ -17,28 +17,30 @@ app.use(express.json());
 
 
 //routes
-const productsRouter = require("./app/routes/product.route");
-const discountCodeRouter = require("./app/routes/discountCode.route");
 const userRouter = require("./app/routes/user.route");
-const genreRouter = require("./app/routes/genre.route");
-const artistRouter = require("./app/routes/artist.route");
+const doctypeRouter = require("./app/routes/doctype.route");
+//const productsRouter = require("./app/routes/product.route");
+//const discountCodeRouter = require("./app/routes/discountCode.route");
+//const genreRouter = require("./app/routes/genre.route");
+//const artistRouter = require("./app/routes/artist.route");
 //const cartRouter = require("./app/routes/cart.route")
-const favoriteRouter = require("./app/routes/favorite.route")
+//const favoriteRouter = require("./app/routes/favorite.route")
 
 
-const { checkUser } = require("./app/middlewares/auth.middleware");
+//const { checkUser } = require("./app/middlewares/auth.middleware");
 
 //app.get("*", checkUser);
 app.get("/",(req, res) =>{
-    res.json( {message: "vinyl disk"} );
+    res.json( {message: "projectmanagement"} );
 });
-app.use("/api/product", productsRouter);
-//app.use("/api/auth", authRouter);
-app.use("/api/genre",genreRouter);
-app.use("/api/artist",artistRouter);
 app.use("/api/user", userRouter);
-app.use("/api/discountcode",discountCodeRouter);
-app.use("/api/favorite", favoriteRouter)
+app.use("/api/doctype", doctypeRouter);
+//app.use("/api/product", productsRouter);
+//app.use("/api/auth", authRouter);
+//app.use("/api/genre",genreRouter);
+//app.use("/api/artist",artistRouter);
+//app.use("/api/discountcode",discountCodeRouter);
+//app.use("/api/favorite", favoriteRouter)
 
 
 //upload img

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid" style="background-color: var(--bg-color)">
+  <div class="container-fluid" style="background-color: var(--bg-color);">
     <div class="row flex-nowrap" id="sidebar">
       <div class="col-2 px-0" style="background-color: var(--main-color)">
         <div
@@ -55,7 +55,7 @@
                 class="nav-link px-0"
               >
                 <div class="button-des">
-                  <i class="fa-regular fa-file-lines"></i>
+                  <i class="fa-regular fa-file-lines" style="padding-right: 0.5vw"></i>
                   <span class="ms-1 d-none d-sm-inline">Dự án</span>
                 </div>
               </button>
@@ -121,7 +121,7 @@
                 :class="{ active1: activeTab === 'docType' }"
               >
                 <div class="button-des">
-                  <i class="fa-solid fa-icons"></i>
+                  <i class="fa-solid fa-icons" style="padding-right: 0.5vw"></i>
                   <span class="ms-1 d-none d-sm-inline">Quản lý danh mục</span>
                 </div>
               </button>
@@ -139,7 +139,7 @@
                 "
               >
                 <div class="button-des">
-                  <i class="fa-solid fa-users"></i>
+                  <i class="fa-solid fa-users" style="padding-right: 0.5vw"></i>
                   <span class="ms-1 d-none d-sm-inline"
                     >Quản lý người dùng</span
                   >
@@ -173,8 +173,8 @@
             <Account></Account>
           </div>
         </div>
-        <div v-else>
-          <div class="row" style="">
+        <div v-else style="height: 100vh;">
+          <div class="row" >
             <Header :title="filterTittle"></Header>
           </div>
           <div class="row">

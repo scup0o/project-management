@@ -1,6 +1,12 @@
 <template>
-  <div class="container-fluid">
-    <div class="row" style="background-color: var(--bar-color); padding: 6px">
+  <div
+    class="container-fluid"
+    style="overflow-x: hidden; overflow-y: hidden; height: 92vh"
+  >
+    <div
+      class="row"
+      style="background-color: var(--bar-color); padding: 7px; height: 7vh"
+    >
       <div class="col">
         <button
           class="btn btn-outline-secondary"
@@ -8,7 +14,7 @@
           data-aos="fade-up"
           style="margin-right: 10px"
         >
-          Thêm thể loại
+          Thêm loại tài liệu
           <i class="fa-solid fa-square-plus" id="util-icon"></i>
         </button>
         <button
@@ -41,57 +47,129 @@
         :e="false"
         :doctype="{
           ten: null,
-          id: null,
           giaiDoan: null,
         }"
       >
       </DoctypeForm>
     </div>
-    <div class="row" style="padding-top: 20px">
-      <div
-        v-for="(doctype, index) in sliceDoctype"
-        :key="index"
-        v-if="filteredDoctypesCount > 0"
-      >
+    <div
+      class="row"
+      style="
+        padding-top: 3vh;
+        padding-bottom: 3vh;
+        font-size: 2vh;
+        padding-left: 1vw;
+      "
+    >
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Trước đấu thầu</div>
+          <div class="col text-end">
+            {{ sliceDoctypeTruocDauThau.length }}
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Sau đấu thầu</div>
+          <div class="col text-end">
+            {{ sliceDoctypeSauDauThau.length }}
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Bảo hành, bảo trì</div>
+          <div class="col text-end">
+            {{ sliceDoctypeBaoHanh.length }}
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Loại tài liệu khác</div>
+          <div class="col text-end">
+            {{ sliceDoctypeKhac.length }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="">
+      <div class="col-3" style="">
         <AdminDoctypeRender
-          v-if="index === onPage"
-          :doctypes="doctype"
-          :is="doctype"
+          v-if="sliceDoctypeTruocDauThau.length > 0"
+          :doctypes="sliceDoctypeTruocDauThau"
+          :is="sliceDoctypeTruocDauThau"
           @refresh="retrieveDoctype()"
         >
         </AdminDoctypeRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
+        >
+          Không có loại tài liệu nào.
+        </p>
       </div>
-      <p v-else>Không có thể loại nào.</p>
-    </div>
-    <div class="row text-center d-flex" v-if="filteredDoctypesCount > 0">
-      <div>
-        <button
-          v-if="onPage != 0"
-          @click="onPage--, onPageTemp--"
-          class="btn"
-          style="margin-right: 10px; border-color: none"
-          title="Trang trước"
+      <div class="col-3">
+        <AdminDoctypeRender
+          v-if="sliceDoctypeSauDauThau.length > 0"
+          :doctypes="sliceDoctypeSauDauThau"
+          :is="sliceDoctypeSauDauThau"
+          @refresh="retrieveDoctype()"
         >
-          <i class="fa-solid fa-caret-left"></i>
-        </button>
-        <div style="display: inline">
-          <input
-            class="form-control"
-            style="width: 50px; display: inline"
-            type="number"
-            v-model="onPageTemp"
-            @keyup.enter="(onPage = onPageTemp - 1), (onPageTemp = onPage + 1)"
-          />/ {{ pageNumber }}
-        </div>
-        <button
-          v-if="onPageTemp < pageNumber"
-          @click="onPage++, (onPageTemp = onPage + 1)"
-          class="btn"
-          style="margin-left: 10px; border-color: none"
-          title="Trang sau"
+        </AdminDoctypeRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
         >
-          <i class="fa-solid fa-caret-right"></i>
-        </button>
+          Không có loại tài liệu nào.
+        </p>
+      </div>
+      <div class="col-3">
+        <AdminDoctypeRender
+          :doctypes="sliceDoctypeBaoHanh"
+          :is="sliceDoctypeBaoHanh"
+          v-if="sliceDoctypeBaoHanh.length > 0"
+          @refresh="retrieveDoctype()"
+        >
+        </AdminDoctypeRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
+        >
+          Không có loại tài liệu nào.
+        </p>
+      </div>
+      <div class="col-3">
+        <AdminDoctypeRender
+          :doctypes="sliceDoctypeKhac"
+          :is="sliceDoctypeKhac"
+          @refresh="retrieveDoctype()"
+          v-if="sliceDoctypeKhac.length > 0"
+        >
+        </AdminDoctypeRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
+        >
+          Không có loại tài liệu nào.
+        </p>
       </div>
     </div>
   </div>
@@ -127,8 +205,8 @@ export default {
   computed: {
     doctypeStrings() {
       return this.doctypes.map((doctype) => {
-        const { name } = doctype;
-        return [name].join("");
+        const { ten} = doctype;
+        return [ten].join("");
       });
     },
 
@@ -139,6 +217,7 @@ export default {
           .toLowerCase()
           .includes(this.searchText.toLowerCase())
       );
+      //console.log(this.doctypesList);
     },
 
     filteredDoctypesCount() {
@@ -146,18 +225,26 @@ export default {
       return this.filteredDoctypes.length;
     },
 
-    sliceDoctype() {
-      let doctypeListNumber = Math.ceil(this.filteredDoctypes.length / 8);
-      this.pageNumber = doctypeListNumber;
-      let count = 0;
-      let tempDoctypes = [];
-      let i;
-      for (i = 0; i < doctypeListNumber; i++) {
-        tempDoctypes[i] = this.filteredDoctypes.slice(count, count + 8);
-        count = count + 8;
-      }
-      this.doctypesList = tempDoctypes;
-      return tempDoctypes;
+    sliceDoctypeTruocDauThau() {
+      return this.filteredDoctypes.filter((_doctype, index) =>
+        _doctype.giaiDoan==='truocdauthau'
+      );
+    },
+
+    sliceDoctypeSauDauThau() {
+      return this.filteredDoctypes.filter((_doctype, index) =>
+        _doctype.giaiDoan==='saudauthau'
+      );
+    },
+    sliceDoctypeBaoHanh() {
+      return this.filteredDoctypes.filter((_doctype, index) =>
+        _doctype.giaiDoan==='baohanh'
+      );
+    },
+    sliceDoctypeKhac() {
+      return this.filteredDoctypes.filter((_doctype, index) =>
+        _doctype.giaiDoan==='khac'
+      );
     },
   },
 

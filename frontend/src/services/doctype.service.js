@@ -17,8 +17,8 @@ class DoctypeService {
         return(await this.api.post("/",data)).data
     }
 
-    async update(id, data) {
-        return (await this.api.put(`/${id}`, data)).data;
+    async update(data) {
+        return (await this.api.put(`/`, data)).data;
     }
 
     async delete(id) {
