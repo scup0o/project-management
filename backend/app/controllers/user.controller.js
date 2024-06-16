@@ -260,6 +260,29 @@ exports.get = async (req, res, next) => {
   }
 };
 
+exports.getMSNV = async (req, res, next) => {
+  try {
+    //console.log(req.params.id);
+    db.query(
+      `SELECT * FROM NHAN_VIEN WHERE manhanvien = '${req.params.manhanvien}'`,
+      function (err, result, fields) {
+        if (err) {
+          throw err;
+        } else {
+          if (result.length === 0) {
+            res.send(null);
+            console.log("null");
+          } else {
+            res.send(result[0]);
+          }
+        }
+      }
+    );
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 exports.getAll = async (req, res, next) => {
   try {
     db.query(`SELECT * FROM NHAN_VIEN`, function (err, result, fields) {

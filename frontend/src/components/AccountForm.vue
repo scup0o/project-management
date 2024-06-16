@@ -6,10 +6,10 @@
           <label
             v-if="edit === false"
             class=""
-            style="margin: auto; font-size: 20px"
+            style="margin: auto; font-size: 20px; font-family: RalewayBlack"
             >Thêm tài khoản nhân viên</label
           > <!--tiêu đề-->
-          <label v-else class="" style="margin: auto; font-size: 20px"
+          <label v-else class="" style="margin: auto; font-size: 20px; font-family: RalewayBlack"
             >Chỉnh sửa tài khoản nhân viên</label>
         </div> <!--tiêu đề-->
         <Form @submit="createAccount" :validation-schema="FormSchema">

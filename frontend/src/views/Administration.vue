@@ -46,7 +46,7 @@
               <button
                 @click="
                   show = true;
-                  projectTab = 'all';
+                  projectTab = 'chia se';
                   this.activeTab = 'project';
                   show1 = false;
                   filterTittle='Danh sách dự án'
@@ -65,43 +65,43 @@
                 style="padding-left: 2.5vw; padding-top: 1vh"
               >
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'all'">
+                  <button class="a active2" @click="projectTab = 'chia se'">
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
-                      v-if="projectTab === 'all'"
+                      v-if="projectTab === 'chia se'"
                     ></i>
                     <span class="ms-1 d-none d-sm-inline">Chia sẻ</span>
                   </button>
                 </div>
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'personal'">
+                  <button class="a active2" @click="projectTab = 'ca nhan'">
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
-                      v-if="projectTab === 'personal'"
+                      v-if="projectTab === 'ca nhan'"
                     ></i>
 
                     <span class="ms-1 d-none d-sm-inline">Cá nhân</span>
                   </button>
                 </div>
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'archive'">
+                  <button class="a active2" @click="projectTab = 'luu tru'">
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
-                      v-if="projectTab === 'archive'"
+                      v-if="projectTab === 'luu tru'"
                     ></i>
 
                     <span class="ms-1 d-none d-sm-inline">Lưu trữ</span>
                   </button>
                 </div>
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'discard'">
+                  <button class="a active2" @click="projectTab = 'thung rac'">
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
-                      v-if="projectTab === 'discard'"
+                      v-if="projectTab === 'thung rac'"
                     ></i>
 
                     <span class="ms-1 d-none d-sm-inline">Thùng rác</span>
@@ -178,6 +178,7 @@
             <Header :title="filterTittle"></Header>
           </div>
           <div class="row">
+            <Project v-if="activeTab === 'project' " :projectTab="projectTab"></Project>
             <AdministrationDocType
               v-if="activeTab === 'docType'"
             ></AdministrationDocType>
@@ -195,6 +196,7 @@
 <script>
 import AdministrationDocType from "@/components/AdministrationDocType.vue";
 import AdministrationAccount from "@/components/AdministrationAccount.vue";
+import Project from "@/components/Project.vue"
 import Header from "@/components/header.vue";
 import Account from "@/views/Account.vue";
 import BackToTop from "@/components/BackToTop.vue";
@@ -208,13 +210,14 @@ export default {
     Header,
     Account,
     BackToTop,
+    Project
   },
 
   data() {
     return {
       show1: false,
       activeTab: "",
-      projectTab: "",
+      projectTab: "chia se",
       accountTab: "",
       activeChild: "all",
       show: false,
@@ -225,7 +228,7 @@ export default {
 
   mounted() {
     console.log(this.user);
-    if (this.user.chucvu!=='admin') {this.activeTab='project'; this.projectTab='all'; this.show=true; this.filterTittle="Danh sách dự án"}
+    if (this.user.chucvu!=='admin') {this.activeTab='project'; this.projectTab='chia se'; this.show=true; this.filterTittle="Danh sách dự án"}
     else {this.activeTab='docType'; this.filterTittle="Danh sách loại tài liệu"}
     //this.getUser();
   },

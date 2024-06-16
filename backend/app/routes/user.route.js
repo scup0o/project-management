@@ -12,24 +12,23 @@ router.route("/add")
 
 router.route("/")
     .get(requireAuth, userController.logout)
+    .put(requireAuth, userController.update)
 
 router.route("/forgot")
     .post(userController.forgotPass)
 
 router.route("/:id")
     .post(requireAuth, userController.get)
-
-router.route("/all")
-    .get(requireAuth, AdminOnly, userController.getAll)
-
-router.route("/:id")
     .delete(requireAuth, AdminOnly, userController.delete)
 
-router.route("/")
-    .put(requireAuth, userController.update)
+router.route("/all")
+    .get(requireAuth, userController.getAll)
 
 router.route("/cp")
     .put(userController.changePass);
+
+router.route("/:manhanvien")
+    .get(requireAuth, userController.getMSNV)
 
 /*router.route("/secret/:id")
     .get(userController.decodepass)*/

@@ -63,7 +63,7 @@ exports.update = async (req, res, next) => {
             else rs(r);
         });
         })
-        if (result.length!=0 && req.body.id != result.id){
+        if (result.length!=0 && req.body.id != result[0].id){
             return res.send(false);
         }
         else{

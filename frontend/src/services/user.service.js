@@ -21,6 +21,10 @@ class UserService {
         return (await this.api.post(`/${id}`)).data;
     }
 
+    async getmnv(mnv){
+        return (await this.api.get(`/${mnv}`)).data;
+    }
+
     async getAll(){
         return (await this.api.get("/all")).data;
     }

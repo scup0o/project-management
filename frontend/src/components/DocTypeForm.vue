@@ -5,11 +5,11 @@
         <div class="modal-header">
           <label
             class=""
-            style="margin: auto; font-size: 20px"
+            style="margin: auto; font-size: 20px; font-family: RalewayBlack"
             v-if="edit === false"
             >Thêm loại tài liệu</label
           >
-          <label class="" style="margin: auto; font-size: 20px" v-else
+          <label class="" style="margin: auto; font-size: 20px; font-family: RalewayBlack" v-else
             >Chỉnh sửa loại tài liệu</label
           >
         </div>

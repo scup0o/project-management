@@ -19,7 +19,7 @@ app.use(express.json());
 //routes
 const userRouter = require("./app/routes/user.route");
 const doctypeRouter = require("./app/routes/doctype.route");
-//const productsRouter = require("./app/routes/product.route");
+const projectRouter = require("./app/routes/project.route");
 //const discountCodeRouter = require("./app/routes/discountCode.route");
 //const genreRouter = require("./app/routes/genre.route");
 //const artistRouter = require("./app/routes/artist.route");
@@ -35,7 +35,7 @@ app.get("/",(req, res) =>{
 });
 app.use("/api/user", userRouter);
 app.use("/api/doctype", doctypeRouter);
-//app.use("/api/product", productsRouter);
+app.use("/api/project", projectRouter);
 //app.use("/api/auth", authRouter);
 //app.use("/api/genre",genreRouter);
 //app.use("/api/artist",artistRouter);
