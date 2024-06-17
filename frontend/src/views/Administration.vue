@@ -96,17 +96,7 @@
                     <span class="ms-1 d-none d-sm-inline">Lưu trữ</span>
                   </button>
                 </div>
-                <div class="row">
-                  <button class="a active2" @click="projectTab = 'thung rac'">
-                    <i
-                      class="fa-solid fa-chevron-right"
-                      style="padding-right: 1vw"
-                      v-if="projectTab === 'thung rac'"
-                    ></i>
-
-                    <span class="ms-1 d-none d-sm-inline">Thùng rác</span>
-                  </button>
-                </div>
+                
               </div>
             </li>
             <li v-if="user.chucvu === 'admin'">

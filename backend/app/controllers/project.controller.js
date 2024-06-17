@@ -26,22 +26,101 @@ exports.get = async (req, res, next) => {
 
 exports.getType = async (req, res, next) => {
   try {
-    console.log(req.params.type)
-    db.query(
-      `SELECT * FROM DU_AN WHERE loai = '${req.params.type}'`,
-      function (e, r) {
-        if (e)
-          return next(
-            new ApiError(
-              500,
-              `Error retrieving project with type = ${req.params.type}`
-            )
-          );
-        else {
-          console.log(r);
-          return res.send(r);}
-      }
-    );
+    console.log(req.params.type);
+    if (req.params.type != "chia se")
+      db.query(
+        `SELECT * FROM DU_AN WHERE loai = '${req.params.type}' AND id_NguoiTao = '${req.body.id}'`,
+        function (e, r) {
+          if (e)
+            return next(
+              new ApiError(
+                500,
+                `Error retrieving project with type = ${req.params.type}`
+              )
+            );
+          else {
+            console.log(r);
+            return res.send(r);
+          }
+        }
+      );
+    else {
+      db.query(
+        `SELECT * FROM DU_AN da JOIN THAM_GIA tg ON da.id=tg.id_DuAn JOIN QUYEN_DUAN q ON q.id_duan=da.id WHERE da.loai = 'chia se' AND tg.id_NhanVien = '${req.body.id}' OR q.quyen!='chi minh toi' AND q.loaiQuyen !='chinh sua'`,
+        async function (e, r) {
+          if (e)
+            return next(
+              new ApiError(
+                500,
+                `Error retrieving project with type = ${req.params.type}`
+              )
+            );
+          else {
+            console.log(r);
+            let i = 0;
+            let t;
+            
+            while (i < r.length) {
+              if(r[i].loai!='chia se') r.splice(i,1);
+              else i++;
+            }
+            i=0;
+            while (i < r.length) {
+              if (r[i].quyen != "tat ca" && r[i].id_NhanVien != req.body.id) {
+                console.log(r[i].id_DuAn);
+                r.splice(i, 1);
+              } else {
+                if (i === 0 || r[i].id_DuAn != t) {
+                  //console.log(r[i].id_DuAn);
+                  let temp = await new Promise((rs, rj) => {
+                    db.query(
+                      `SELECT * FROM QUYEN_DUAN WHERE id_duan = '${r[i].id_DuAn}' AND loaiQuyen='chinh sua' AND id_nguoichinhsua = '${req.body.id}' OR id_nguoichinhsua = NULL `,
+                      function (e, re) {
+                        if (e) rj(e);
+                        else {
+                          rs(re);
+                        }
+                      }
+                    );
+                  });
+                  if (temp.length === 0) {
+                    r[i].e = false;
+                  } else r[i].e = true;
+                  i++;
+                  t = r[i - 1].id_DuAn;
+                } else {
+                  r.splice(i, 1);
+                }
+              }
+            }
+
+            i = 0;
+            while (i < r.length) {
+              let temp = await new Promise((rs, rj) => {
+                db.query(
+                  `SELECT * FROM THONG_TIN_HE_THONG WHERE id_DuAn = '${r[i].id_DuAn}'`,
+                  function (e, re) {
+                    if (e) rj(e);
+                    else {
+                      rs(re);
+                    }
+                  }
+                );
+              });
+              if (temp.length===0){
+                r.ttht=false;
+              }
+              else{
+                r.ttht=true;
+              }
+              i++;
+            }
+
+            return res.send(r);
+          }
+        }
+      );
+    }
   } catch (e) {
     return next(
       new ApiError(
@@ -108,7 +187,7 @@ exports.create = async (req, res, next) => {
       console.log(result.insertId);
 
       db.query(
-        `INSERT INTO QUYEN_DUAN (quyen, id_duan, loai) VALUES ('${req.body.QuyenXem}', '${result.insertId}', 'xem')`
+        `INSERT INTO QUYEN_DUAN (quyen, id_duan, loai, id_nguoichinhsua) VALUES ('${req.body.QuyenXem}', '${result.insertId}', 'xem', '${req.body.id_NguoiTao}')`
       );
       let i = 0;
       let count = 0;
@@ -123,13 +202,13 @@ exports.create = async (req, res, next) => {
         console.log(userid);
         while (i < userid.length) {
           db.query(
-            `INSERT INTO QUYEN_DUAN (quyen, id_duan, id_nguoichinhsua, loai) VALUES ('${req.body.QuyenChinhSua}', '${result.insertId}','${userid[i]}', 'chinhsua')`
+            `INSERT INTO QUYEN_DUAN (quyen, id_duan, id_nguoichinhsua, loaiQuyen) VALUES ('${req.body.QuyenChinhSua}', '${result.insertId}','${userid[i]}', 'chinh sua')`
           );
           i++;
         }
       } else {
         db.query(
-          `INSERT INTO QUYEN_DUAN (quyen, id_duan, loai) VALUES ('${req.body.QuyenChinhSua}', '${result.insertId}', 'chinh sua')`
+          `INSERT INTO QUYEN_DUAN (quyen, id_duan, loaiQuyen) VALUES ('${req.body.QuyenChinhSua}', '${result.insertId}', 'chinh sua')`
         );
       }
       count = 0;
@@ -140,7 +219,7 @@ exports.create = async (req, res, next) => {
           count++;
         }
       }
-      i=0;
+      i = 0;
       while (i < userid2.length) {
         db.query(
           `INSERT INTO THAM_GIA (id_DuAn, id_NhanVien) VALUES ('${result.insertId}', '${userid2[i]}')`
@@ -192,10 +271,59 @@ exports.update = async (req, res, next) => {
 
       return res.send(error);
     } else {
-      const date = new Date().toJSON();
+      const date = new Date().toISOString().split(".")[0];
+      result = await new Promise((rs, rj) => {
+        db.query(
+          `UPDATE DU_AN SET Ten = '${req.body.Ten}' AND loai = '${req.body.loai}' AND Ma = '${req.body.Ma}' AND MoTa = '${req.body.MoTa}' AND TrangThai = '${req.body.TrangThai}' AND ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}' AND ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}' AND ThoiGianBatDauDauThau'=${req.body.ThoiGianBatDauDauThau}' AND ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}' AND ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}' AND ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}') AND ThoiGianChinhSuaLanCuoi = '${date}' WHERE id = ${req.body.id}`,
+          function (e, r) {
+            if (e) rj(e);
+            else rs(r);
+          }
+        );
+      });
+
       db.query(
-        `UPDATE DU_AN SET Ten = '${req.body.Ten}' AND loai = '${req.body.loai}' AND Ma = '${req.body.Ma}' AND MoTa = '${req.body.MoTa}' AND TrangThai = '${req.body.TrangThai}' AND ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}' AND ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}' AND ThoiGianBatDauDauThau'=${req.body.ThoiGianBatDauDauThau}' AND ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}' AND ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}' AND ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}') AND ThoiGianChinhSuaLanCuoi = '${date}' WHERE id = ${req.body.id}`
+        `UPDATE QUYEN_DUAN set quyen = '${req.body.QuyenXem} WHERE id_duan = '${req.body.id}')`
       );
+      db.query(`DELETE FROM QUYEN_DUAN WHERE id_duan = '${req.body.id}'`);
+      let i = 0;
+      let count = 0;
+      if (req.body.QuyenChinhSua === "tuy chinh") {
+        let userid = [];
+        for (const [key, value] of Object.entries(req.body)) {
+          if (key === `DSNguoiChinhSua[${count}][id]`) {
+            userid.push(value);
+            count++;
+          }
+        }
+
+        while (i < userid.length) {
+          db.query(
+            `INSERT INTO QUYEN_DUAN (quyen, id_duan, id_nguoichinhsua, loaiQuyen) VALUES ('${req.body.QuyenChinhSua}', '${result.insertId}','${userid[i]}', 'chinh sua')`
+          );
+          i++;
+        }
+      } else {
+        db.query(
+          `INSERT INTO QUYEN_DUAN (quyen, id_duan, loaiQuyen) VALUES ('${req.body.QuyenChinhSua}', '${result.insertId}', 'chinh sua')`
+        );
+      }
+      count = 0;
+      let userid2 = [];
+      db.query(`DELETE FROM THAM_GIA WHERE id_DuAn = '${req.body.id}'`);
+      for (const [key, value] of Object.entries(req.body)) {
+        if (key === `DSNguoiThamGia[${count}][id]`) {
+          userid2.push(value);
+          count++;
+        }
+      }
+      i = 0;
+      while (i < userid2.length) {
+        db.query(
+          `INSERT INTO THAM_GIA (id_DuAn, id_NhanVien) VALUES ('${result.insertId}', '${userid2[i]}')`
+        );
+        i++;
+      }
       return res.send(true);
     }
   } catch (e) {
@@ -237,6 +365,28 @@ exports.deleteAll = async (req, res, next) => {
   } catch (e) {
     return next(
       new ApiError(500, `Error deleting project with id = ${req.params.id}`)
+    );
+  }
+};
+
+exports.archive = async (req, res, next) => {
+  try {
+    db.query(
+      `UPDATE DU_AN SET loai = 'luu tru' WHERE id = '${req.params.id}'`,
+      function (e, r) {
+        if (e)
+          return next(
+            new ApiError(
+              500,
+              `Error archiving project with id = ${req.params.id}`
+            )
+          );
+        else return res.send(true);
+      }
+    );
+  } catch (e) {
+    return next(
+      new ApiError(500, `Error archiving project with id = ${req.params.id}`)
     );
   }
 };

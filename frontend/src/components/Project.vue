@@ -49,7 +49,7 @@
         :projectprop="{
           Ma: null,
           Ten: null,
-          MoTa: null,
+          MoTa: '',
           TrangThai: 'dangthuchien',
           ThoiGianBatDau: null,
           ThoiGianKetThuc: null,
@@ -257,7 +257,7 @@ export default {
       try {
         this.projects=[];
         this.projectType=this.projectTab;
-        this.projects = await ProjectService.getType(this.projectType);
+        this.projects = await ProjectService.getType(this.projectType, this.user);
         console.log(this.projects);
       } catch (error) {
         console.log(error);

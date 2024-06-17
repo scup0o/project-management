@@ -207,7 +207,7 @@
                     Nữ
                   </div>
                   <ErrorMessage
-                    name="manhanvien"
+                    name="gioitinh"
                     class="error-feedback"
                     style="padding-left: 0.5vw"
                   ></ErrorMessage>

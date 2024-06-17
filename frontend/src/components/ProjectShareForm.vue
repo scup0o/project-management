@@ -32,7 +32,7 @@
                   "
                 >
                   <Field
-                  name="a"
+                    name="a"
                     as="select"
                     value="tatca"
                     class="icon-filter form-control"
@@ -566,17 +566,24 @@ export default {
     async createProject(data) {
       try {
         console.log(data);
-        data.Ten=this.project.Ten;
+        data.Ten = this.project.Ten;
         data.MoTa = this.project.MoTa;
-        console.log(data.MoTa);
+        if (
+          typeof data.MoTa === "undefined" ||
+          data.MoTa === "" ||
+          data.MoTa.length === 0
+        ) {
+          data.MoTa = "Không có mô tả";
+        }
+        console.log(data.MoTa.length);
         data.Ma = this.project.Ma;
         data.TrangThai = this.project.TrangThai;
-        data.ThoiGianBaoHanh=this.project.ThoiGianBaoHanh;
-        data.ThoiGianNghiemThu=this.project.ThoiGianNghiemThu;
-        data.ThoiGianBatDauDuAn=this.project.ThoiGianBatDauDuAn;
-        data.ThoiGianKetThucDuAn=this.project.ThoiGianKetThucDuAn;
-        data.ThoiGianBatDauDauThau=this.project.ThoiGianBatDauDauThau;
-        data.ThoiGianKetThucDauThau=this.project.ThoiGianKetThucDauThau;
+        data.ThoiGianBaoHanh = this.project.ThoiGianBaoHanh;
+        data.ThoiGianNghiemThu = this.project.ThoiGianNghiemThu;
+        data.ThoiGianBatDauDuAn = this.project.ThoiGianBatDauDuAn;
+        data.ThoiGianKetThucDuAn = this.project.ThoiGianKetThucDuAn;
+        data.ThoiGianBatDauDauThau = this.project.ThoiGianBatDauDauThau;
+        data.ThoiGianKetThucDauThau = this.project.ThoiGianKetThucDauThau;
         data.step = "create";
         if (data.QuyenXem === "chi minh toi") data.loai = "ca nhan";
         else data.loai = "chia se";
@@ -604,7 +611,7 @@ export default {
             duration: 3000,
             dismissible: true,
           });
-          
+
           this.$emit("closeall");
           this.$emit("refresh");
         }

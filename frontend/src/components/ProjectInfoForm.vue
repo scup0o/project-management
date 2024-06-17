@@ -305,6 +305,7 @@
     @close="this.next = false"
     @closeall="
       $emit('close');
+      $emit('refresh');
       this.next = false;
     "
     :projectprop="project"
@@ -382,7 +383,7 @@ export default {
 
   methods: {
     async checkData(data) {
-      if (typeof data.MoTa === "undefined" || data.MoTa === null) {
+      if (typeof data.MoTa === "undefined" || data.MoTa === '') {
         data.Mota = "Không có mô tả";
       }
       console.log(data.MoTa);

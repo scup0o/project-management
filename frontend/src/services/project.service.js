@@ -9,8 +9,8 @@ class ProjectService {
         return (await this.api.get("/")).data;
     }
 
-    async getType(type){
-        return (await this.api.get(`/type/${type}`)).data;
+    async getType(type, data){
+        return (await this.api.post(`/type/${type}`, data)).data;
     }
 
     async get(id) {
@@ -31,6 +31,10 @@ class ProjectService {
 
     async deleteAll() {
         return (await this.api.delete("/")).data;
+    }
+
+    async archive(id) {
+        return (await this.api.put(`/${id}`)).data;
     }
 }
 
