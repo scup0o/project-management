@@ -51,7 +51,7 @@
               style="
                 overflow-x: auto;
                 padding-top: 2vh;
-                height: 14vh;
+                height: 15vh;
                 overflow-y: hidden;
               "
             >
@@ -83,6 +83,7 @@
                       "
                     >
                       <p>{{ user.hoten.split(" ").pop() }}</p>
+                      <p style="margin-top:-20px; font-family: RalewayItalic; font-size:0.9vw">({{ user.manhanvien }})</p>
                     </div>
                   </div>
                   <div class="col-1">
@@ -286,7 +287,7 @@
                 style="
                   overflow-x: auto;
                   padding-top: 2vh;
-                  height: 14vh;
+                  height: 15vh;
                   overflow-y: hidden;
                 "
               >
@@ -318,6 +319,7 @@
                         "
                       >
                         <p>{{ user.hoten.split(" ").pop() }}</p>
+                        <p style="margin-top:-20px; font-family: RalewayItalic; font-size:0.9vw">({{ user.manhanvien }})</p>
                       </div>
                     </div>
                     <div class="col-1">
@@ -411,6 +413,15 @@
               <!--tên nút -->
             </button>
             <button
+              v-else
+              class="btn btn-dark"
+              style="margin-right: 10px; width: 10vw"
+              type="submit"
+            >
+              Cập nhật
+              <!--tên nút -->
+            </button>
+            <button
               @click="$emit('close'), $emit('refresh')"
               class="btn btn-dark"
               style="width: 10vw"
@@ -430,6 +441,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import VueJwtDecode from "vue-jwt-decode";
 import UserService from "@/services/user.service";
 import ProjectService from "@/services/project.service";
+import moment from "moment";
 
 export default {
   components: {
@@ -470,8 +482,15 @@ export default {
   mounted() {
     console.log(this.project);
     this.getUser();
-    this.project.QuyenXem = "tat ca";
-    this.project.QuyenChinhSua = "nguoi co quyen xem";
+    if (this.edit === false) {
+      this.project.QuyenXem = "tat ca";
+      this.project.QuyenChinhSua = "nguoi co quyen xem";
+    }
+    else{
+      
+      this.plist = this.projectprop.DS_TG;
+      this.elist = this.projectprop.DS_CS;
+    }
   },
 
   methods: {
@@ -479,22 +498,64 @@ export default {
       let s = "admin";
       this.us.userList = await UserService.getAll();
       let i = 0;
-      while (i < this.us.userList.length) {
-        if (this.us.userList[i].id === this.user.id) {
-          this.us.checkp[i] = true;
-          this.plist.push(this.us.userList[i]);
-          this.us.checke[i] = true;
-          this.elist.push(this.us.userList[i]);
-        } else {
-          this.us.checkp[i] = false;
-          this.us.checke[i] = false;
+      if (this.edit === false) {
+        while (i < this.us.userList.length) {
+          if (this.us.userList[i].id === this.user.id) {
+            this.us.checkp[i] = true;
+            this.plist.push(this.us.userList[i]);
+            this.us.checke[i] = true;
+            this.elist.push(this.us.userList[i]);
+          } else {
+            this.us.checkp[i] = false;
+            this.us.checke[i] = false;
+          }
+          if (this.us.userList[i].chucvu === "admin") {
+            this.us.userList.splice(i, 1);
+          } else {
+            ++i;
+          }
         }
-        if (this.us.userList[i].chucvu === "admin") {
-          this.us.userList.splice(i, 1);
-        } else {
-          ++i;
+      } else {
+        i=0;
+        while(i<this.us.userList.length){
+          
+          if (this.us.userList[i].chucvu==='admin'){
+            this.us.userList.splice(i, 1);
+          }
+          else{
+            this.us.checkp[i]=false;
+          this.us.checke[i]=false;
+          i++;
+          }
+        }
+        i=0;
+        while(i<this.plist.length){
+          let j=0;
+          while(j<this.us.userList.length){
+            if(this.us.userList[j].id===this.plist[i].id){
+              this.us.checkp[j]=true;
+              break;
+            }
+            j++;
+          }
+          i++;
+        }
+        
+        i=0;
+        while(i<this.elist.length){
+          let j=0;
+          while(j<this.us.userList.length){
+            if(this.us.userList[j].id===this.elist[i].id){
+              this.us.checke[j]=true;
+              break;
+            }
+            j++;
+          }
+          i++;
         }
       }
+      console.log(this.plist);
+      console.log(this.elist)
       console.log(this.us);
     },
 
@@ -605,12 +666,18 @@ export default {
           }
         } else {
           data.id_NguoiChinhSuaLanCuoi = this.user.id;
+          data.DSNguoiThamGia = this.plist;
+          data.DSNguoiChinhSua = this.elist;
+          data.check='update-admin'
+          data.id=this.project.id
+          let check = await ProjectService.update(data);
+          if (check === true) {
           this.$toast.open({
             message: "Chỉnh sửa dự án thành công",
             type: "success",
             duration: 3000,
             dismissible: true,
-          });
+          });}
 
           this.$emit("closeall");
           this.$emit("refresh");

@@ -98,6 +98,7 @@
     <div class="row" style="">
       <div class="col-4" style="">
         <ProjectRender
+        :projectType="projectType"
           v-if="sliceProjectDangThucHien.length > 0"
           :projects="sliceProjectDangThucHien"
           :is="sliceProjectDangThucHien"

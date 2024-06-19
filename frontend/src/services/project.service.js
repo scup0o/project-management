@@ -33,9 +33,14 @@ class ProjectService {
         return (await this.api.delete("/")).data;
     }
 
-    async archive(id) {
-        return (await this.api.put(`/${id}`)).data;
+    async archive(id, data) {
+        return (await this.api.put(`/${id}`, data)).data;
     }
+
+    async getQuyen(da){
+        return (await this.api.post(`/${da}`)).data
+    }
+    
 }
 
 export default new ProjectService();

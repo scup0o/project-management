@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-mask">
+  <div class="modal-mask" v-if="this.editForm === false">
     <div class="modal-wrapper">
       <div class="modal-container">
         <div class="modal-header">
@@ -50,7 +50,7 @@
               <label for="chucvu">Lần chỉnh sửa cuối:</label>
             </div>
             <div class="col-7">
-              Vào lúc {{ format_date(project.ThoiGianChinhSuaLanCuoi) }} bởi
+              Vào lúc {{ format_datetime(project.ThoiGianChinhSuaLanCuoi) }} bởi
               {{ project.NguoiChinhSua.hoten }} ({{
                 project.NguoiChinhSua.manhanvien
               }})
@@ -107,30 +107,82 @@
             </div>
           </div>
           <div class="row spacing">
-                <div class="col">
-                  <label for="ThoiGianNghiemThu">Thời gian nghiệm thu:</label>
-                </div>
-                <div class="col-7">
-                  {{ format_date(project.ThoiGianNghiemThu) }}
-                </div>
-          </div>
-          <div class="row spacing">
-                <div class="col">
-                  <label for="ThoiGianBaoHanh">Thời gian bảo hành:</label>
-                </div>
-                <div class="col-7">
-                  {{ format_date(project.ThoiGianBaoHanh) }}
+            <div class="col">
+              <label for="ThoiGianNghiemThu">Thời gian nghiệm thu:</label>
+            </div>
+            <div class="col-7">
+              {{ format_date(project.ThoiGianNghiemThu) }}
             </div>
           </div>
+          <div class="row spacing">
+            <div class="col">
+              <label for="ThoiGianBaoHanh">Thời gian bảo hành:</label>
+            </div>
+            <div class="col-7">
+              {{ format_date(project.ThoiGianBaoHanh) }}
+            </div>
+          </div>
+          <label>Danh sách người tham gia</label>
+          <div
+            class="row text-center flex-nowrap"
+            style="
+              overflow-x: auto;
+              padding-top: 2vh;
+              height: 15vh;
+              overflow-y: hidden;
+            "
+          >
+            <div
+              v-for="(user, index) in tglist"
+              :key="user"
+              class="col-2"
+              style=""
+            >
+              <div class="row text-center">
+                <div class="col-5">
+                  <img
+                    style="
+                      display: inline-block;
+                      width: 3vw;
+                      height: 3vw;
+                      border-radius: 100%;
+                      margin: auto;
+                    "
+                    :src="`../../src/assets/img/${user.anhdaidien}`"
+                  />
 
+                  <div
+                    style="
+                      font-size: 14px;
+                      padding-top: 0.5vh;
+                      margin: auto;
+                      text-align: center;
+                    "
+                  >
+                    <p>{{ user.hoten.split(" ").pop() }}</p>
+                    <p
+                      style="
+                        margin-top: -20px;
+                        font-family: RalewayItalic;
+                        font-size: 0.9vw;
+                      "
+                    >
+                      ({{ user.manhanvien }})
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <!--chỉnh view chính tới khúc này-->
         </div>
         <div class="text-center">
           <button
-            v-if="edit === false"
+            v-if="project.e === true || type != 'chia se'"
             class="btn btn-dark"
             style="margin-right: 10px"
             type="submit"
+            @click="checkData()"
           >
             Chỉnh sửa
           </button>
@@ -145,26 +197,41 @@
       </div>
     </div>
   </div>
+  <ProjectInfoForm
+    v-if="editForm === true"
+    @close="editForm = false"
+    @refresh="
+      $emit('close');
+      $emit('refresh');
+    "
+    :e="true"
+    :projectprop="project"
+  ></ProjectInfoForm>
 </template>
 <script>
 import "@/assets/css/base.css";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import moment from "moment";
+
+import ProjectInfoForm from "@/components/ProjectInfoForm.vue";
 import VueJwtDecode from "vue-jwt-decode";
 import UserService from "@/services/user.service";
-import FileService from "@/services/file.service";
+import ProjectService from "@/services/project.service";
 
 export default {
   components: {
     Form,
     Field,
     ErrorMessage,
+    ProjectInfoForm,
   },
 
   props: {
     projectprop: { type: Object, required: true },
     e: { type: Boolean, required: true },
+
+    type: { type: String, required: true },
   },
 
   data() {
@@ -174,15 +241,40 @@ export default {
       edit: this.e,
       project: this.projectprop,
       FormSchema,
+      editForm: false,
+      tglist: [],
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.getTG();
+  },
 
   methods: {
-    format_date(value) {
+    async getTG() {
+      let temp = await ProjectService.getQuyen(this.project.id);
+
+      let i = 0;
+      while (i < temp.DS_TG.length) {
+        temp.DS_TG[i] = await UserService.get(temp.DS_TG[i]);
+        i++;
+      }
+      console.log(temp);
+      this.tglist = temp.DS_TG;
+    },
+
+    async checkData() {
+      this.editForm = true;
+    },
+    format_datetime(value) {
       if (value) {
         return moment(String(value)).format("hh:mm, DD - MM - YYYY");
+      }
+    },
+
+    format_date(value) {
+      if (value) {
+        return moment(String(value)).format("DD - MM - YYYY");
       }
     },
 

@@ -135,7 +135,7 @@
                         </div>
                         <div class="col-9">
                           <Field
-                            type="datetime-local"
+                            type="date"
                             v-model="project.ThoiGianBatDauDauThau"
                             name="ThoiGianBatDauDauThau"
                             class="form-control"
@@ -157,7 +157,7 @@
                         </div>
                         <div class="col-9">
                           <Field
-                            type="datetime-local"
+                            type="date"
                             v-model="project.ThoiGianKetThucDauThau"
                             name="ThoiGianKetThucDauThau"
                             class="form-control"
@@ -190,7 +190,7 @@
                         </div>
                         <div class="col-9">
                           <Field
-                            type="datetime-local"
+                            type="date"
                             v-model="project.ThoiGianBatDauDuAn"
                             name="ThoiGianBatDauDuAn"
                             class="form-control"
@@ -212,7 +212,7 @@
                         </div>
                         <div class="col-9">
                           <Field
-                            type="datetime-local"
+                            type="date"
                             v-model="project.ThoiGianKetThucDuAn"
                             name="ThoiGianKetThucDuAn"
                             class="form-control"
@@ -239,7 +239,7 @@
                   </div>
                   <div class="col-7">
                     <Field
-                      type="datetime-local"
+                      type="date"
                       v-model="project.ThoiGianNghiemThu"
                       name="ThoiGianNghiemThu"
                       class="form-control"
@@ -262,7 +262,7 @@
                   </div>
                   <div class="col-7">
                     <Field
-                      type="datetime-local"
+                      type="date"
                       v-model="project.ThoiGianBaoHanh"
                       name="ThoiGianBaoHanh"
                       class="form-control"
@@ -281,11 +281,21 @@
           </div>
           <div class="text-center">
             <button
+            v-if="project.id_NguoiTao===user.id"
               class="btn btn-dark"
               style="margin-right: 10px; width: 10vw"
               type="submit"
             >
               Tiếp tục
+              <!--tên nút -->
+            </button>
+            <button
+            v-else
+              class="btn btn-dark"
+              style="margin-right: 10px; width: 10vw"
+              type="submit"
+            >
+              Cập nhật
               <!--tên nút -->
             </button>
             <button
@@ -355,18 +365,13 @@ export default {
     });
 
     return {
-      type: "password",
-      password: null,
       edit: this.e,
       project: this.projectprop,
       FormSchema,
-      img: null,
-      images: [],
       idMessage: "",
       haveData: true,
-      user: null,
-      passMess: "",
-      imgop: false,
+      user: VueJwtDecode.decode(localStorage.getItem("auth")),
+
       TenMessage: "",
       MaMessage: "",
       next: false,
@@ -383,12 +388,18 @@ export default {
 
   methods: {
     async checkData(data) {
-      if (typeof data.MoTa === "undefined" || data.MoTa === '') {
+      if (typeof data.MoTa === "undefined" || data.MoTa === "") {
         data.Mota = "Không có mô tả";
       }
-      console.log(data.MoTa);
+      console.log(this.edit);
       data.step = "check";
-      let check = await ProjectService.create(data);
+
+      let check;
+      if (this.edit === false) check = await ProjectService.create(data);
+      else {
+        data.id = this.project.id;
+        check = await ProjectService.update(data);
+      }
       if (check[0] === 1) this.MaMessage = "Mã dự án đã tồn tại";
       if (check[1] === 1) this.TenMessage = "Tên dự án đã tồn tại";
       if (check[0] === 0 && check[1] === 0) {
@@ -429,7 +440,37 @@ export default {
           c = false;
         }
         if (c === true) {
-          this.next = true;
+          if (this.edit === true && this.project.id_NguoiTao === this.user.id) {
+            console.log('next')
+            let temp = await ProjectService.getQuyen(data.id);
+
+            let i = 0;
+            while (i < temp.DS_TG.length) {
+              temp.DS_TG[i] = await UserService.get(temp.DS_TG[i]);
+              i++;
+            }
+            console.log(temp);
+            this.project.DS_TG = temp.DS_TG;
+            this.project.DS_CS = temp.DS_CS;
+            this.project.QuyenXem = temp.qx;
+            this.project.QuyenChinhSua = temp.qcs;
+          }
+          if (this.edit === false || this.project.id_NguoiTao === this.user.id)
+            this.next = true;
+          else {
+            data.step = "update";
+            data.id_NguoiChinhSuaLanCuoi = this.user.id;
+            check = await ProjectService.update(data);
+            this.$toast.open({
+              message: "Chỉnh sửa dự án thành công",
+              type: "success",
+              duration: 3000,
+              dismissible: true,
+            });
+
+            this.$emit("close");
+            this.$emit("refresh");
+          }
         }
       }
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="row" style="max-height: 76vh; overflow-y: auto">
+  <div class="row" style="max-height: 76vh; min-height: 76vh; overflow-y: auto">
     <div
       class="col-12"
       v-for="(project, index) in projects"
@@ -33,9 +33,16 @@
                   project.id_NguoiTao === user.id && project.loai != 'luu tru'
                 "
                 class="fa-solid fa-box-archive"
-                @click="archiveProject(project)"
+                @click="archiveProject(project, 'a')"
                 id="util-icon"
                 title="Lưu trữ dự án"
+              ></i>
+              <i
+                class="fa-solid fa-boxes-packing"
+                v-if="project.loai==='luu tru'"
+                @click="archiveProject(project, 'u')"
+                id="util-icon"
+                title="Hủy lưu trữ dự án"
               ></i>
               <i
                 v-if="project.loai === 'luu tru'"
@@ -50,19 +57,19 @@
                 title="Sự kiện"
               ></i>
               <i
-                class="fa-solid fa-ellipsis-vertical"
+                class="fa-solid fa-ellipsis-vertical parent"
                 @click="(editProject = project), (edit = true)"
                 id="util-icon"
                 style="display: inline"
                 title="Thông tin"
-              ></i>
-              <div class="menu">
-                <div class="row" @click="iOpenUp(project)">Thông tin chung</div>
-                <div class="row" v-if="project.ttht === true">
-                  Thông tin hệ thống
-                </div>
-                <div class="row" v-else>Thông tin hệ thống</div>
-              </div>
+                ><div class="menu" id="child">
+                  <div class="row text-menu" @click="iOpenUp(project)" style="">
+                    Thông tin chung
+                  </div>
+                  <hr style="width: 100%; padding:0">
+                  <div class="row text-menu">Thông tin hệ thống</div>
+                </div></i
+              >
             </div>
           </div>
         </div>
@@ -72,9 +79,11 @@
   <ProjectInformation
     v-if="i === true"
     :projectprop="editProject"
+
     :e="ie"
     @close="i = false"
     @refresh="this.$emit('refresh')"
+    :type="projectT"
   >
   </ProjectInformation>
 </template>
@@ -83,6 +92,7 @@ import ProjectInformation from "@/components/ProjectInformation.vue";
 import ProjectService from "@/services/project.service";
 import UserService from "@/services/user.service";
 import VueJwtDecode from "vue-jwt-decode";
+import moment from "moment";
 
 export default {
   components: {
@@ -95,10 +105,12 @@ export default {
       type: Array,
       default: [],
     },
+    projectType:{ type: String, required: true}
   },
 
   data() {
     return {
+      projectT:this.projectType,
       editProject: null,
       edit: false,
       user: VueJwtDecode.decode(localStorage.getItem("auth")),
@@ -113,31 +125,47 @@ export default {
   },
 
   methods: {
+    format_date(value) {
+      if (value) {
+        return moment(String(value)).format("YYYY-MM-DD");
+      }
+    },
     async iOpenUp(data) {
-      
       data.NguoiTao = await UserService.get(data.id_NguoiTao);
-      data.NguoiChinhSua = await UserService.get(
-        data.id_NguoiChinhSuaLanCuoi
+      data.NguoiChinhSua = await UserService.get(data.id_NguoiChinhSuaLanCuoi);
+      data.ThoiGianBaoHanh = this.format_date(data.ThoiGianBaoHanh);
+      data.ThoiGianBatDauDauThau = this.format_date(data.ThoiGianBatDauDauThau);
+      data.ThoiGianKetThucDauThau = this.format_date(
+        data.ThoiGianKetThucDauThau
       );
+      data.ThoiGianNghiemThu = this.format_date(data.ThoiGianNghiemThu);
+      data.ThoiGianBatDauDuAn = this.format_date(data.ThoiGianBatDauDuAn);
+      data.ThoiGianKetThucDuAn = this.format_date(data.ThoiGianKetThucDuAn);
       this.i = true;
       this.ie = data.e;
       this.editProject = data;
     },
 
-    async archiveProject(data) {
+    async archiveProject(data, s) {
       try {
-        if (confirm(`Bạn có chắc muốn lưu trữ dự án ${data.Ma}?`)) {
-          const check = await ProjectService.archive(data.id);
+        let q = "lưu trữ";
+        data.confirm = true;
+        if (s === "u") {
+          q = "hủy lưu trữ";
+          data.confirm = false;
+        }
+        if (confirm(`Bạn có muốn ${q} dự án ${data.Ma}?`)) {
+          const check = await ProjectService.archive(data.id, data);
           if (check != true) {
             this.$toast.open({
-              message: "Lưu trữ dự án thất bại",
+              message: `${q} dự án thất bại` ,
               type: "error",
               duration: 3000,
               dismissible: true,
             });
           } else {
             this.$toast.open({
-              message: "Dự án đã được chuyển vào hộp lưu trữ",
+              message: `Dự án đã được ${q}`,
               type: "success",
               duration: 3000,
               dismissible: true,
@@ -197,7 +225,7 @@ label {
   z-index: 999;
 }
 
-.card:hover #util-button {
+.parent:hover #child {
   visibility: visible;
 }
 
@@ -219,7 +247,31 @@ label {
 
 .menu {
   position: absolute;
-  padding-top: 10px;
   z-index: 999;
+  margin-left: -10vw;
+  width: 11vw;
+  font-size: 1vw;
+  font-family: Raleway;
+  font-weight: normal;
+  background-color: rgb(208, 224, 243);
+  padding:10px 20px 15px 20px;
+  border-radius: 5px 5px 5px 5px;
+  border:0.1px solid rgb(144, 144, 144);
+}
+
+#child {
+  visibility: hidden;
+}
+
+.text-menu:hover{
+  text-decoration: underline;
+  cursor: pointer;
+  
+}
+
+.text-menu{
+  padding-left:10px;
+  padding-top:0;
+  padding-bottom:0;
 }
 </style>
