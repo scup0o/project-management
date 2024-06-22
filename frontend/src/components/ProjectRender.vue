@@ -39,13 +39,48 @@
             </p>
           </div>
           <div class="row" id="util-button">
-            <div class="col-12 d-flex justify-content-end">
+            <div class="col-10">
+              <p
+                v-if="project.Han <= 60 && project.Han > 0 && project.TB === 1"
+                style="font-size: 0.9vw; color: red"
+                title="Tắt thông báo gia hạn"
+                class="tbclose"
+                @click="tat(project)"
+              >
+                Còn {{ project.Han }} ngày nữa đến hạn bảo hành
+              </p>
+              <p
+                v-if="project.Han === 0 && project.TB === 1"
+                style="font-size: 0.9vw; color: red"
+                title="Tắt thông báo gia hạn"
+                class="tbclose"
+                @click="tat(project)"
+              >
+                Đã đến hạn bảo hành
+              </p>
+              <p
+                v-if="project.Han < 0 && project.TB === 1"
+                style="font-size: 0.9vw; color: red"
+                title="Tắt thông báo gia hạn"
+                class="tbclose"
+                @click="tat(project)"
+              >
+                Đã quá hạn bảo hành {{ -project.Han }} ngày
+              </p>
+            </div>
+            <div class="col-2 d-flex justify-content-end">
               <!--<i
                 @click="$emit('openproject', project)"
                 class="fa-solid fa-file-lines"
                 id="util-icon"
                 title="Tài liệu dự án"
               ></i>-->
+              <i v-if='this.user.id===project.id_NguoiTao && project.TB===0'
+                class="fa-solid fa-bell"
+                @click="bat(project)"
+                id="util-icon"
+                title="Bật thông báo bảo hành"
+              ></i>
               <i
                 v-if="
                   project.id_NguoiTao === user.id && project.loai != 'luu tru'
@@ -69,7 +104,8 @@
                 title="Xóa dự án"
                 @click="deleteProject(project)"
               ></i>
-              <i @click="editProject = project, event=true"
+              <i
+                @click="(editProject = project), (event = true)"
                 class="fa-solid fa-calendar-days"
                 id="util-icon"
                 title="Sự kiện"
@@ -85,7 +121,7 @@
                     Thông tin chung
                   </div>
                   <hr style="width: 100%; padding: 0" />
-                  <div class="row text-menu">Thông tin hệ thống</div>
+                  <div class="row text-menu">Thông tin cài đặt hệ thống</div>
                 </div></i
               >
             </div>
@@ -103,9 +139,13 @@
     :type="projectT"
   >
   </ProjectInformation>
-  <Event v-if="event===true"
-  :project="editProject"
-  @close="event=false; this.$emit('refresh')"
+  <Event
+    v-if="event === true"
+    :project="editProject"
+    @close="
+      event = false;
+      this.$emit('refresh');
+    "
   ></Event>
 </template>
 <script>
@@ -119,7 +159,7 @@ import moment from "moment";
 export default {
   components: {
     ProjectInformation,
-    Event
+    Event,
   },
   emits: ["refresh"],
 
@@ -140,7 +180,7 @@ export default {
       openMenu: false,
       i: false,
       ie: false,
-      event:false,
+      event: false,
     };
   },
 
@@ -190,6 +230,72 @@ export default {
           } else {
             this.$toast.open({
               message: `Dự án đã được ${q}`,
+              type: "success",
+              duration: 3000,
+              dismissible: true,
+            });
+            this.$emit("refresh");
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async tat(data) {
+      try {
+        if (this.user.id === data.id_NguoiTao) {
+          if (
+            confirm(
+              `Bạn có chắc muốn tắt thông báo gia hạn cho dự án ${data.Ma}?`
+            )
+          ) {
+            const check = await ProjectService.tat(data.id);
+            if (check != true) {
+              this.$toast.open({
+                message: "Tắt thông báo thất bại",
+                type: "error",
+                duration: 3000,
+                dismissible: true,
+              });
+            } else {
+              this.$toast.open({
+                message: "Tắt thông báo thành công",
+                type: "success",
+                duration: 3000,
+                dismissible: true,
+              });
+              this.$emit("refresh");
+            }
+          }
+        } else {
+          this.$toast.open({
+            message: "Bạn không có quyền tắt thông báo",
+            type: "error",
+            duration: 3000,
+            dismissible: true,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async bat(data) {
+      try {
+        if (
+          confirm(`Bạn có muốn bật thông báo gia hạn cho dự án ${data.Ma}?`)
+        ) {
+          const check = await ProjectService.bat(data.id);
+          if (check != true) {
+            this.$toast.open({
+              message: "Bật thông báo thất bại",
+              type: "error",
+              duration: 3000,
+              dismissible: true,
+            });
+          } else {
+            this.$toast.open({
+              message: "Bật thông báo thành công",
               type: "success",
               duration: 3000,
               dismissible: true,
@@ -283,14 +389,15 @@ label {
 
 #util-icon:hover {
   transform: scale(1.1);
+  cursor: pointer;
 }
 
 .menu {
   position: absolute;
   z-index: 999;
-  margin-left: -10vw;
+  margin-left: -13vw;
   margin-top: -7vw;
-  width: 11vw;
+  width: 14vw;
   font-size: 1vw;
   font-family: Raleway;
   font-weight: normal;
@@ -313,5 +420,10 @@ label {
   padding-left: 10px;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.tbclose:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

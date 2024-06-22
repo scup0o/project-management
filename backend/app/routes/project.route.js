@@ -19,4 +19,8 @@ router.route("/type/:type").post(projectController.getType);
 
 router.route("/:da").post(projectController.getQuyen);
 
+router.route("/tb/tat/:id").put(projectController.tat)
+router.route("/tb/bat/:id").put(projectController.bat)
+
+
 module.exports = router;

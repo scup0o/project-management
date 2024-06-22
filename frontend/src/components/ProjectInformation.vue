@@ -24,6 +24,12 @@
             </div>
           </div>
           <div class="row spacing">
+            <div class="col"><label for="Ten">Khách hàng: </label></div>
+            <div class="col-8">
+              {{ project.KhachHang }}
+            </div>
+          </div>
+          <div class="row spacing">
             <div class="col"><label for="MoTa">Mô tả dự án: </label></div>
             <div class="col-8">
               {{ project.MoTa }}
@@ -40,6 +46,15 @@
             </div>
           </div>
           <div class="row spacing">
+            <div class="col">
+              <label for="TrangThai">Gia hạn từ dự án: </label>
+            </div>
+            <div class="col-8">
+              <p v-if="project.id_GiaHan === 0 || project.id_GiaHan === null">Không có</p>
+              <p v-else>{{ project.DuAnGiaHan.Ten }}</p>
+            </div>
+          </div>
+          <div class="row spacing">
             <div class="col"><label for="Nguoitao">Người tạo: </label></div>
             <div class="col-8">
               {{ project.NguoiTao.hoten }} ({{ project.NguoiTao.manhanvien }})
@@ -49,7 +64,7 @@
             <div class="col">
               <label for="chucvu">Lần chỉnh sửa cuối:</label>
             </div>
-            <div class="col-7">
+            <div class="col-8">
               Vào lúc {{ format_datetime(project.ThoiGianChinhSuaLanCuoi) }} bởi
               {{ project.NguoiChinhSua.hoten }} ({{
                 project.NguoiChinhSua.manhanvien
@@ -178,7 +193,7 @@
         </div>
         <div class="text-center">
           <button
-            v-if="project.e === true || type != 'chia se'"
+            v-if="(project.e === true || type != 'chia se') && this.user.chucvu==='hc'"
             class="btn btn-dark"
             style="margin-right: 10px"
             type="submit"
@@ -243,6 +258,7 @@ export default {
       FormSchema,
       editForm: false,
       tglist: [],
+      user: VueJwtDecode.decode(localStorage.getItem("auth")),
     };
   },
 

@@ -73,6 +73,28 @@
             <div class="row spacing">
               <div class="form-group">
                 <div class="row">
+                  <div class="col">
+                    <label for="KhachHang">Khách hàng: </label>
+                  </div>
+                  <div class="col-8">
+                    <Field
+                      name="KhachHang"
+                      type="text"
+                      class="form-control"
+                      v-model="project.KhachHang"
+                    >
+                    </Field>
+                    <ErrorMessage
+                      name="KhachHang"
+                      class="error-feedback"
+                    ></ErrorMessage>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row spacing">
+              <div class="form-group">
+                <div class="row">
                   <div class="col"><label for="MoTa">Mô tả dự án: </label></div>
                   <div class="col-8">
                     <Field
@@ -115,6 +137,42 @@
                         <option value="dangthuchien">Đang thực hiện</option>
                         <option value="hoanthanh">Hoàn thành</option>
                         <option value="tamdung">Tạm dừng</option>
+                      </Field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row spacing">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col">
+                    <label for="id_GiaHan">Gia hạn từ dự án: </label>
+                  </div>
+                  <div class="col-8">
+                    <div style="margin: auto">
+                      <Field
+                        name="id_GiaHan"
+                        as="select"
+                        class=""
+                        :value="0"
+                        v-model="project.id_GiaHan"
+                        style="
+                          width: 100%;
+                          border-width: 1.55px;
+                          border-color: var(--secondary-color);
+                          box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
+                          height: 5vh;
+                          border-radius: 5px 5px 5px 5px;
+                          text-align: center;
+                        "
+                      >
+                        <option :value="0">Không có</option>
+                        <option :value="p.id" v-for="(p, i) in plist">
+                          <p v-snip="{ lines: 1 }" style="width: 50px">
+                            {{ p.Ten }}
+                          </p>
+                        </option>
                       </Field>
                     </div>
                   </div>
@@ -281,7 +339,7 @@
           </div>
           <div class="text-center">
             <button
-              v-if="project.id_NguoiTao === user.id"
+              v-if="project.id_NguoiTao === user.id || this.edit===false"
               class="btn btn-dark"
               style="margin-right: 10px; width: 10vw"
               type="submit"
@@ -379,14 +437,20 @@ export default {
       duanMessage: "",
       nghiemthuMessage: "",
       baohanhMessage: "",
+      plist: "",
     };
   },
 
   mounted() {
     console.log(this.project);
+    this.getp();
+    console.log(this.plist);
   },
 
   methods: {
+    async getp() {
+      this.plist = await ProjectService.getType("chia se", this.user);
+    },
     async checkData(data) {
       if (typeof data.MoTa === "undefined" || data.MoTa === "") {
         data.Mota = "Không có mô tả";

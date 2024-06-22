@@ -64,7 +64,7 @@
                   <span class="ms-1 d-none d-sm-inline">Dự án</span>
                 </div>
               </button>
-              <div
+              <div v-if="this.user.chucvu==='hc'"
                 class="col-auto text-start"
                 :class="{ show: show === true, child: show === false }"
                 style="padding-left: 2.5vw; padding-top: 1vh"

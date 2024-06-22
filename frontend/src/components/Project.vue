@@ -57,6 +57,7 @@
           ThoiGianKetThucDauThau: null,
           ThoiGianNghiemThu: null,
           ThoiGianBaoHanh: null,
+          id_GiaHan:0,
         }"
       >
       </ProjectInfoForm>

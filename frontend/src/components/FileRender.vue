@@ -81,7 +81,7 @@
                 "
               ></i>
               <i
-                v-if="file.e === true"
+                v-if="file.e === true && this.user.chucvu==='hc'"
                 class="fa-solid fa-upload"
                 @click="(editFile = file), (edit = true), ionly=false"
                 id="util-icon"

@@ -646,6 +646,22 @@ export default {
         data.ThoiGianKetThucDuAn = this.project.ThoiGianKetThucDuAn;
         data.ThoiGianBatDauDauThau = this.project.ThoiGianBatDauDauThau;
         data.ThoiGianKetThucDauThau = this.project.ThoiGianKetThucDauThau;
+        data.KhachHang=this.project.KhachHang;
+        if (
+          typeof data.KhachHang === "undefined" ||
+          data.KhachHang === "" ||
+          data.KhachHang.length === 0
+        ) {
+          data.KhachHang = "Không có";
+        }
+        data.id_GiaHan=this.project.id_GiaHan
+        if (
+          typeof data.id_GiaHan=== "undefined" ||
+          data.id_GiaHan === "" ||
+          data.id_GiaHan.length === 0
+        ) {
+          data.id_GiaHan = 0;
+        }
         data.step = "create";
         if (data.QuyenXem === "chi minh toi") data.loai = "ca nhan";
         else data.loai = "chia se";

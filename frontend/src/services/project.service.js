@@ -17,6 +17,14 @@ class ProjectService {
         return (await this.api.get(`/${id}`)).data;
     }
 
+    async tat(id) {
+        return (await this.api.put(`/tb/tat/${id}`)).data;
+    }
+
+    async bat(id) {
+        return (await this.api.put(`/tb/bat/${id}`)).data;
+    }
+
     async create(data){
         return(await this.api.post("/",data)).data
     }

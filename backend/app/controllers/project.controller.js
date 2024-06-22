@@ -129,24 +129,7 @@ exports.getType = async (req, res, next) => {
     //console.log(req.params.type);
     if (req.params.type != "chia se")
       db.query(
-        `SELECT * FROM DU_AN WHERE loai = '${req.params.type}' AND id_NguoiTao = '${req.body.id}' ORDER BY id`,
-        function (e, r) {
-          if (e)
-            return next(
-              new ApiError(
-                500,
-                `Error retrieving project with type = ${req.params.type}`
-              )
-            );
-          else {
-            //console.log(r);
-            return res.send(r);
-          }
-        }
-      );
-    else {
-      db.query(
-        `SELECT * FROM DU_AN da JOIN THAM_GIA tg ON da.id=tg.id_DuAn JOIN QUYEN_DUAN q ON q.id_duan=da.id WHERE da.loai = 'chia se' AND tg.id_NhanVien = '${req.body.id}' OR q.quyen!='chi minh toi' AND q.loaiQuyen !='chinh sua' ORDER BY id`,
+        `SELECT * FROM DU_AN WHERE loai = '${req.params.type}' AND id_NguoiTao = '${req.body.id}' ORDER BY id DESC`,
         async function (e, r) {
           if (e)
             return next(
@@ -156,8 +139,78 @@ exports.getType = async (req, res, next) => {
               )
             );
           else {
-            //console.log(r);
             let i = 0;
+            while (i < r.length) {
+              let Difference_In_Time =
+                r[i].ThoiGianBaoHanh.getTime() - new Date().getTime();
+
+              // Calculating the no. of days between
+              // two dates
+              let Difference_In_Days = Math.round(
+                Difference_In_Time / (1000 * 3600 * 24)
+              );
+              r[i].Han = Difference_In_Days;
+
+              if (r[i].id_GiaHan != 0) {
+                let t = await new Promise((rs, rj) => {
+                  db.query(
+                    `SELECT * FROM DU_AN WHERE id='${r[i].id_GiaHan}'`,
+                    function (e, r) {
+                      if (e) throw e;
+                      else rs(r);
+                    }
+                  );
+                });
+                r[i].DuAnGiaHan = t[0];
+              }
+
+              i++;
+            }
+
+            return res.send(r);
+          }
+        }
+      );
+    else {
+      db.query(
+        `SELECT * FROM DU_AN da JOIN THAM_GIA tg ON da.id=tg.id_DuAn JOIN QUYEN_DUAN q ON q.id_duan=da.id WHERE da.loai = 'chia se' AND tg.id_NhanVien = '${req.body.id}' OR q.quyen!='chi minh toi' AND q.loaiQuyen !='chinh sua' ORDER BY id DESC`,
+        async function (e, r) {
+          if (e)
+            return next(
+              new ApiError(
+                500,
+                `Error retrieving project with type = ${req.params.type}`
+              )
+            );
+          else {
+            let i = 0;
+            while (i < r.length) {
+              let Difference_In_Time =
+                r[i].ThoiGianBaoHanh.getTime() - new Date().getTime();
+
+              // Calculating the no. of days between
+              // two dates
+              let Difference_In_Days = Math.round(
+                Difference_In_Time / (1000 * 3600 * 24)
+              );
+              r[i].Han = Difference_In_Days;
+              if (r[i].id_GiaHan != 0) {
+                let t = await new Promise((rs, rj) => {
+                  db.query(
+                    `SELECT * FROM DU_AN WHERE id='${r[i].id_GiaHan}'`,
+                    function (e, r) {
+                      if (e) throw e;
+                      else rs(r);
+                    }
+                  );
+                });
+                r[i].DuAnGiaHan = t[0];
+              }
+
+              i++;
+            }
+            //console.log(r);
+            i = 0;
             let t;
 
             while (i < r.length) {
@@ -289,7 +342,7 @@ exports.create = async (req, res, next) => {
     } else {
       result = await new Promise((rs, rj) => {
         db.query(
-          `INSERT INTO DU_AN (Ten, Ma, MoTa, TrangThai, ThoiGianBatDauDuAn, ThoiGianKetThucDuAn, ThoiGianBatDauDauThau, ThoiGianKetThucDauThau, ThoiGianNghiemThu, ThoiGianBaoHanh, loai,  id_NguoiTao, id_NguoiChinhSuaLanCuoi) VALUES ('${req.body.Ten}','${req.body.Ma}', '${req.body.MoTa}', '${req.body.TrangThai}', '${req.body.ThoiGianBatDauDuAn}', '${req.body.ThoiGianKetThucDuAn}', '${req.body.ThoiGianBatDauDauThau}', '${req.body.ThoiGianKetThucDauThau}', '${req.body.ThoiGianNghiemThu}', '${req.body.ThoiGianBaoHanh}', '${req.body.loai}', '${req.body.id_NguoiTao}', '${req.body.id_NguoiChinhSuaLanCuoi}')`,
+          `INSERT INTO DU_AN (id_GiaHan, KhachHang, Ten, Ma, MoTa, TrangThai, ThoiGianBatDauDuAn, ThoiGianKetThucDuAn, ThoiGianBatDauDauThau, ThoiGianKetThucDauThau, ThoiGianNghiemThu, ThoiGianBaoHanh, loai,  id_NguoiTao, id_NguoiChinhSuaLanCuoi) VALUES ('${req.body.id_GiaHan}','${req.body.KhachHang}','${req.body.Ten}','${req.body.Ma}', '${req.body.MoTa}', '${req.body.TrangThai}', '${req.body.ThoiGianBatDauDuAn}', '${req.body.ThoiGianKetThucDuAn}', '${req.body.ThoiGianBatDauDauThau}', '${req.body.ThoiGianKetThucDauThau}', '${req.body.ThoiGianNghiemThu}', '${req.body.ThoiGianBaoHanh}', '${req.body.loai}', '${req.body.id_NguoiTao}', '${req.body.id_NguoiChinhSuaLanCuoi}')`,
           function (e, r) {
             if (e) rj(e);
             else rs(r);
@@ -386,7 +439,7 @@ exports.update = async (req, res, next) => {
       if (req.body.check === "update-admin") {
         result = await new Promise((rs, rj) => {
           db.query(
-            `UPDATE DU_AN SET id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', loai = '${req.body.loai}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
+            `UPDATE DU_AN SET id_GiaHan='${req.body.id_GiaHan}', KhachHang='${req.body.KhachHang}', id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', loai = '${req.body.loai}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
             function (e, r) {
               if (e) rj(e);
               else rs(r);
@@ -397,7 +450,6 @@ exports.update = async (req, res, next) => {
         db.query(`DELETE FROM QUYEN_DUAN WHERE id_duan = '${req.body.id}'`);
         db.query(
           `INSERT INTO QUYEN_DUAN (quyen, id_duan, id_nguoichinhsua, loaiQuyen) VALUES ('${req.body.QuyenXem}', '${req.body.id}','${req.body.id_NguoiTao}', 'xem')`
-      
         );
         let i = 0;
         let count = 0;
@@ -441,7 +493,7 @@ exports.update = async (req, res, next) => {
       } else {
         //console.log('here')
         db.query(
-          `UPDATE DU_AN SET id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
+          `UPDATE DU_AN SET id_GiaHan='${req.body.id_GiaHan}', KhachHang='${req.body.KhachHang}',id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
           function (e, r) {
             if (e) throw e;
             else return res.send(true);
@@ -554,3 +606,27 @@ exports.archive = async (req, res, next) => {
     );
   }
 };
+
+exports.tat = async (req, res, next) => {
+  try {
+    db.query(`UPDATE DU_AN SET TB='0' WHERE id='${req.params.id}'`)
+    return res.send(true)
+  } catch (e) {
+    return next(
+      new ApiError(500, `Error archiving project with id = ${req.params.id}`)
+    );
+  }
+};
+
+exports.bat = async (req, res, next) => {
+  try {
+    db.query(`UPDATE DU_AN SET TB='1' WHERE id='${req.params.id}'`)
+    return res.send(true)
+
+  } catch (e) {
+    return next(
+      new ApiError(500, `Error archiving project with id = ${req.params.id}`)
+    );
+  }
+};
+

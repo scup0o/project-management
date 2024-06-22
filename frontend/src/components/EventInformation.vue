@@ -136,7 +136,7 @@
         </div>
         <div class="text-center">
           <button
-            v-if="edit === true"
+            v-if="edit === true && this.user.chucvu==='hc'"
             class="btn btn-dark"
             style="margin-right: 10px; width: 150px"
             type="submit"
@@ -149,7 +149,7 @@
             class="btn btn-dark"
             style="width: 150px"
           >
-            Hủy
+            Đóng
           </button>
         </div>
       </div>
