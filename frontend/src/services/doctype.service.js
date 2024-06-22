@@ -13,6 +13,10 @@ class DoctypeService {
         return (await this.api.get(`/${id}`)).data;
     }
 
+    async getType(type) {
+        return (await this.api.get(`/type/${type}`)).data;
+    }
+
     async create(data){
         return(await this.api.post("/",data)).data
     }

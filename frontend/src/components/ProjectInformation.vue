@@ -35,8 +35,8 @@
             </div>
             <div class="col-8">
               <p v-if="project.TrangThai === 'dangthuchien'">Đang thực hiện</p>
-              <p v-if="project.TrangThai === 'Hoàn thành'">Hoàn thành</p>
-              <p v-if="project.TrangThai === 'Tạm dừng'">Tạm dừng</p>
+              <p v-if="project.TrangThai === 'hoanthanh'">Hoàn thành</p>
+              <p v-if="project.TrangThai === 'tamdung'">Tạm dừng</p>
             </div>
           </div>
           <div class="row spacing">
@@ -268,7 +268,7 @@ export default {
     },
     format_datetime(value) {
       if (value) {
-        return moment(String(value)).format("hh:mm, DD - MM - YYYY");
+        return moment(String(value)).format("hh:mm A, DD - MM - YYYY");
       }
     },
 

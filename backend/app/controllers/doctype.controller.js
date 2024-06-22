@@ -16,6 +16,22 @@ exports.get = async (req, res, next) => {
     }
 }
 
+exports.getType = async (req, res, next) => {
+    try{
+        //console.log('catch')
+        //console.log(req.params.type)
+        db.query(`SELECT * FROM LOAI_TAI_LIEU WHERE giaiDoan = '${req.params.type}'`, function(e, r){
+            if (e) throw(e);
+            else { //console.log(r);
+                return res.send(r);}
+        });
+        
+    }
+    catch(e){
+        return next(new ApiError(500, `Error retrieving doctype with id = ${req.params.id}`));
+    }
+}
+
 exports.getAll = async (req, res, next) => {
     try{
         db.query(`SELECT * FROM LOAI_TAI_LIEU`, function(e, r){
@@ -31,7 +47,7 @@ exports.getAll = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
     try{
-        console.log(req.body);
+        //console.log(req.body);
         let result = await new Promise((rs, rj) =>{
             db.query(`SELECT * FROM LOAI_TAI_LIEU WHERE ten = '${req.body.ten}'`, function(e, r){
             if (e) rj(e);
@@ -67,7 +83,7 @@ exports.update = async (req, res, next) => {
             return res.send(false);
         }
         else{
-            db.query(`UPDATE LOAI_TAI_LIEU SET ten = '${req.body.ten}' AND giaiDoan = '${req.body.giaiDoan}' WHERE id = '${req.body.id}')`)
+            db.query(`UPDATE LOAI_TAI_LIEU SET ten = '${req.body.ten}', giaiDoan = '${req.body.giaiDoan}' WHERE id = '${req.body.id}'`)
             return res.send(true);
         }
     }

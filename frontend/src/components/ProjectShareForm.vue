@@ -482,6 +482,7 @@ export default {
   mounted() {
     console.log(this.project);
     this.getUser();
+    
     if (this.edit === false) {
       this.project.QuyenXem = "tat ca";
       this.project.QuyenChinhSua = "nguoi co quyen xem";
@@ -638,7 +639,7 @@ export default {
         }
         console.log(data.MoTa.length);
         data.Ma = this.project.Ma;
-        data.TrangThai = this.project.TrangThai;
+        data.TrangThai = this.project.tempTrangThai;
         data.ThoiGianBaoHanh = this.project.ThoiGianBaoHanh;
         data.ThoiGianNghiemThu = this.project.ThoiGianNghiemThu;
         data.ThoiGianBatDauDuAn = this.project.ThoiGianBatDauDuAn;

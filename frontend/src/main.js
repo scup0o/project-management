@@ -9,8 +9,9 @@ import router from "./router";
 import ToastPlugin from 'vue-toast-notification';
 import VueSnip from 'vue-snip'
 import AOS from 'aos'
+import { setupCalendar } from 'v-calendar';
 
 AOS.init();
 
-createApp(App).use(router).use(ToastPlugin).use(VueSnip).mount('#app');
+createApp(App).use(router).use(ToastPlugin).use(VueSnip).use(setupCalendar, {}).mount('#app');
 

@@ -20,92 +20,19 @@ app.use(express.json());
 const userRouter = require("./app/routes/user.route");
 const doctypeRouter = require("./app/routes/doctype.route");
 const projectRouter = require("./app/routes/project.route");
-//const discountCodeRouter = require("./app/routes/discountCode.route");
-//const genreRouter = require("./app/routes/genre.route");
-//const artistRouter = require("./app/routes/artist.route");
-//const cartRouter = require("./app/routes/cart.route")
-//const favoriteRouter = require("./app/routes/favorite.route")
+const fileRouter = require("./app/routes/file.route");
+const eventRouter = require("./app/routes/event.route");
 
 
-//const { checkUser } = require("./app/middlewares/auth.middleware");
-
-//app.get("*", checkUser);
-app.get("/",(req, res) =>{
-    res.json( {message: "projectmanagement"} );
-});
 app.use("/api/user", userRouter);
 app.use("/api/doctype", doctypeRouter);
 app.use("/api/project", projectRouter);
-//app.use("/api/auth", authRouter);
-//app.use("/api/genre",genreRouter);
-//app.use("/api/artist",artistRouter);
-//app.use("/api/discountcode",discountCodeRouter);
-//app.use("/api/favorite", favoriteRouter)
+app.use("/api/file", fileRouter);
+app.use("/api/event",eventRouter);
 
-
-//upload img
-app.post("/api/file/:filename", (req,res) =>{
-    try{
-    if (!req.files || Object.keys(req.files).length === 0) {
-        console.log(req);
-        console.log('no');
-        return res.status(400).send('No files were uploaded.');
-      }
-    else{
-        //console.log(req);
-        //let temp = req.files;
-        //console.log(temp)
-        let fileuploaded = Object.values(req.files)[0];
-        //let fileuploaded = req.files
-        console.log(Object.values(fileuploaded))
-        temp=Object.values(fileuploaded);
-        //console.log(temp[0].name);
-        var uploadedFiles = []
-        /*if(fileuploaded.length > 1){
-            for (let i = 0; i < fileuploaded.length; i++) {
-                fileuploaded[i].mv(__dirname + '/../frontend/admin/src/assets/img/' + fileuploaded[i].name , function(err) {
-                    if (err){
-                        console.log(err)
-                      return res.status(500).send(err);
-                    }
-                    
-                      console.log(`uploaded at ${this._dirname}`)
-                    //res.send('File uploaded!');  
-                    
-                  });
-                  fileuploaded[i].mv(__dirname + '/../frontend/user/src/assets/img/' + fileuploaded[i].name , function(err) {
-                    if (err){
-                        console.log(err)
-                      return res.status(500).send(err);
-                    }
-                    
-                      console.log(`uploaded at ${this._dirname}`)
-                    //res.send('File uploaded!');  
-                    
-                  });
-            }
-            res.send(true);
-        }
-        else{*/
-            // Use the mv() method to place the file somewhere on your server
-            fileuploaded.mv(__dirname + '/../frontend/src/assets/img/' + req.params.filename , function(err) {
-                if (err){
-                    console.log(err)
-                //return res.status(500).send(err);
-            }
-                
-                console.log(`uploaded at ${this._dirname}`)
-                //res.send(window.alert("I am an alert box!")); 
-            });
-            res.send(true)
-        //}
-    }
-    }
-    catch(error){
-        console.log(error)
-    }
-    //next();
-})
+app.get("/",(req, res) =>{
+    res.json( {message: "projectmanagement"} );
+});
 
 //404 
 app.use((req, res, next) => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid" style="background-color: var(--bg-color);">
+  <div class="container-fluid" style="background-color: var(--bg-color)">
     <div class="row flex-nowrap" id="sidebar">
       <div class="col-2 px-0" style="background-color: var(--main-color)">
         <div
@@ -45,17 +45,22 @@
             <li id="parent-tab" v-if="user.chucvu != 'admin'">
               <button
                 @click="
+                open=false;
                   show = true;
                   projectTab = 'chia se';
                   this.activeTab = 'project';
                   show1 = false;
-                  filterTittle='Danh sách dự án'
+                  filterTittle = 'Danh sách dự án';
+                  
                 "
                 :class="{ active1: activeTab === 'project' }"
                 class="nav-link px-0"
               >
                 <div class="button-des">
-                  <i class="fa-regular fa-file-lines" style="padding-right: 0.5vw"></i>
+                  <i
+                    class="fa-regular fa-file-lines"
+                    style="padding-right: 0.5vw"
+                  ></i>
                   <span class="ms-1 d-none d-sm-inline">Dự án</span>
                 </div>
               </button>
@@ -65,7 +70,7 @@
                 style="padding-left: 2.5vw; padding-top: 1vh"
               >
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'chia se'">
+                  <button class="a active2" @click="projectTab = 'chia se'; open=false;filterTittle='Danh sách dự án'">
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
@@ -75,7 +80,7 @@
                   </button>
                 </div>
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'ca nhan'">
+                  <button class="a active2" @click="projectTab = 'ca nhan'; open=false;filterTittle='Danh sách dự án'">
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
@@ -86,7 +91,7 @@
                   </button>
                 </div>
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'luu tru'">
+                  <button class="a active2" @click="projectTab = 'luu tru'; open=false; filterTittle='Danh sách dự án'">
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
@@ -96,7 +101,6 @@
                     <span class="ms-1 d-none d-sm-inline">Lưu trữ</span>
                   </button>
                 </div>
-                
               </div>
             </li>
             <li v-if="user.chucvu === 'admin'">
@@ -106,7 +110,8 @@
                   this.activeTab = 'docType';
                   show = false;
                   show1 = false;
-                  filterTittle='Danh sách loại tài liệu'
+                  filterTittle = 'Danh sách loại tài liệu';
+                  open=false;
                 "
                 :class="{ active1: activeTab === 'docType' }"
               >
@@ -126,6 +131,7 @@
                   show1 = true;
                   show = false;
                   filterTittle = 'Danh sách tài khoản';
+                  open=false;
                 "
               >
                 <div class="button-des">
@@ -145,6 +151,7 @@
                   (this.activeTab = 'account'), (show1 = true);
                   show = false;
                   filterTittle = 'Thông tin tài khoản';
+                  open=false;
                 "
               >
                 <div class="button-des">
@@ -163,12 +170,18 @@
             <Account></Account>
           </div>
         </div>
-        <div v-else style="height: 100vh;">
-          <div class="row" >
+        <div v-else style="height: 100vh">
+          <div class="row">
             <Header :title="filterTittle"></Header>
           </div>
           <div class="row">
-            <Project v-if="activeTab === 'project' " :projectTab="projectTab"></Project>
+            <Project
+              v-if="activeTab === 'project' && open === false"
+              :projectTab="projectTab"
+              @openproject="OpenProject"
+            ></Project>
+            <ProjectFile v-if="open === true" :project="this.project">
+            </ProjectFile>
             <AdministrationDocType
               v-if="activeTab === 'docType'"
             ></AdministrationDocType>
@@ -186,7 +199,8 @@
 <script>
 import AdministrationDocType from "@/components/AdministrationDocType.vue";
 import AdministrationAccount from "@/components/AdministrationAccount.vue";
-import Project from "@/components/Project.vue"
+import ProjectFile from "@/components/ProjectFile.vue";
+import Project from "@/components/Project.vue";
 import Header from "@/components/header.vue";
 import Account from "@/views/Account.vue";
 import BackToTop from "@/components/BackToTop.vue";
@@ -200,7 +214,8 @@ export default {
     Header,
     Account,
     BackToTop,
-    Project
+    Project,
+    ProjectFile,
   },
 
   data() {
@@ -213,17 +228,34 @@ export default {
       show: false,
       user: VueJwtDecode.decode(localStorage.getItem("auth")),
       filterTittle: "",
+      project: {},
+      open: false,
     };
+  },
+
+  watch: {
   },
 
   mounted() {
     console.log(this.user);
-    if (this.user.chucvu!=='admin') {this.activeTab='project'; this.projectTab='chia se'; this.show=true; this.filterTittle="Danh sách dự án"}
-    else {this.activeTab='docType'; this.filterTittle="Danh sách loại tài liệu"}
+    if (this.user.chucvu !== "admin") {
+      this.activeTab = "project";
+      this.projectTab = "chia se";
+      this.show = true;
+      this.filterTittle = "Danh sách dự án";
+    } else {
+      this.activeTab = "docType";
+      this.filterTittle = "Danh sách loại tài liệu";
+    }
     //this.getUser();
   },
 
   methods: {
+    async OpenProject(value) {
+      this.open = true;
+      this.project = value;
+      this.filterTittle='Danh sách tài liệu'
+    },
     /* async getUser(){
                 this.user = await UserService.get(this.user.id);
                 console.log(this.user)

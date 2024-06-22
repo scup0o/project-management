@@ -425,6 +425,7 @@ export default {
         reader.addEventListener(
           "load",
           function () {
+            console.log(this.$refs);
             this.$refs["image" + parseInt(i)][0].src = reader.result;
           }.bind(this),
           false

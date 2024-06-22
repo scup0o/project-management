@@ -116,6 +116,7 @@ export default {
         const headers = { "Content-Type": "multipart/form-data" };
         if (this.images[0]) {
           console.log(this.imgS[0].name);
+          console.log(this.imgS)
           await FileService.upload(this.account.id + "-pic.png", this.imgS, {
             headers,
           });

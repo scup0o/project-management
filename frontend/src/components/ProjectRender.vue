@@ -1,5 +1,5 @@
 <template>
-  <div class="row" style="max-height: 76vh; min-height: 76vh; overflow-y: auto">
+  <div class="row" style="max-height: 76vh; overflow-y: auto">
     <div
       class="col-12"
       v-for="(project, index) in projects"
@@ -9,7 +9,19 @@
       <div class="card">
         <div class="row d-flex align-items-center">
           <div class="row">
-            <label v-snip="{ lines: 1 }">{{ project.Ten }}</label>
+            <div class="col-6">
+              <label v-snip="{ lines: 1 }">{{ project.Ten }}</label>
+            </div>
+            <div
+              class="col-6 file text-end"
+              @click="$emit('openproject', project)"
+            >
+              Xem tài liệu dự án
+              <i
+                class="fa-solid fa-chevron-right"
+                style="padding-left: 0.3vw; font-size: 0.8vw"
+              ></i>
+            </div>
           </div>
           <div class="row">
             <label
@@ -28,6 +40,12 @@
           </div>
           <div class="row" id="util-button">
             <div class="col-12 d-flex justify-content-end">
+              <!--<i
+                @click="$emit('openproject', project)"
+                class="fa-solid fa-file-lines"
+                id="util-icon"
+                title="Tài liệu dự án"
+              ></i>-->
               <i
                 v-if="
                   project.id_NguoiTao === user.id && project.loai != 'luu tru'
@@ -39,7 +57,7 @@
               ></i>
               <i
                 class="fa-solid fa-boxes-packing"
-                v-if="project.loai==='luu tru'"
+                v-if="project.loai === 'luu tru'"
                 @click="archiveProject(project, 'u')"
                 id="util-icon"
                 title="Hủy lưu trữ dự án"
@@ -51,7 +69,7 @@
                 title="Xóa dự án"
                 @click="deleteProject(project)"
               ></i>
-              <i
+              <i @click="editProject = project, event=true"
                 class="fa-solid fa-calendar-days"
                 id="util-icon"
                 title="Sự kiện"
@@ -66,7 +84,7 @@
                   <div class="row text-menu" @click="iOpenUp(project)" style="">
                     Thông tin chung
                   </div>
-                  <hr style="width: 100%; padding:0">
+                  <hr style="width: 100%; padding: 0" />
                   <div class="row text-menu">Thông tin hệ thống</div>
                 </div></i
               >
@@ -79,15 +97,19 @@
   <ProjectInformation
     v-if="i === true"
     :projectprop="editProject"
-
     :e="ie"
     @close="i = false"
     @refresh="this.$emit('refresh')"
     :type="projectT"
   >
   </ProjectInformation>
+  <Event v-if="event===true"
+  :project="editProject"
+  @close="event=false; this.$emit('refresh')"
+  ></Event>
 </template>
 <script>
+import Event from "@/components/Event.vue";
 import ProjectInformation from "@/components/ProjectInformation.vue";
 import ProjectService from "@/services/project.service";
 import UserService from "@/services/user.service";
@@ -97,6 +119,7 @@ import moment from "moment";
 export default {
   components: {
     ProjectInformation,
+    Event
   },
   emits: ["refresh"],
 
@@ -105,18 +128,19 @@ export default {
       type: Array,
       default: [],
     },
-    projectType:{ type: String, required: true}
+    projectType: { type: String, required: true },
   },
 
   data() {
     return {
-      projectT:this.projectType,
+      projectT: this.projectType,
       editProject: null,
       edit: false,
       user: VueJwtDecode.decode(localStorage.getItem("auth")),
       openMenu: false,
       i: false,
       ie: false,
+      event:false,
     };
   },
 
@@ -158,7 +182,7 @@ export default {
           const check = await ProjectService.archive(data.id, data);
           if (check != true) {
             this.$toast.open({
-              message: `${q} dự án thất bại` ,
+              message: `${q} dự án thất bại`,
               type: "error",
               duration: 3000,
               dismissible: true,
@@ -212,17 +236,33 @@ label {
   font-family: "RalewayBold";
 }
 .card {
-  width: 100%;
+  margin: auto;
+  width: 96%;
   background-color: var(--bar-color);
   padding: 15px;
+  padding-right: 0px;
   border: 1px solid rgb(192, 192, 192);
   box-shadow: 0 2px 8px rgba(176, 176, 176, 0.33);
   max-height: fit-content;
 }
 
 .card:hover {
-  transform: scale(1.05);
-  z-index: 999;
+  transform: scale(1.03);
+  background-color: rgb(219, 221, 240);
+}
+
+.card:hover .file {
+  visibility: visible;
+}
+
+.file {
+  font-size: 1vw;
+  visibility: hidden;
+}
+
+.file:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .parent:hover #child {
@@ -249,29 +289,29 @@ label {
   position: absolute;
   z-index: 999;
   margin-left: -10vw;
+  margin-top: -7vw;
   width: 11vw;
   font-size: 1vw;
   font-family: Raleway;
   font-weight: normal;
-  background-color: rgb(208, 224, 243);
-  padding:10px 20px 15px 20px;
+  background-color: rgb(233, 241, 250);
+  padding: 10px 20px 15px 20px;
   border-radius: 5px 5px 5px 5px;
-  border:0.1px solid rgb(144, 144, 144);
+  border: 0.1px solid rgb(144, 144, 144);
 }
 
 #child {
   visibility: hidden;
 }
 
-.text-menu:hover{
+.text-menu:hover {
   text-decoration: underline;
   cursor: pointer;
-  
 }
 
-.text-menu{
-  padding-left:10px;
-  padding-top:0;
-  padding-bottom:0;
+.text-menu {
+  padding-left: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 </style>

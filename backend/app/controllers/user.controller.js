@@ -122,7 +122,11 @@ exports.create = async (req, res, next) => {
       req.body.matkhau = await bcrypt.hash(req.body.matkhau, salt);
       salt = await bcrypt.genSalt();
       let id = await bcrypt.hash(req.body.manhanvien, salt);
-      id = id.replace("/", "a");
+      let i=0;
+      while(i<id.length){
+        id.replace('/','')
+        i++;
+      }
       if (req.body.anhdaidien != "user-img.jpg")
         req.body.anhdaidien = id + "-pic.png";
       db.query(
@@ -201,7 +205,6 @@ exports.update = async (req, res, next) => {
       }
       if (error[0] === 0 && error[1] === 0 && error[2] === 0) {
         if (req.body.util === "admin") {
-          
           if (req.body.matkhau != null && req.body.matkhau != undefined) {
             console.log("new pass", req.body.matkhau);
             const salt = await bcrypt.genSalt();

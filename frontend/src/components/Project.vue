@@ -33,7 +33,7 @@
           <input
             type="text"
             class="form-control search-form"
-            placeholder="Nhập tên dự án, chủ sở hữu cần tìm"
+            placeholder="Nhập tên dự án cần tìm"
             v-model="searchText"
           />
           <button class="btn btn-outline-secondary search-button" type="button">
@@ -98,7 +98,8 @@
     <div class="row" style="">
       <div class="col-4" style="">
         <ProjectRender
-        :projectType="projectType"
+          @openproject="OpenProject"
+          :projectType="projectType"
           v-if="sliceProjectDangThucHien.length > 0"
           :projects="sliceProjectDangThucHien"
           :is="sliceProjectDangThucHien"
@@ -118,6 +119,7 @@
       </div>
       <div class="col-4">
         <ProjectRender
+          @openproject="OpenProject"
           v-if="sliceProjectHoanThanh.length > 0"
           :projects="sliceProjectHoanThanh"
           :is="sliceProjectHoanThanhu"
@@ -137,6 +139,7 @@
       </div>
       <div class="col-4">
         <ProjectRender
+          @openproject="OpenProject"
           :projects="sliceProjectTamDung"
           :is="sliceProjectTamDung"
           v-if="sliceProjectTamDung.length > 0"
@@ -168,6 +171,7 @@ export default {
   components: {
     ProjectInfoForm,
     ProjectRender,
+    Event
   },
 
   props: {
@@ -201,8 +205,8 @@ export default {
   computed: {
     projectStrings() {
       return this.projects.map((project) => {
-        const { Ten, NguoiTao } = project;
-        return [Ten, NguoiTao].join("");
+        const { Ten} = project;
+        return [Ten].join("");
       });
     },
 
@@ -254,11 +258,18 @@ export default {
         }
       },*/
 
+    async OpenProject(value) {
+      this.$emit("openproject", value);
+    },
+
     async retrieveProject() {
       try {
-        this.projects=[];
-        this.projectType=this.projectTab;
-        this.projects = await ProjectService.getType(this.projectType, this.user);
+        this.projects = [];
+        this.projectType = this.projectTab;
+        this.projects = await ProjectService.getType(
+          this.projectType,
+          this.user
+        );
         console.log(this.projects);
       } catch (error) {
         console.log(error);

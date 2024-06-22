@@ -49,7 +49,7 @@
                       name="giaiDoan"
                       as="select"
                       class=""
-                      v-model="doctypeNew.giaiDoan"
+                      v-model="giaiDoan"
                       style="
                         width: 100%;
                         border-width: 1.55px;
@@ -138,6 +138,7 @@ export default {
       images: [],
       nameMessage: "",
       haveData: true,
+      giaiDoan:new String(this.doctype.giaiDoan)
     };
   },
 

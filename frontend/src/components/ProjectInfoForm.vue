@@ -101,7 +101,7 @@
                         as="select"
                         value="dangthuchien"
                         class=""
-                        v-model="project.TrangThai"
+                        v-model="TrangThai"
                         style="
                           width: 100%;
                           border-width: 1.55px;
@@ -281,7 +281,7 @@
           </div>
           <div class="text-center">
             <button
-            v-if="project.id_NguoiTao===user.id"
+              v-if="project.id_NguoiTao === user.id"
               class="btn btn-dark"
               style="margin-right: 10px; width: 10vw"
               type="submit"
@@ -290,7 +290,7 @@
               <!--tên nút -->
             </button>
             <button
-            v-else
+              v-else
               class="btn btn-dark"
               style="margin-right: 10px; width: 10vw"
               type="submit"
@@ -371,7 +371,7 @@ export default {
       idMessage: "",
       haveData: true,
       user: VueJwtDecode.decode(localStorage.getItem("auth")),
-
+      TrangThai: new String(this.projectprop.TrangThai),
       TenMessage: "",
       MaMessage: "",
       next: false,
@@ -393,7 +393,7 @@ export default {
       }
       console.log(this.edit);
       data.step = "check";
-
+      data.TrangThai = this.TrangThai;
       let check;
       if (this.edit === false) check = await ProjectService.create(data);
       else {
@@ -441,7 +441,7 @@ export default {
         }
         if (c === true) {
           if (this.edit === true && this.project.id_NguoiTao === this.user.id) {
-            console.log('next')
+            console.log("next");
             let temp = await ProjectService.getQuyen(data.id);
 
             let i = 0;
@@ -455,9 +455,13 @@ export default {
             this.project.QuyenXem = temp.qx;
             this.project.QuyenChinhSua = temp.qcs;
           }
-          if (this.edit === false || this.project.id_NguoiTao === this.user.id)
+          if (
+            this.edit === false ||
+            this.project.id_NguoiTao === this.user.id
+          ) {
+            this.project.tempTrangThai = this.TrangThai;
             this.next = true;
-          else {
+          } else {
             data.step = "update";
             data.id_NguoiChinhSuaLanCuoi = this.user.id;
             check = await ProjectService.update(data);

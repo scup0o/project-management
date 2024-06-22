@@ -24,7 +24,7 @@ exports.get = async (req, res, next) => {
   }
 };
 
-exports.getQuyen = async (req, res, next) => {  
+exports.getQuyen = async (req, res, next) => {
   try {
     //console.log("catch");
     let i = 0;
@@ -114,10 +114,10 @@ exports.getQuyen = async (req, res, next) => {
     rs.DS_TG = DS_TG;
     rs.qx = qx;
     rs.qcs = qcs;
-    console.log(rs);
+    //console.log(rs);
     return res.send(rs);
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return next(
       new ApiError(500, `Error retrieving project with id = ${req.params.id}`)
     );
@@ -129,7 +129,7 @@ exports.getType = async (req, res, next) => {
     //console.log(req.params.type);
     if (req.params.type != "chia se")
       db.query(
-        `SELECT * FROM DU_AN WHERE loai = '${req.params.type}' AND id_NguoiTao = '${req.body.id}'`,
+        `SELECT * FROM DU_AN WHERE loai = '${req.params.type}' AND id_NguoiTao = '${req.body.id}' ORDER BY id`,
         function (e, r) {
           if (e)
             return next(
@@ -146,7 +146,7 @@ exports.getType = async (req, res, next) => {
       );
     else {
       db.query(
-        `SELECT * FROM DU_AN da JOIN THAM_GIA tg ON da.id=tg.id_DuAn JOIN QUYEN_DUAN q ON q.id_duan=da.id WHERE da.loai = 'chia se' AND tg.id_NhanVien = '${req.body.id}' OR q.quyen!='chi minh toi' AND q.loaiQuyen !='chinh sua'`,
+        `SELECT * FROM DU_AN da JOIN THAM_GIA tg ON da.id=tg.id_DuAn JOIN QUYEN_DUAN q ON q.id_duan=da.id WHERE da.loai = 'chia se' AND tg.id_NhanVien = '${req.body.id}' OR q.quyen!='chi minh toi' AND q.loaiQuyen !='chinh sua' ORDER BY id`,
         async function (e, r) {
           if (e)
             return next(
@@ -228,7 +228,7 @@ exports.getType = async (req, res, next) => {
               }
               i++;
             }
-            console.log(r);
+            //console.log(r);
             return res.send(r);
           }
         }
@@ -395,6 +395,10 @@ exports.update = async (req, res, next) => {
         });
 
         db.query(`DELETE FROM QUYEN_DUAN WHERE id_duan = '${req.body.id}'`);
+        db.query(
+          `INSERT INTO QUYEN_DUAN (quyen, id_duan, id_nguoichinhsua, loaiQuyen) VALUES ('${req.body.QuyenXem}', '${req.body.id}','${req.body.id_NguoiTao}', 'xem')`
+      
+        );
         let i = 0;
         let count = 0;
         if (req.body.QuyenChinhSua === "tuy chinh") {
@@ -406,9 +410,6 @@ exports.update = async (req, res, next) => {
             }
           }
 
-          db.query(
-            `UPDATE QUYEN_DUAN set quyen = '${req.body.QuyenXem}' WHERE id_duan = '${req.body.id}'`
-          );
           while (i < userid.length) {
             db.query(
               `INSERT INTO QUYEN_DUAN (quyen, id_duan, id_nguoichinhsua, loaiQuyen) VALUES ('${req.body.QuyenChinhSua}', '${req.body.id}','${userid[i]}', 'chinh sua')`
@@ -449,7 +450,7 @@ exports.update = async (req, res, next) => {
       }
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return next(new ApiError(500, `Error updating project`));
   }
 };
@@ -468,12 +469,12 @@ exports.delete = async (req, res, next) => {
           );
         else {
           db.query(
-            `DELETE FROM QUYEN_DUAN WHERE id_duan = '${req.body.id}'`,
+            `DELETE FROM QUYEN_DUAN WHERE id_duan = '${req.params.id}'`,
             function (e, r) {
               if (e) throw e;
               else {
                 db.query(
-                  `DELETE FROM THAM_GIA WHERE id_DuAn = '${req.body.id}'`,
+                  `DELETE FROM THAM_GIA WHERE id_DuAn = '${req.params.id}'`,
                   function (e, r) {
                     if (e) throw e;
                     else {
