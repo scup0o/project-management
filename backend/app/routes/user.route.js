@@ -4,6 +4,9 @@ const userController = require("../controllers/user.controller");
 const {requireAuth} = require("../middlewares/auth.middleware")
 const {AdminOnly} = require("../middlewares/auth.middleware")
 
+router.route("/lock")
+    .post(userController.lock);
+
 router.route("/login")
     .post(userController.login);
 

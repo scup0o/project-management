@@ -477,6 +477,7 @@ export default {
     Field,
     ErrorMessage,
   },
+  emits: ["refresh"],
 
   props: {
     fileprop: { type: Object, required: true },
@@ -673,13 +674,13 @@ export default {
             dismissible: true,
           });
           this.$emit("closeall");
-          this.$emit("refresh");
         } else {
           this.file.id_NguoiChinhSua = this.user.id;
           this.file.DSNguoiThamGia = this.plist;
           this.file.DSNguoiChinhSua = this.elist;
           this.file.check = "update-admin";
           let check = await FileService.update(this.file);
+          
           this.$toast.open({
             message: "Chỉnh sửa dự án thành công",
             type: "success",
@@ -695,7 +696,6 @@ export default {
           }
 
           this.$emit("closeall");
-          this.$emit("refresh");
         }
       } catch (error) {
         console.log(error);

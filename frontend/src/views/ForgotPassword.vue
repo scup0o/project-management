@@ -44,7 +44,7 @@
                   class="form-control field icon-email"
                   style=""
                   placeholder="Nhập Email hoặc Username"
-                  @click="this.emailMes=''"
+                  @click="this.emailMes = ''"
                 >
                 </Field>
                 <p class="error-feedback">{{ emailMes }}</p>
@@ -87,7 +87,11 @@
             >
               <div class="row">
                 <div class="form-group">
-                  <label for="newpassword" style="font-family: 'RalewayBold'; padding: 1vh">Mật khẩu mới: </label>
+                  <label
+                    for="newpassword"
+                    style="font-family: 'RalewayBold'; padding: 1vh"
+                    >Mật khẩu mới:
+                  </label>
                   <div
                     class="control"
                     style="display: inline; padding-left: 10px"
@@ -121,7 +125,11 @@
               </div>
               <div class="row" style="padding-top: 10px">
                 <div class="form-group">
-                  <label for="newpassword" style="font-family: 'RalewayBold'; padding: 1vh">Xác nhận mật khẩu mới: </label>
+                  <label
+                    for="newpassword"
+                    style="font-family: 'RalewayBold'; padding: 1vh"
+                    >Xác nhận mật khẩu mới:
+                  </label>
                   <div
                     class="control"
                     style="display: inline; padding-left: 10px"
@@ -239,6 +247,9 @@ export default {
         console.log(check);
         if (check === false) this.emailMes = "Không tìm thấy tài khoản";
         else {
+          if (check === "lock") {
+            return alert("Tài khoản đã bị khóa");
+          }
           alert("Link đổi mật khẩu đã được gửi vào email");
         }
       } catch (error) {
@@ -305,8 +316,7 @@ export default {
 
 .icon-email {
   padding-left: 6vh;
-  background: url("../assets/img/envelope-solid.svg")
-    no-repeat left;
+  background: url("../assets/img/envelope-solid.svg") no-repeat left;
   background-size: 2vh;
   background-position: 2vh;
 }

@@ -40,9 +40,9 @@
   --bar-color: rgb(245, 244, 244);
   --bg-color: rgb(255, 255, 255);
   --sub-color: rgb(237, 237, 237);
+  --search-color:rgb(233, 241, 252);
   --field-color: rgb(218, 224, 255);
 }
-
 body {
   font-family: "Raleway", monospace;
 }
@@ -69,6 +69,30 @@ body {
   color: rgb(197, 187, 187);
   font-family: RalewayItalic;
   font-size: 2vh;
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+  
 }
 
 /*

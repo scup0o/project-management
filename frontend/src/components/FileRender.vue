@@ -129,8 +129,7 @@
     :fileprop="editFile"
     :e="true"
     :io="ionly"
-    @close="edit=false; ionly=true"
-    @refresh="this.$emit('refresh')"
+    @close="edit=false; ionly=true;this.$emit('refresh')"
   >
   </FileInfoForm>
 </template>

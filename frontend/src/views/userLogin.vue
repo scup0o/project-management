@@ -144,6 +144,10 @@ export default {
         if (user === "incorrected") alert("Username hoặc mật khẩu sai");
         //if (user === 'not verified') alert("Tài khoản chưa được xác thực email");
         else {
+          if (user==='lock'){
+            alert("Tài khoản đã bị khóa");
+            return;
+          }
           localStorage.setItem("auth", user);
           //const auth = localStorage.getItem('auth');
           //console.log(VueJwtDecode.decode(auth).role);

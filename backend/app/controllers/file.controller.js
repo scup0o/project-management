@@ -425,7 +425,7 @@ exports.update = async (req, res, next) => {
       }
       let docu = await new Promise((rs, rj) => {
         db.query(
-          `UPDATE TAI_LIEU SET LoaiFile='${req.body.extension}', LoaiTaiLieu='${req.body.LoaiTaiLieu}', TenTaiLieu='${req.body.TenTaiLieu}', GiaiDoan='${req.body.GiaiDoan}' WHERE id='${req.body.id}'`,
+          `UPDATE TAI_LIEU SET LoaiFile='${req.body.extension}', LoaiTaiLieu='${req.body.LoaiTaiLieu}', TenTaiLieu='${req.body.TenTaiLieu}', GiaiDoan='${req.body.tempGiaiDoan}' WHERE id='${req.body.id}'`,
           function (e, r) {
             if (e) throw e;
             else rs(r);

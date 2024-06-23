@@ -127,7 +127,7 @@
                         as="select"
                         :value="GiaiDoan"
                         class=""
-                        v-model="GiaiDoan"
+                        v-model="this.GiaiDoan"
                         style="
                           width: 80%;
                           border-width: 1.55px;
@@ -351,6 +351,8 @@ export default {
     io: { type: Boolean, required: true },
   },
 
+  emits: ["refresh"],
+
   watch: {
     GiaiDoan() {
       this.getType();
@@ -436,9 +438,7 @@ export default {
         if (this.filelist[0] !== undefined) {
           
         } else {
-          if (this.ionly===false)
             this.fileMessage = "Chọn file cần tải lên";
-            console.log('a');
         }
         if (
           (data.TenTaiLieu === null ||
@@ -505,9 +505,10 @@ export default {
                   this.LoaiTaiLieu = new String(this.TenLoaiTaiLieu);
                 }
               }
-              this.filepj.GiaiDoan = new String(this.GiaiDoan);
+              if (this.edit===false)this.filepj.GiaiDoan = new String(this.GiaiDoan);
               this.filepj.LoaiTaiLieu = new String(this.LoaiTaiLieu);
               if (this.edit === true) {
+                this.filepj.tempGiaiDoan = new String(this.GiaiDoan);
                 if (this.filelist[0] != undefined) {
                   this.filepj.file = this.file;
                 } else {

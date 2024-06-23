@@ -121,7 +121,7 @@
                     Thông tin chung
                   </div>
                   <hr style="width: 100%; padding: 0" />
-                  <div class="row text-menu">Thông tin cài đặt hệ thống</div>
+                  <div class="row text-menu" @click="ttht=true; editProject=project">Thông tin cài đặt hệ thống</div>
                 </div></i
               >
             </div>
@@ -147,6 +147,7 @@
       this.$emit('refresh');
     "
   ></Event>
+  <Information v-if="ttht===true" @close="ttht=false" :projectprop="editProject"></Information>
 </template>
 <script>
 import Event from "@/components/Event.vue";
@@ -155,11 +156,13 @@ import ProjectService from "@/services/project.service";
 import UserService from "@/services/user.service";
 import VueJwtDecode from "vue-jwt-decode";
 import moment from "moment";
+import Information from "@/components/Information.vue";
 
 export default {
   components: {
     ProjectInformation,
     Event,
+    Information,
   },
   emits: ["refresh"],
 
@@ -173,6 +176,7 @@ export default {
 
   data() {
     return {
+      ttht:false,
       projectT: this.projectType,
       editProject: null,
       edit: false,

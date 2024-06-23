@@ -190,7 +190,10 @@ export default {
     project: { type: Object, required: true },
   },
 
-  watch: {},
+  emits: ["refresh"],
+
+  watch: {
+  },
 
   data() {
     return {

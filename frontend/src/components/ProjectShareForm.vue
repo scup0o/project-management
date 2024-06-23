@@ -649,6 +649,7 @@ export default {
         data.KhachHang=this.project.KhachHang;
         if (
           typeof data.KhachHang === "undefined" ||
+          data.KhachHang === null ||
           data.KhachHang === "" ||
           data.KhachHang.length === 0
         ) {
@@ -657,6 +658,7 @@ export default {
         data.id_GiaHan=this.project.id_GiaHan
         if (
           typeof data.id_GiaHan=== "undefined" ||
+          data.id_GiaHan=== null ||
           data.id_GiaHan === "" ||
           data.id_GiaHan.length === 0
         ) {

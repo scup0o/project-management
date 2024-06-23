@@ -142,10 +142,8 @@ exports.getType = async (req, res, next) => {
             let i = 0;
             while (i < r.length) {
               let Difference_In_Time =
-                r[i].ThoiGianBaoHanh.getTime() - new Date().getTime();
-
-              // Calculating the no. of days between
-              // two dates
+                r[i].ThoiGianBaoHanh.getTime() - (new Date().getTime()) + (12*3600000);
+              
               let Difference_In_Days = Math.round(
                 Difference_In_Time / (1000 * 3600 * 24)
               );
@@ -186,10 +184,7 @@ exports.getType = async (req, res, next) => {
             let i = 0;
             while (i < r.length) {
               let Difference_In_Time =
-                r[i].ThoiGianBaoHanh.getTime() - new Date().getTime();
-
-              // Calculating the no. of days between
-              // two dates
+                r[i].ThoiGianBaoHanh.getTime() - new Date().getTime() + (12*3600000);
               let Difference_In_Days = Math.round(
                 Difference_In_Time / (1000 * 3600 * 24)
               );
@@ -265,7 +260,7 @@ exports.getType = async (req, res, next) => {
             while (i < r.length) {
               let temp = await new Promise((rs, rj) => {
                 db.query(
-                  `SELECT * FROM THONG_TIN_HE_THONG WHERE id_DuAn = '${r[i].id_DuAn}'`,
+                  `SELECT * FROM THONG_TIN_CAI_DAT_HE_THONG WHERE id_DuAn = '${r[i].id_DuAn}'`,
                   function (e, re) {
                     if (e) rj(e);
                     else {

@@ -32,7 +32,7 @@
                   </div>
                   <div v-if="sEvent.length > 0">
                     <div v-for="(e, i) in sEvent" :key="e">
-                      <div style="padding-bottom: 1px; padding-top: 1px">
+                      <div style="padding-bottom: 5px; padding-top:5px">
                         <div class="row card-in" style="width: 98%; margin: 0">
                           <div class="col">
                             <label style="font-family: Raleway"
@@ -149,7 +149,7 @@
                       <input
                         type="text"
                         class="form-control search-form icon-search"
-                        style="background-color: var(--field-color)"
+                        style="background-color: var(--search-color)"
                         placeholder="Nhập sự kiện cần tìm"
                         v-model="searchText"
                       />
@@ -185,7 +185,7 @@
                             this.searchText.toLowerCase()
                           )
                         "
-                        style="padding-bottom: 1px; padding-top: 1px"
+                        style="padding-bottom: 5px; padding-top: 5px"
                       >
                         <div class="row card-in" style="width: 98%; margin: 0">
                           <div class="col">
@@ -390,7 +390,7 @@ export default {
       date: new Date(0, 0, 0),
       event: [],
       pj: this.project,
-      user: VueJwtDecode.decode(localStorage.getItem("auth")),
+      
       searchText: "",
       eventlist: ref([]),
       sEvent: [],
@@ -636,10 +636,12 @@ label {
 
 .card {
   height: 30vh;
+  
 }
 
 .card-in {
-  border: 1px solid gray;
+  background-color: rgb(233, 241, 252);
+  border: none;
   padding: 5px;
   padding-left: 10px;
   padding-right: 10px;

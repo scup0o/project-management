@@ -16,7 +16,7 @@ exports.login = async (req, res, next) => {
     console.log(req.body);
     let result = await new Promise((resolve, reject) => {
       db.query(
-        `SELECT username, matkhau, chucvu, id FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
+        `SELECT username, matkhau, chucvu, khoa, id FROM NHAN_VIEN WHERE username = '${req.body.username}'`,
         async function (e, result) {
           if (e) reject(e);
           else resolve(result);
@@ -29,6 +29,10 @@ exports.login = async (req, res, next) => {
       res.send("incorrected");
       return console.log("Username incorrected");
     } else {
+      if (result[0].khoa === 1) {
+        console.log('lock')
+        return res.send("lock");
+      }
       //console.log(req.body.matkhau, ",", result[0].matkhau);
       const matkhau = await bcrypt.compare(req.body.matkhau, result[0].matkhau);
       if (!matkhau) {
@@ -122,9 +126,9 @@ exports.create = async (req, res, next) => {
       req.body.matkhau = await bcrypt.hash(req.body.matkhau, salt);
       salt = await bcrypt.genSalt();
       let id = await bcrypt.hash(req.body.manhanvien, salt);
-      let i=0;
-      while(i<id.length){
-        id.replace('/','')
+      let i = 0;
+      while (i < id.length) {
+        id.replace("/", "");
         i++;
       }
       if (req.body.anhdaidien != "user-img.jpg")
@@ -381,6 +385,9 @@ exports.forgotPass = async (req, res, next) => {
       res.send(false);
       return console.log("not found");
     } else {
+      if (result[0].khoa===1){
+        return res.send('lock')
+      }
       const message = `link đổi mật khẩu: http://localhost:3002/forgotpassword/${result[0].id}`;
       res.send(true);
       await sendEmail(result[0].email, "Quên mật khẩu", message);
@@ -389,6 +396,19 @@ exports.forgotPass = async (req, res, next) => {
     console.log(error);
   }
 };
+
+exports.lock = async (req, res, next) => {
+  try{
+    let i=0;
+    if (req.body.w==='lock') i=1;
+    db.query(`UPDATE NHAN_VIEN SET khoa='${i}' WHERE id='${req.body.id}'`) 
+    return res.send(true);
+  }
+  catch(e){
+    console.log(e);
+    return res.send(e)
+  }
+}
 
 /*exports.getAll = async (req, res, next) => {
     try{
