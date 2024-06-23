@@ -9,14 +9,14 @@
       </div>
       <div class="row">
         <div class="col-7 d-flex justify-content-center align-items-center" style="">
-          <img
-            src="../assets/img/vinyl-login.jpg"
+          <!--<img
+            src="../assets/img/login.png"
             style="
               width: 800px;
               height: 640px;
               border-radius: 10px 10px 10px 10px;
             "
-          />
+          />-->
         </div>
         <div class="col-5" style="background-color: white">
           <div style="padding: 4vh; padding-top: 20vh">

@@ -408,6 +408,12 @@ export default {
 
   mounted() {
     console.log(this.i);
+    if (this.edit===true){
+      if (this.i.HienTrangHeThong!='hoanthanh'){
+        this.HienTrang=this.i.HienTrangHeThong.split('()')[1];
+        this.i.HienTrangHeThong='chuahoanthanh'
+      }
+    }
   },
 
   methods: {

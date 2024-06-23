@@ -5,9 +5,9 @@ class SettingiService {
     this.api = createApiClient(baseUrl);
   }
 
-  async get(id) {
+  /*async get(id) {
     return (await this.api.get(`/${id}`)).data;
-  }
+  }*/
 
   async getAll(id) {
     return (await this.api.get(`/all/${id}`)).data;
@@ -35,6 +35,23 @@ class SettingiService {
   /*async addServer(data) {
     return (await this.api.post(`/server/add`, data)).data;
   }*/
+
+    async addDiary(data) {
+      return (await this.api.post(`/diary/add`, data)).data;
+    }
+  
+    async getDiary(id) {
+      return (await this.api.get(`/diary/get/${id}`)).data;
+    }
+
+    async updateDiary(data) {
+      return (await this.api.put(`/diary/update`, data)).data;
+    }
+  
+    async deleteDiary(id) {
+      return (await this.api.delete(`/diary/delete/${id}`)).data;
+    }
+    
 }
 
 export default new SettingiService();

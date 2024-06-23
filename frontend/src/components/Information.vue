@@ -60,6 +60,9 @@
               >
                 <div class="row" style="padding-bottom:5px" v-for="(i, index) in ilist" :key="i">
                   <div
+                  v-if="
+                              i.DonViSuDung.toLowerCase()
+                              .includes(this.searchText.toLowerCase())"
                     @click="editI=i"
                     class="card-render"
                     style=""
@@ -74,7 +77,7 @@
                       
                       <i @click="deleteI(i)" class="fa-solid fa-trash-can" id="util-icon" title="Xóa thông tin hệ thống" style="color: #e85454; padding-left:20px;" v-if="this.user.id===i.id_NguoiTao"></i>
                       <i @click="editform=true; editI=i" class="fa-solid fa-pen" id="util-icon" title="Cập nhật thông tin" style="padding-left:20px;"></i>
-                      <i class="fa-solid fa-book" id="util-icon" title="Nhật ký lỗi và cập nhật"></i>
+                      <i  @click="diary=true; editI=i" class="fa-solid fa-book" id="util-icon" title="Nhật ký lỗi và cập nhật"></i>
                     </div>
                   </div>
                 </div>
@@ -347,6 +350,9 @@
     @refresh="this.retrieveI(); info = false"
   >
   </ServerInformation>
+  <Diary v-if="diary===true" @close="diary=false" :e="this.project.e" :iprop="editI">
+
+  </Diary>
 </template>
 <script>
 import "@/assets/css/base.css";
@@ -358,6 +364,7 @@ import ServerInformation from "@/components/ServerInformation.vue";
 import SettingiService from "@/services/settingi.service";
 import moment from "moment";
 import InformationForm from "@/components/InformationForm.vue";
+import Diary from "@/components/Diary.vue"
 
 export default {
   components: {
@@ -365,7 +372,8 @@ export default {
     Field,
     ErrorMessage,
     InformationForm,
-    ServerInformation
+    ServerInformation,
+    Diary
   },
 
   props: {
@@ -374,6 +382,7 @@ export default {
 
   data() {
     return {
+      diary:false,
       editform:false,
       ilist: [],
       user: VueJwtDecode.decode(localStorage.getItem("auth")),
@@ -528,7 +537,7 @@ label {
 }
 
 .card-render:hover{
-  transform: scale(1.001);
+  transform: scale(1.02);
   background-color: rgb(238, 238, 238);
 }
 
