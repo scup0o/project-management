@@ -19,7 +19,7 @@
           />-->
         </div>
         <div class="col-5" style="background-color: white">
-          <div style="padding: 4vh; padding-top: 20vh">
+          <div style="padding: 4vh; padding-top: 13vh">
             <p
             class="title"
               style="
@@ -141,7 +141,8 @@ export default {
         const user = await UserService.login(data);
         //console.log(JSON.stringify(user));
         console.log(user);
-        if (user === "incorrected") alert("Username hoặc mật khẩu sai");
+        if (user === "user not found") return alert("Username sai");
+        if (user === "incorrected") return alert("Mật khẩu sai");
         //if (user === 'not verified') alert("Tài khoản chưa được xác thực email");
         else {
           if (user==='lock'){
@@ -149,10 +150,6 @@ export default {
             return;
           }
           localStorage.setItem("auth", user);
-          //const auth = localStorage.getItem('auth');
-          //console.log(VueJwtDecode.decode(auth).role);
-          //console.log(VueJwtDecode.decode(user).username);
-          //console.log(this.$cookies.get("jwt"))
           location.reload();
         }
       } catch (error) {

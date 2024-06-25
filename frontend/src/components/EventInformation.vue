@@ -136,7 +136,7 @@
         </div>
         <div class="text-center">
           <button
-            v-if="edit === true && this.user.chucvu==='hc'"
+            v-if="edit === true && this.user.chucvu!='admin'"
             class="btn btn-dark"
             style="margin-right: 10px; width: 150px"
             type="submit"

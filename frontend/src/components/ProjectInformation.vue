@@ -50,7 +50,9 @@
               <label for="TrangThai">Gia hạn từ dự án: </label>
             </div>
             <div class="col-8">
-              <p v-if="project.id_GiaHan === 0 || project.id_GiaHan === null">Không có</p>
+              <p v-if="project.id_GiaHan === 0 || project.id_GiaHan === null">
+                Không có
+              </p>
               <p v-else>{{ project.DuAnGiaHan.Ten }}</p>
             </div>
           </div>
@@ -135,6 +137,9 @@
             </div>
             <div class="col-7">
               {{ format_date(project.ThoiGianBaoHanh) }}
+              <p style="display: inline" v-if="project.ThoiHan!=0">
+                ({{ project.ThoiHan }} {{ project.LoaiThoiHan }})
+              </p>
             </div>
           </div>
           <label>Danh sách người tham gia</label>
@@ -193,7 +198,10 @@
         </div>
         <div class="text-center">
           <button
-            v-if="(project.e === true || type != 'chia se') && this.user.chucvu==='hc'"
+            v-if="
+              (project.e === true || type != 'chia se') &&
+              this.user.chucvu != 'admin'
+            "
             class="btn btn-dark"
             style="margin-right: 10px"
             type="submit"

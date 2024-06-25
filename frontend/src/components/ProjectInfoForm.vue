@@ -312,7 +312,66 @@
                 </div>
               </div>
             </div>
-            <div class="row spacing">
+            <div class="row spacing" v-if="date === false">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col">
+                    <label for="ThoiGianBaoHanh">Thời gian bảo hành:</label>
+                  </div>
+                  <div class="col-3">
+                    <Field
+                      type="number"
+                      v-model="project.ThoiHan"
+                      name="ThoiHan"
+                      class="form-control"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <Field
+                      as="select"
+                      v-model="project.LoaiThoiHan"
+                      value="tháng"
+                      name="LoaiThoiHan"
+                      class=""
+                      style="
+                        width: 100%;
+                        border-width: 1.55px;
+                        border-color: var(--secondary-color);
+                        box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
+                        height: 5vh;
+                        border-radius: 5px 5px 5px 5px;
+                        text-align: center;
+                      "
+                      @click="baohanhMessage = ''"
+                    >
+                      <option value="ngày">Ngày</option>
+                      <option value="tháng">Tháng</option>
+                      <option value="năm">Năm</option>
+                    </Field>
+                  </div>
+                  <div class="row" style="padding-top: 10px">
+                    <div class="col-5"></div>
+                    <div class="col">
+                      <ErrorMessage
+                        class="error-feedback"
+                        for="ThoiHan"
+                        name="ThoiHan"
+                        style="padding-left: 10px"
+                      ></ErrorMessage>
+                      <p
+                        class="c"
+                        style="margin-left: 10px"
+                        @click="date = true"
+                      >
+                        Chọn ngày cụ thể
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row spacing" v-if="date === true">
               <div class="form-group">
                 <div class="row">
                   <div class="col">
@@ -330,16 +389,20 @@
                       name="ThoiGianBaoHanh"
                       class="error-feedback"
                     />
+                    <p class="error-feedback">{{ baohanhMessage }}</p>
+                    <div class="c" style="" @click="date = false">
+                      Chọn thời hạn
+                    </div>
                   </div>
-                  <p class="error-feedback">{{ baohanhMessage }}</p>
                 </div>
               </div>
             </div>
+
             <!--chỉnh view chính tới khúc này-->
           </div>
           <div class="text-center">
             <button
-              v-if="project.id_NguoiTao === user.id || this.edit===false"
+              v-if="project.id_NguoiTao === user.id || this.edit === false"
               class="btn btn-dark"
               style="margin-right: 10px; width: 10vw"
               type="submit"
@@ -390,6 +453,7 @@ import ProjectShareForm from "@/components/ProjectShareForm.vue";
 import VueJwtDecode from "vue-jwt-decode";
 import UserService from "@/services/user.service";
 import ProjectService from "@/services/project.service";
+import moment from "moment";
 
 export default {
   components: {
@@ -414,15 +478,14 @@ export default {
       Ten: yup.string().required("Tên dự án không được để trống"),
 
       MoTa: yup.string().max(500, "Mô tả tối đa 500 ký tự."),
-      ThoiGianBaoHanh: yup
-        .date()
-        .required("Thời gian bảo hành không được để trống"),
       ThoiGianNghiemThu: yup
         .date()
         .required("Thời gian nghiệm thu không được để trống"),
+      ThoiHan: yup.number().min(1, "Thời hạn phải > 0"),
     });
 
     return {
+      date: false,
       edit: this.e,
       project: this.projectprop,
       FormSchema,
@@ -442,6 +505,14 @@ export default {
   },
 
   mounted() {
+    if (this.edit === false) {
+      this.project.LoaiThoiHan = "tháng";
+    }
+    else{
+      if (this.project.ThoiHan===0){
+        this.date=true;
+      }
+    }
     console.log(this.project);
     this.getp();
     console.log(this.plist);
@@ -452,6 +523,35 @@ export default {
       this.plist = await ProjectService.getType("chia se", this.user);
     },
     async checkData(data) {
+      if (data.LoaiThoiHan === "tháng") {
+        data.ThoiGianBaoHanh = new Date(
+          new Date(data.ThoiGianNghiemThu).getTime() +
+            data.ThoiHan * 30 * 86400000
+        ).toLocaleDateString();
+      }
+      if (data.LoaiThoiHan === "ngày") {
+        data.ThoiGianBaoHanh = new Date(
+          new Date(data.ThoiGianNghiemThu).getTime() + data.ThoiHan * 86400000
+        ).toLocaleDateString();
+      }
+      if (data.LoaiThoiHan === "năm") {
+        data.ThoiGianBaoHanh = new Date(
+          new Date(data.ThoiGianNghiemThu).getTime() +
+            data.ThoiHan * 365 * 86400000
+        ).toLocaleDateString();
+      }
+      if (this.date === false) {
+        this.project.LoaiThoiHan = data.LoaiThoiHan;
+        this.project.ThoiHan = data.ThoiHan;
+      } else {
+        data.LoaiThoiHan = "";
+        data.ThoiHan = 0;
+        this.project.LoaiThoiHan = "";
+        this.project.ThoiHan = 0;
+      }
+      console.log(data.ThoiGianBaoHanh);
+      data.ThoiGianBaoHanh = moment(data.ThoiGianBaoHanh).format("YYYY-MM-DD");
+      this.project.ThoiGianBaoHanh = data.ThoiGianBaoHanh;
       if (typeof data.MoTa === "undefined" || data.MoTa === "") {
         data.Mota = "Không có mô tả";
       }
@@ -498,10 +598,18 @@ export default {
             c = false;
           }
         }
-        if (data.ThoiGianNghiemThu >= data.ThoiGianBaoHanh) {
-          this.baohanhMessage =
-            "Thời gian bảo hành không thể trước thời gian nghiệm thu";
-          c = false;
+        if (
+          data.ThoiGianBaoHanh === null ||
+          data.ThoiGianBaoHanh === undefined
+        ) {
+          this.baohanhMessage = "Thời gian bảo hành không được để trống";
+          return;
+        } else {
+          if (data.ThoiGianNghiemThu >= data.ThoiGianBaoHanh) {
+            this.baohanhMessage =
+              "Thời gian bảo hành không thể trước thời gian nghiệm thu";
+            c = false;
+          }
         }
         if (c === true) {
           if (this.edit === true && this.project.id_NguoiTao === this.user.id) {
@@ -616,5 +724,11 @@ label {
   height: 500px;
   background-color: white;
   padding: 20px;
+}
+
+.c:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: RalewayItalic;
 }
 </style>

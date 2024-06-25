@@ -1,6 +1,6 @@
 const app = require("./app");
 const config = require("./app/config");
-const db = require("./app/utils/mysql.util")
+let db = require("./app/utils/mysql.util")
 //const mongoose = require('mongoose');
 
 async function startServer(){

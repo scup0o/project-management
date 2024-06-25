@@ -57,7 +57,7 @@
                 </div>
                 <div
                   class="col-4 hover-i"
-                  v-if="this.user.chucvu === 'kt' && this.edit === true"
+                  v-if="this.user.chucvu != 'admin' && this.edit === true"
                   @click="form = true"
                 >
                   <div class="row text-center">
@@ -123,6 +123,7 @@
                         v-if="this.user.id === i.id_nguoitao"
                       ></i>
                       <i
+                      v-if="this.user.chucvu!='admin' && edit===true"
                         @click="
                           editform = true;
                           editI = i;

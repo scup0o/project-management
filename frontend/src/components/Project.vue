@@ -13,7 +13,7 @@
           @click="createForm = true"
           data-aos="fade-up"
           style="margin-right: 10px"
-          v-if="this.user.chucvu === 'hc'"
+          v-if="this.user.chucvu != 'admin'"
         >
           Tạo dự án
           <i class="fa-solid fa-square-plus" id="util-icon"></i>
@@ -47,6 +47,8 @@
         @refresh="retrieveProject()"
         :e="false"
         :projectprop="{
+          LoaiThoiHan: 'thang',
+          ThoiHan: 1,
           Ma: null,
           Ten: null,
           MoTa: '',
@@ -57,7 +59,7 @@
           ThoiGianKetThucDauThau: null,
           ThoiGianNghiemThu: null,
           ThoiGianBaoHanh: null,
-          id_GiaHan:0,
+          id_GiaHan: 0,
         }"
       >
       </ProjectInfoForm>
@@ -155,7 +157,7 @@
             padding-left: 0.6vw;
           "
         >
-          Không có loại tài liệu nào.
+          Không có dự án nào.
         </p>
       </div>
     </div>
@@ -172,7 +174,7 @@ export default {
   components: {
     ProjectInfoForm,
     ProjectRender,
-    Event
+    Event,
   },
 
   props: {
@@ -206,7 +208,7 @@ export default {
   computed: {
     projectStrings() {
       return this.projects.map((project) => {
-        const { Ten} = project;
+        const { Ten } = project;
         return [Ten].join("");
       });
     },

@@ -142,8 +142,10 @@ exports.getType = async (req, res, next) => {
             let i = 0;
             while (i < r.length) {
               let Difference_In_Time =
-                r[i].ThoiGianBaoHanh.getTime() - (new Date().getTime()) + (12*3600000);
-              
+                r[i].ThoiGianBaoHanh.getTime() -
+                new Date().getTime() +
+                12 * 3600000;
+
               let Difference_In_Days = Math.round(
                 Difference_In_Time / (1000 * 3600 * 24)
               );
@@ -184,7 +186,9 @@ exports.getType = async (req, res, next) => {
             let i = 0;
             while (i < r.length) {
               let Difference_In_Time =
-                r[i].ThoiGianBaoHanh.getTime() - new Date().getTime() + (12*3600000);
+                r[i].ThoiGianBaoHanh.getTime() -
+                new Date().getTime() +
+                12 * 3600000;
               let Difference_In_Days = Math.round(
                 Difference_In_Time / (1000 * 3600 * 24)
               );
@@ -337,7 +341,7 @@ exports.create = async (req, res, next) => {
     } else {
       result = await new Promise((rs, rj) => {
         db.query(
-          `INSERT INTO DU_AN (id_GiaHan, KhachHang, Ten, Ma, MoTa, TrangThai, ThoiGianBatDauDuAn, ThoiGianKetThucDuAn, ThoiGianBatDauDauThau, ThoiGianKetThucDauThau, ThoiGianNghiemThu, ThoiGianBaoHanh, loai,  id_NguoiTao, id_NguoiChinhSuaLanCuoi) VALUES ('${req.body.id_GiaHan}','${req.body.KhachHang}','${req.body.Ten}','${req.body.Ma}', '${req.body.MoTa}', '${req.body.TrangThai}', '${req.body.ThoiGianBatDauDuAn}', '${req.body.ThoiGianKetThucDuAn}', '${req.body.ThoiGianBatDauDauThau}', '${req.body.ThoiGianKetThucDauThau}', '${req.body.ThoiGianNghiemThu}', '${req.body.ThoiGianBaoHanh}', '${req.body.loai}', '${req.body.id_NguoiTao}', '${req.body.id_NguoiChinhSuaLanCuoi}')`,
+          `INSERT INTO DU_AN (LoaiThoiHan, ThoiHan, id_GiaHan, KhachHang, Ten, Ma, MoTa, TrangThai, ThoiGianBatDauDuAn, ThoiGianKetThucDuAn, ThoiGianBatDauDauThau, ThoiGianKetThucDauThau, ThoiGianNghiemThu, ThoiGianBaoHanh, loai,  id_NguoiTao, id_NguoiChinhSuaLanCuoi) VALUES ('${req.body.LoaiThoiHan}','${req.body.ThoiHan}','${req.body.id_GiaHan}','${req.body.KhachHang}','${req.body.Ten}','${req.body.Ma}', '${req.body.MoTa}', '${req.body.TrangThai}', '${req.body.ThoiGianBatDauDuAn}', '${req.body.ThoiGianKetThucDuAn}', '${req.body.ThoiGianBatDauDauThau}', '${req.body.ThoiGianKetThucDauThau}', '${req.body.ThoiGianNghiemThu}', '${req.body.ThoiGianBaoHanh}', '${req.body.loai}', '${req.body.id_NguoiTao}', '${req.body.id_NguoiChinhSuaLanCuoi}')`,
           function (e, r) {
             if (e) rj(e);
             else rs(r);
@@ -434,7 +438,7 @@ exports.update = async (req, res, next) => {
       if (req.body.check === "update-admin") {
         result = await new Promise((rs, rj) => {
           db.query(
-            `UPDATE DU_AN SET id_GiaHan='${req.body.id_GiaHan}', KhachHang='${req.body.KhachHang}', id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', loai = '${req.body.loai}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
+            `UPDATE DU_AN SET ThoiHan='${req.body.ThoiHan}',LoaiThoiHan='${req.body.LoaiThoiHan}', id_GiaHan='${req.body.id_GiaHan}', KhachHang='${req.body.KhachHang}', id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', loai = '${req.body.loai}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
             function (e, r) {
               if (e) rj(e);
               else rs(r);
@@ -470,7 +474,15 @@ exports.update = async (req, res, next) => {
         }
         count = 0;
         let userid2 = [];
-        db.query(`DELETE FROM THAM_GIA WHERE id_DuAn = '${req.body.id}'`);
+        let a = await new Promise((rs, rj) => {
+          db.query(
+            `DELETE FROM THAM_GIA WHERE id_DuAn = '${req.body.id}'`,
+            function (e, r) {
+              if (e) throw e;
+              else rs(r);
+            }
+          );
+        });
         for (const [key, value] of Object.entries(req.body)) {
           if (key === `DSNguoiThamGia[${count}][id]`) {
             userid2.push(value);
@@ -488,7 +500,7 @@ exports.update = async (req, res, next) => {
       } else {
         //console.log('here')
         db.query(
-          `UPDATE DU_AN SET id_GiaHan='${req.body.id_GiaHan}', KhachHang='${req.body.KhachHang}',id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
+          `UPDATE DU_AN SET ThoiHan='${req.body.ThoiHan}',LoaiThoiHan='${req.body.LoaiThoiHan}', id_GiaHan='${req.body.id_GiaHan}', KhachHang='${req.body.KhachHang}',id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
           function (e, r) {
             if (e) throw e;
             else return res.send(true);
@@ -604,8 +616,8 @@ exports.archive = async (req, res, next) => {
 
 exports.tat = async (req, res, next) => {
   try {
-    db.query(`UPDATE DU_AN SET TB='0' WHERE id='${req.params.id}'`)
-    return res.send(true)
+    db.query(`UPDATE DU_AN SET TB='0' WHERE id='${req.params.id}'`);
+    return res.send(true);
   } catch (e) {
     return next(
       new ApiError(500, `Error archiving project with id = ${req.params.id}`)
@@ -615,13 +627,11 @@ exports.tat = async (req, res, next) => {
 
 exports.bat = async (req, res, next) => {
   try {
-    db.query(`UPDATE DU_AN SET TB='1' WHERE id='${req.params.id}'`)
-    return res.send(true)
-
+    db.query(`UPDATE DU_AN SET TB='1' WHERE id='${req.params.id}'`);
+    return res.send(true);
   } catch (e) {
     return next(
       new ApiError(500, `Error archiving project with id = ${req.params.id}`)
     );
   }
 };
-

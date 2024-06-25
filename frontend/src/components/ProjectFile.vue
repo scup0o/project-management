@@ -13,7 +13,7 @@
           @click="createForm = true"
           data-aos="fade-up"
           style="margin-right: 10px"
-          v-if="this.user.chucvu === 'hc' && project.e === true"
+          v-if="(this.user.chucvu !='admin' && pj.e === true) || pj.loai!='chia se'"
         >
           Thêm tài liệu
           <i class="fa-solid fa-square-plus" id="util-icon"></i>
@@ -207,6 +207,7 @@ export default {
   },
 
   mounted() {
+    console.log(this.pj)
     this.retrieveFile();
   },
 

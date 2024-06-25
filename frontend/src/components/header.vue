@@ -84,7 +84,7 @@ export default {
               class="center-1"
               id="header-button header-icon"
             >
-              <button
+              <button v-if="this.$router.currentRoute._rawValue.fullPath!='/user/login'"
                 type="button"
                 class="btn btn-outline-light login-button"
                 @click="this.$router.push({ name: 'user.login' })"

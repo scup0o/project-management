@@ -1,6 +1,8 @@
 const ApiError = require("../api-error");
 const db = require("../utils/mysql.util");
 
+var fs = require("fs");
+
 exports.upload = async (req, res) => {
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -229,7 +231,7 @@ exports.create = async (req, res, next) => {
     if (req.body.step === "check") {
       let result = await new Promise((rs, rj) => {
         db.query(
-          `SELECT * FROM TAI_LIEU WHERE TenTaiLieu='${req.body.TenTaiLieu}'`,
+          `SELECT * FROM TAI_LIEU WHERE TenTaiLieu='${req.body.TenTaiLieu}' AND LoaiFile='${req.body.LoaiFile}'`,
           function (e, r) {
             if (e) rj(e);
             else {
@@ -349,7 +351,7 @@ exports.update = async (req, res, next) => {
     if (req.body.step === "check") {
       let result = await new Promise((rs, rj) => {
         db.query(
-          `SELECT * FROM TAI_LIEU WHERE TenTaiLieu='${req.body.TenTaiLieu}'`,
+          `SELECT * FROM TAI_LIEU WHERE TenTaiLieu='${req.body.TenTaiLieu}' AND LoaiFile='${req.body.LoaiFile}'`,
           function (e, r) {
             if (e) rj(e);
             else {
@@ -485,11 +487,30 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
+    let f = await new Promise((rs, rj) => {
+      db.query(
+        `SELECT * FROM LICH_SU WHERE id_TaiLieu='${req.params.id}'`,
+        function (e, r) {
+          if (e) throw e;
+          else {
+            rs(r);
+          }
+        }
+      );
+    });
+    let i = 0;
+    while (i < f.length) {
+      let filePath =
+        __dirname + `../../../../frontend/src/assets/file/doc` + f[0].TenFile;
+      fs.unlinkSync(filePath);
+      i++;
+    }
     db.query(`DELETE FROM TAI_LIEU WHERE id = '${req.params.id}'`);
     db.query(`DELETE FROM QUYEN_TAILIEU WHERE id_tailieu = '${req.params.id}'`);
     db.query(`DELETE FROM LICH_SU WHERE id_TaiLieu = '${req.params.id}'`);
     return res.send(true);
-  } catch (e) {console.log(e);
-    return res.send(e)
+  } catch (e) {
+    console.log(e);
+    return res.send(e);
   }
 };

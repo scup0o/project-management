@@ -48,6 +48,7 @@
                 >
                 </Field>
                 <p class="error-feedback">{{ emailMes }}</p>
+                <p style="color:green">{{ emes }}</p>
               </div>
               <button
                 class="btn btn-dark"
@@ -233,6 +234,7 @@ export default {
       showconfirmPassword: false,
       confirmMessage: "",
       passwordMessage: "",
+      emes:''
     };
   },
 
@@ -250,7 +252,8 @@ export default {
           if (check === "lock") {
             return alert("Tài khoản đã bị khóa");
           }
-          alert("Link đổi mật khẩu đã được gửi vào email");
+          if (check!='email') return this.emes=`Link đổi mật khẩu đã được gửi vào email ${check}`
+          this.emes="Link đổi mật khẩu đã được gửi vào email";
         }
       } catch (error) {
         console.log(error);

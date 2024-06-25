@@ -259,7 +259,7 @@ export default {
               <div>
                 <div class="row" style="padding: 0vw 3vw 3vw 3vw">
                   <div class="row line" style="">
-                    <div class="col">
+                    <div class="col-6">
                       <div class="row">
                         <div class="col-6 lb">Tên đăng nhập:</div>
                         <div class="col">
@@ -267,27 +267,7 @@ export default {
                         </div>
                       </div>
                     </div>
-                    <div class="col">
-                      <div class="row">
-                        <div class="col-6 lb">Mã số nhân viên:</div>
-                        <div class="col">
-                          {{ account.manhanvien }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row line" style="">
-                    <div class="col-3 lb">Email:</div>
-                    <div class="col">
-                      {{ account.email }}
-                    </div>
-                  </div>
-                  <div class="row line" style="">
-                    <div class="col-3 lb">Điện thoại:</div>
-                    <div class="col">
-                      {{ account.sodienthoai }}
-                    </div>
+                   
                   </div>
                   <div class="row line" style="">
                     <div class="col">
@@ -296,11 +276,8 @@ export default {
                         <div class="col" v-if="account.chucvu === 'admin'">
                           Quản trị
                         </div>
-                        <div class="col" v-if="account.chucvu === 'hc'">
-                          Nhân viên hành chính
-                        </div>
-                        <div class="col" v-if="account.chucvu === 'kt'">
-                          Nhân viên kỹ thuật
+                        <div class="col" v-else>
+                          Nhân viên
                         </div>
                       </div>
                     </div>
@@ -314,6 +291,19 @@ export default {
                       </div>
                     </div>
                   </div>
+                  <div class="row line" style="">
+                    <div class="col-3 lb">Email:</div>
+                    <div class="col">
+                      {{ account.email }}
+                    </div>
+                  </div>
+                  <div class="row line" style="">
+                    <div class="col-3 lb">Điện thoại:</div>
+                    <div class="col">
+                      {{ account.sodienthoai }}
+                    </div>
+                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -415,45 +405,10 @@ export default {
                   >
                     <!--Thông tin cá nhân-->
                   </div>
-                  <!--<div class="row">
-                    <div
-                      class="form-group"
-                      style="
-                        padding: 70px;
-                        padding-top: 0px;
-                        padding-bottom: 10px;
-                      "
-                    >
-                      <div class="row">
-                        <div class="col-3">
-                          <label for="username" style="display: inline"
-                            >Tên đăng nhập:</label
-                          >
-                        </div>
-                        <div class="col">
-                          <Field
-                            style="display: inline"
-                            name="username"
-                            type="text"
-                            class="form-control"
-                            v-model="account.username"
-                          >
-                          </Field>
-                          <ErrorMessage
-                            name="username"
-                            style="color: red"
-                          ></ErrorMessage>
-                          <div class="error-feedback" style="color: red">
-                            {{ usernameMessage }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>-->
                   <div class="row" style="padding: 5vh; padding-top: 8vh">
                     <div class="row">
                       <div class="form-group" style="">
-                        <label for="hoten">Họ và tên</label>
+                        <label for="hoten">Họ và tên</label><p class="dot">(*)</p>
                         <Field
                           style="width: 98%; margin: auto"
                           name="hoten"
@@ -472,7 +427,7 @@ export default {
                     <div class="row">
                       <div class="col">
                         <div class="form-group" style="">
-                          <label for="username">Username</label>
+                          <label for="username">Username</label><p class="dot">(*)</p>
                           <Field
                             style="width: 98%; margin: auto"
                             name="username"
@@ -495,61 +450,14 @@ export default {
                           </p>
                         </div>
                       </div>
-                      <div class="col">
-                        <div class="form-group" style="">
-                          <label for="gioitinh">Giới tính</label>
-                          <div style="margin: auto">
-                            <Field
-                              name="gioitinh"
-                              type="radio"
-                              value="Nam"
-                              v-model="account.gioitinh"
-                              style="margin-left: 2vw"
-                            >
-                            </Field>
-                            Nam
-                            <Field
-                              name="gioitinh"
-                              type="radio"
-                              value="Nu"
-                              v-model="account.gioitinh"
-                              style="margin-left: 2vw"
-                            >
-                            </Field>
-                            Nữ
-                          </div>
-                          <ErrorMessage
-                            name="gioitinh"
-                            class="error-feedback"
-                            style="padding-left: 0.5vw"
-                          ></ErrorMessage>
-                        </div>
-                      </div>
+                      
                     </div>
                     <div class="row">
-                      <!--<div class="col">
-                        <div class="form-group" style="">
-                          <label for="manhanvien">Mã số nhân viên</label>
-                          <Field
-                            style="width: 98%; margin: auto"
-                            name="manhanvien"
-                            type="text"
-                            class="form-control field"
-                            v-model="account.manhanvien"
-                          >
-                          </Field>
-                          <ErrorMessage
-                            name="manhanvien"
-                            class="error-feedback"
-                            style="padding-left: 0.5vw"
-                          ></ErrorMessage>
-                        </div>
-                      </div>-->
                     </div>
                     <div class="row">
                       <div class="col">
                         <div class="form-group" style="">
-                          <label for="sodienthoai">Số điện thoại</label>
+                          <label for="sodienthoai">Số điện thoại</label><p class="dot">(*)</p>
                           <Field
                             style="width: 98%; margin: auto"
                             name="sodienthoai"
@@ -567,7 +475,7 @@ export default {
                       </div>
                       <div class="col">
                         <div class="form-group" style="">
-                          <label for="email">Email</label>
+                          <label for="email">Email</label><p class="dot">(*)</p>
                           <Field
                             style="width: 98%; margin: auto"
                             name="email"

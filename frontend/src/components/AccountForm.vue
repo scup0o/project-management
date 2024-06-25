@@ -8,10 +8,16 @@
             class=""
             style="margin: auto; font-size: 20px; font-family: RalewayBlack"
             >Thêm tài khoản nhân viên</label
-          > <!--tiêu đề-->
-          <label v-else class="" style="margin: auto; font-size: 20px; font-family: RalewayBlack"
-            >Chỉnh sửa tài khoản nhân viên</label>
-        </div> <!--tiêu đề-->
+          >
+          <!--tiêu đề-->
+          <label
+            v-else
+            class=""
+            style="margin: auto; font-size: 20px; font-family: RalewayBlack"
+            >Chỉnh sửa tài khoản nhân viên</label
+          >
+        </div>
+        <!--tiêu đề-->
         <Form @submit="createAccount" :validation-schema="FormSchema">
           <div class="modal-body">
             <!--chỉnh view chính từ khúc này-->
@@ -23,11 +29,8 @@
                 <div>
                   <label
                     for="fileuploaded"
-                    @mouseenter="
-                      imgop = false;
-                      console.log('in');
-                    "
-                    @mouseleave="imgop = true"
+                    @mouseenter="imgop = true"
+                    @mouseleave="imgop = false"
                   >
                     <img
                       v-if="
@@ -69,7 +72,7 @@
                       </div>
                     </div>
                     <div
-                      v-if="imgop == false"
+                      v-if="imgop == true"
                       style="
                         border-radius: 100%;
                         width: 10vw;
@@ -116,6 +119,7 @@
               <div class="col">
                 <div class="form-group">
                   <label for="username">Username: </label>
+                  <p class="dot">(*)</p>
                   <Field
                     name="username"
                     type="text"
@@ -137,6 +141,7 @@
                 <div class="form-group">
                   <label v-if="edit === false" for="matkhau">Mật khẩu: </label>
                   <label v-else for="matkhau">Mật khẩu mới: </label>
+                  <p class="dot">(*)</p>
                   <div
                     class="control"
                     style="display: inline; padding-left: 10px"
@@ -165,7 +170,9 @@
                     name="matkhau"
                     style="color: red"
                   ></ErrorMessage>
-                  <p class="error-feedback">{{ passMess }}</p>
+                  <p class="error-feedback" v-if="passMess != ''">
+                    {{ passMess }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -173,6 +180,7 @@
               <div class="col">
                 <div class="form-group">
                   <label for="hoten">Họ tên: </label>
+                  <p class="dot">(*)</p>
                   <Field
                     name="hoten"
                     type="text"
@@ -180,12 +188,52 @@
                     v-model="accountNew.hoten"
                   >
                   </Field>
-                  <ErrorMessage name="hoten" style="color: red"></ErrorMessage>
+                  <ErrorMessage
+                    name="hoten"
+                    style="color: red"
+                    class="error-feedback"
+                  ></ErrorMessage>
                 </div>
               </div>
-              <div class="col">
+            </div>
+            <div class="row" style="padding-bottom: 10px">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="chucvu">Chức vụ: </label>
+                  <p class="dot">(*)</p>
+                  <div style="margin: auto">
+                    <Field
+                      onfocus="this.size=10;"
+                      onblur="this.size=1;"
+                      onchange="this.size=1; this.blur();"
+                      name="chucvu"
+                      as="select"
+                      value="admin"
+                      class=""
+                      v-model="accountNew.chucvu"
+                      style="
+                        width: 16vw;
+                        position: absolute;
+                        border-width: 1.55px;
+                        border-color: var(--secondary-color);
+                        box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
+                        border-radius: 5px 5px 5px 5px;
+                        text-align: center;
+                        min-height: 5vh;
+                        max-height: 8vh;
+                        overflow-y: auto;
+                      "
+                    >
+                      <option value="admin">Quản trị</option>
+                      <option value="nhanvien">Nhân viên</option>
+                    </Field>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
                 <div class="form-group" style="">
                   <label for="gioitinh">Giới tính</label>
+                  <p class="dot">(*)</p>
                   <div style="margin: auto">
                     <Field
                       name="gioitinh"
@@ -215,103 +263,60 @@
               </div>
             </div>
             <div class="row">
-              <div class="form-group">
-                <label for="email">Email: </label>
-                <Field
-                  name="email"
-                  type="tel"
-                  class="form-control"
-                  v-model="accountNew.email"
-                >
-                </Field>
-                <ErrorMessage
-                  name="email"
-                  class="error-feedback"
-                ></ErrorMessage>
-                <p v-if="emailMessage != ''" class="error-feedback">
-                  {{ emailMessage }}
-                </p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-group">
-                <label for="sodienthoai">Số điện thoại: </label>
-                <Field
-                  name="sodienthoai"
-                  type="tel"
-                  class="form-control"
-                  v-model="accountNew.sodienthoai"
-                >
-                </Field>
-                <ErrorMessage
-                  name="sodienthoai"
-                  class="error-feedback"
-                ></ErrorMessage>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
+              <div class="col">
                 <div class="form-group">
-                  <label for="">Mã nhân viên: </label>
+                  <label for="email">Email: </label>
+                  <p class="dot">(*)</p>
                   <Field
-                    @click="idMessage = ''"
-                    name="manhanvien"
-                    type="text"
+                    name="email"
+                    type="tel"
                     class="form-control"
-                    v-model="accountNew.manhanvien"
+                    v-model="accountNew.email"
                   >
                   </Field>
                   <ErrorMessage
-                    name="manhanvien"
+                    name="email"
                     class="error-feedback"
                   ></ErrorMessage>
-                  <p v-if="idMessage != ''" class="error-feedback">
-                    {{ idMessage }}
+                  <p v-if="emailMessage != ''" class="error-feedback">
+                    {{ emailMessage }}
                   </p>
                 </div>
               </div>
-              <div class="col-6">
+              <div class="col">
                 <div class="form-group">
-                  <label for="chucvu">Chức vụ: </label>
-                  <div style="margin: auto">
-                    <Field
-                      name="chucvu"
-                      as="select"
-                      value="admin"
-                      class=""
-                      v-model="accountNew.chucvu"
-                      style="
-                        width: 100%;
-                        border-width: 1.55px;
-                        border-color: var(--secondary-color);
-                        box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
-                        height: 5vh;
-                        border-radius: 5px 5px 5px 5px;
-                        text-align: center;
-                      "
-                    >
-                      <option value="admin">Quản trị</option>
-                      <option value="hc">Nhân viên hành chính</option>
-                      <option value="kt">Nhân viên kỹ thuật</option>
-                    </Field>
-                  </div>
+                  <label for="sodienthoai">Số điện thoại: </label>
+                  <p class="dot">(*)</p>
+                  <Field
+                    name="sodienthoai"
+                    type="tel"
+                    class="form-control"
+                    v-model="accountNew.sodienthoai"
+                  >
+                  </Field>
+                  <ErrorMessage
+                    name="sodienthoai"
+                    class="error-feedback"
+                  ></ErrorMessage>
                 </div>
               </div>
             </div>
+
             <!--chỉnh view chính tới khúc này-->
           </div>
           <div class="text-center">
-            
             <button
               v-if="edit === false"
               class="btn btn-dark"
               style="margin-right: 10px"
               type="submit"
             >
-              Thêm tài khoản <!--tên nút -->
+              Thêm tài khoản
+              <!--tên nút -->
             </button>
             <button v-else class="btn btn-dark" style="margin-right: 10px">
-              Lưu tài khoản <!--Tên nút -->
+              Lưu tài khoản
+              <!--Tên nút -->
             </button>
             <button
               @click="$emit('close'), $emit('refresh')"
@@ -472,9 +477,6 @@ export default {
                 if (check[2] === 1) {
                   this.usernameMessage =
                     "Tên đăng nhập đã được sử dụng bởi tài khoản khác";
-                }
-                if (check[1] === 1) {
-                  this.idMessage = "Mã nhân viên đã tồn tại";
                 }
               } else {
                 const headers = { "Content-Type": "multipart/form-data" };
@@ -646,7 +648,7 @@ label {
 
 .modal-body {
   margin: 20px 0;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   height: 500px;
   background-color: white;

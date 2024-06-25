@@ -80,7 +80,7 @@
                       border-radius: 0 25px 25px 0;
                     "
                   >
-                    <Field
+                  <!--<Field
                       name="a"
                       as="select"
                       value="tatca"
@@ -91,7 +91,8 @@
                       <option value="tatca">Tất cả</option>
                       <option value="hc">Nhân viên hành chính</option>
                       <option value="kt">Nhân viên kỹ thuật</option>
-                    </Field>
+                    </Field>-->
+                    
                   </button>
                 </div>
               </div>
@@ -288,7 +289,7 @@
                       border-radius: 0 25px 25px 0;
                     "
                   >
-                    <Field
+                  <!--<Field
                       name="a"
                       as="select"
                       value="tatca"
@@ -299,7 +300,8 @@
                       <option value="tatca">Tất cả</option>
                       <option value="hc">Nhân viên hành chính</option>
                       <option value="kt">Nhân viên kỹ thuật</option>
-                    </Field>
+                    </Field>-->
+                    
                   </button>
                 </div>
               </div>

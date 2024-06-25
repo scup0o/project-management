@@ -58,6 +58,12 @@ body {
   color: red;
 }
 
+.dot{
+  padding-left:5px;
+  display:inline;
+  color:red;
+}
+
 .title {
   margin: auto;
   text-align: center;

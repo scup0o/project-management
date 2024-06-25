@@ -31,7 +31,7 @@
                     border-radius: 0 25px 25px 0;
                   "
                 >
-                  <Field
+                  <!--<Field
                     name="a"
                     as="select"
                     value="tatca"
@@ -42,7 +42,7 @@
                     <option value="tatca">Tất cả</option>
                     <option value="hc">Nhân viên hành chính</option>
                     <option value="kt">Nhân viên kỹ thuật</option>
-                  </Field>
+                  </Field>-->
                 </button>
               </div>
             </div>
@@ -83,7 +83,15 @@
                       "
                     >
                       <p>{{ user.hoten.split(" ").pop() }}</p>
-                      <p style="margin-top:-20px; font-family: RalewayItalic; font-size:0.9vw">({{ user.manhanvien }})</p>
+                      <p
+                        style="
+                          margin-top: -20px;
+                          font-family: RalewayItalic;
+                          font-size: 0.9vw;
+                        "
+                      >
+                        ({{ user.manhanvien }})
+                      </p>
                     </div>
                   </div>
                   <div class="col-1">
@@ -267,7 +275,7 @@
                       border-radius: 0 25px 25px 0;
                     "
                   >
-                    <Field
+                    <!--<Field
                       name="a"
                       as="select"
                       value="tatca"
@@ -278,7 +286,7 @@
                       <option value="tatca">Tất cả</option>
                       <option value="hc">Nhân viên hành chính</option>
                       <option value="kt">Nhân viên kỹ thuật</option>
-                    </Field>
+                    </Field>-->
                   </button>
                 </div>
               </div>
@@ -319,7 +327,15 @@
                         "
                       >
                         <p>{{ user.hoten.split(" ").pop() }}</p>
-                        <p style="margin-top:-20px; font-family: RalewayItalic; font-size:0.9vw">({{ user.manhanvien }})</p>
+                        <p
+                          style="
+                            margin-top: -20px;
+                            font-family: RalewayItalic;
+                            font-size: 0.9vw;
+                          "
+                        >
+                          ({{ user.manhanvien }})
+                        </p>
                       </div>
                     </div>
                     <div class="col-1">
@@ -482,14 +498,17 @@ export default {
   mounted() {
     console.log(this.project);
     this.getUser();
-    
+
     if (this.edit === false) {
       this.project.QuyenXem = "tat ca";
       this.project.QuyenChinhSua = "nguoi co quyen xem";
-    }
-    else{
-      
-      this.plist = this.projectprop.DS_TG;
+    } else {
+      this.plist.push(this.project.NguoiTao);
+      let i = 0;
+      while (i < this.project.DS_TG.length) {
+        this.plist.push(this.project.DS_TG[i]);
+        i++;
+      }
       this.elist = this.projectprop.DS_CS;
     }
   },
@@ -517,37 +536,43 @@ export default {
           }
         }
       } else {
-        i=0;
-        while(i<this.us.userList.length){
-          
-          if (this.us.userList[i].chucvu==='admin'){
+        i = 0;
+        while (i < this.us.userList.length) {
+          if (this.us.userList[i].chucvu === "admin") {
             this.us.userList.splice(i, 1);
-          }
-          else{
-            this.us.checkp[i]=false;
-          this.us.checke[i]=false;
-          i++;
+          } else {
+            this.us.checkp[i] = false;
+            this.us.checke[i] = false;
+            i++;
           }
         }
-        i=0;
-        while(i<this.plist.length){
-          let j=0;
-          while(j<this.us.userList.length){
-            if(this.us.userList[j].id===this.plist[i].id){
-              this.us.checkp[j]=true;
+        i = 0;
+        while (i < this.plist.length) {
+          if (this.plist[i].id === this.project.id_NguoiTao) {
+            this.plist.splice(i, 1);
+            break;
+          }
+          i++;
+        }
+        i = 0;
+        while (i < this.plist.length) {
+          let j = 0;
+          while (j < this.us.userList.length) {
+            if (this.us.userList[j].id === this.plist[i].id) {
+              this.us.checkp[j] = true;
               break;
             }
             j++;
           }
           i++;
         }
-        
-        i=0;
-        while(i<this.elist.length){
-          let j=0;
-          while(j<this.us.userList.length){
-            if(this.us.userList[j].id===this.elist[i].id){
-              this.us.checke[j]=true;
+
+        i = 0;
+        while (i < this.elist.length) {
+          let j = 0;
+          while (j < this.us.userList.length) {
+            if (this.us.userList[j].id === this.elist[i].id) {
+              this.us.checke[j] = true;
               break;
             }
             j++;
@@ -556,7 +581,7 @@ export default {
         }
       }
       console.log(this.plist);
-      console.log(this.elist)
+      console.log(this.elist);
       console.log(this.us);
     },
 
@@ -639,6 +664,8 @@ export default {
         }
         console.log(data.MoTa.length);
         data.Ma = this.project.Ma;
+        data.LoaiThoiHan = this.project.LoaiThoiHan;
+        data.ThoiHan = this.project.ThoiHan;
         data.TrangThai = this.project.tempTrangThai;
         data.ThoiGianBaoHanh = this.project.ThoiGianBaoHanh;
         data.ThoiGianNghiemThu = this.project.ThoiGianNghiemThu;
@@ -646,7 +673,7 @@ export default {
         data.ThoiGianKetThucDuAn = this.project.ThoiGianKetThucDuAn;
         data.ThoiGianBatDauDauThau = this.project.ThoiGianBatDauDauThau;
         data.ThoiGianKetThucDauThau = this.project.ThoiGianKetThucDauThau;
-        data.KhachHang=this.project.KhachHang;
+        data.KhachHang = this.project.KhachHang;
         if (
           typeof data.KhachHang === "undefined" ||
           data.KhachHang === null ||
@@ -655,10 +682,10 @@ export default {
         ) {
           data.KhachHang = "Không có";
         }
-        data.id_GiaHan=this.project.id_GiaHan
+        data.id_GiaHan = this.project.id_GiaHan;
         if (
-          typeof data.id_GiaHan=== "undefined" ||
-          data.id_GiaHan=== null ||
+          typeof data.id_GiaHan === "undefined" ||
+          data.id_GiaHan === null ||
           data.id_GiaHan === "" ||
           data.id_GiaHan.length === 0
         ) {
@@ -687,16 +714,17 @@ export default {
           data.id_NguoiChinhSuaLanCuoi = this.user.id;
           data.DSNguoiThamGia = this.plist;
           data.DSNguoiChinhSua = this.elist;
-          data.check='update-admin'
-          data.id=this.project.id
+          data.check = "update-admin";
+          data.id = this.project.id;
           let check = await ProjectService.update(data);
           if (check === true) {
-          this.$toast.open({
-            message: "Chỉnh sửa dự án thành công",
-            type: "success",
-            duration: 3000,
-            dismissible: true,
-          });}
+            this.$toast.open({
+              message: "Chỉnh sửa dự án thành công",
+              type: "success",
+              duration: 3000,
+              dismissible: true,
+            });
+          }
 
           this.$emit("closeall");
           this.$emit("refresh");

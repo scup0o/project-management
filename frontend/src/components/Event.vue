@@ -158,7 +158,7 @@
                 </div>
                 <div
                   class="col-3 hover-i"
-                  v-if="this.pj.e === true && this.user.chucvu==='hc'"
+                  v-if="this.pj.e === true && this.user.chucvu!='admin'"
                   @click="form = true"
                 >
                   <div class="row text-center">

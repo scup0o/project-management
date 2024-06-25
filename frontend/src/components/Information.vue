@@ -31,7 +31,7 @@
                 </div>
                 <div
                   class="col-4 hover-i"
-                  v-if="this.user.chucvu === 'kt' && this.project.e === true"
+                  v-if="this.user.chucvu !='admin' && this.project.e === true"
                   @click="form = true"
                 >
                   <div class="row text-center">
@@ -76,7 +76,7 @@
                     <div class="col text-end" style="">
                       
                       <i @click="deleteI(i)" class="fa-solid fa-trash-can" id="util-icon" title="Xóa thông tin hệ thống" style="color: #e85454; padding-left:20px;" v-if="this.user.id===i.id_NguoiTao"></i>
-                      <i @click="editform=true; editI=i" class="fa-solid fa-pen" id="util-icon" title="Cập nhật thông tin" style="padding-left:20px;"></i>
+                      <i v-if="this.user.chucvu!='admin' &&project.e===true" @click="editform=true; editI=i" class="fa-solid fa-pen" id="util-icon" title="Cập nhật thông tin" style="padding-left:20px;"></i>
                       <i  @click="diary=true; editI=i" class="fa-solid fa-book" id="util-icon" title="Nhật ký lỗi và cập nhật"></i>
                     </div>
                   </div>

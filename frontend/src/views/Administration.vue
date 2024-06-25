@@ -42,16 +42,15 @@
             id="menu"
             style="margin-top: -10px; width: 100%"
           >
-            <li id="parent-tab" v-if="user.chucvu != 'admin'">
+            <li id="parent-tab">
               <button
                 @click="
-                open=false;
+                  open = false;
                   show = true;
                   projectTab = 'chia se';
                   this.activeTab = 'project';
                   show1 = false;
                   filterTittle = 'Danh sách dự án';
-                  
                 "
                 :class="{ active1: activeTab === 'project' }"
                 class="nav-link px-0"
@@ -64,13 +63,20 @@
                   <span class="ms-1 d-none d-sm-inline">Dự án</span>
                 </div>
               </button>
-              <div v-if="this.user.chucvu==='hc'"
+              <div
                 class="col-auto text-start"
                 :class="{ show: show === true, child: show === false }"
                 style="padding-left: 2.5vw; padding-top: 1vh"
               >
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'chia se'; open=false;filterTittle='Danh sách dự án'">
+                  <button
+                    class="a active2"
+                    @click="
+                      projectTab = 'chia se';
+                      open = false;
+                      filterTittle = 'Danh sách dự án';
+                    "
+                  >
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
@@ -80,7 +86,14 @@
                   </button>
                 </div>
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'ca nhan'; open=false;filterTittle='Danh sách dự án'">
+                  <button
+                    class="a active2"
+                    @click="
+                      projectTab = 'ca nhan';
+                      open = false;
+                      filterTittle = 'Danh sách dự án';
+                    "
+                  >
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
@@ -91,7 +104,14 @@
                   </button>
                 </div>
                 <div class="row">
-                  <button class="a active2" @click="projectTab = 'luu tru'; open=false; filterTittle='Danh sách dự án'">
+                  <button
+                    class="a active2"
+                    @click="
+                      projectTab = 'luu tru';
+                      open = false;
+                      filterTittle = 'Danh sách dự án';
+                    "
+                  >
                     <i
                       class="fa-solid fa-chevron-right"
                       style="padding-right: 1vw"
@@ -103,23 +123,87 @@
                 </div>
               </div>
             </li>
-            <li v-if="user.chucvu === 'admin'">
+            <!--danh muc-->
+            <li id="parent-tab" v-if="user.chucvu === 'admin'">
               <button
-                class="nav-link px-0 align-middle"
                 @click="
                   this.activeTab = 'docType';
+                  cataTab='loaitailieu'
+                  show1 = true;
                   show = false;
-                  show1 = false;
                   filterTittle = 'Danh sách loại tài liệu';
-                  open=false;
+                  open1 = false;
                 "
                 :class="{ active1: activeTab === 'docType' }"
+                class="nav-link px-0"
               >
                 <div class="button-des">
-                  <i class="fa-solid fa-icons" style="padding-right: 0.5vw"></i>
+                  <i
+                    class="fa-regular fa-file-lines"
+                    style="padding-right: 0.5vw"
+                  ></i>
                   <span class="ms-1 d-none d-sm-inline">Quản lý danh mục</span>
                 </div>
               </button>
+              <div
+                class="col-auto text-start"
+                :class="{ show: show1 === true, child: show1 === false }"
+                style="padding-left: 2.5vw; padding-top: 1vh"
+              >
+                <div class="row">
+                  <button
+                    class="a active2"
+                    @click="
+                      cataTab='loaitailieu'
+                      open1 = false;
+                      filterTittle = 'Danh sách loại tài liệu';
+                    "
+                  >
+                    <i
+                      class="fa-solid fa-chevron-right"
+                      style="padding-right: 1vw"
+                      v-if="cataTab === 'loaitailieu'"
+                    ></i>
+                    <span class="ms-1 d-none d-sm-inline">Loại tài liệu</span>
+                  </button>
+                </div>
+                <div class="row">
+                  <button
+                    class="a active2"
+                    @click="
+                      cataTab = 'ngonngu';
+                      open1 = false;
+                      filterTittle = 'Danh sách Ngôn ngữ sử dụng';
+                    "
+                  >
+                    <i
+                      class="fa-solid fa-chevron-right"
+                      style="padding-right: 1vw"
+                      v-if="cataTab === 'ngonngu'"
+                    ></i>
+
+                    <span class="ms-1 d-none d-sm-inline">Ngôn ngữ sử dụng</span>
+                  </button>
+                </div>
+                <div class="row">
+                  <button
+                    class="a active2"
+                    @click="
+                      cataTab='moitruong';
+                      open1 = false;
+                      filterTittle = 'Danh sách Môi trường vận hành';
+                    "
+                  >
+                    <i
+                      class="fa-solid fa-chevron-right"
+                      style="padding-right: 1vw"
+                      v-if="cataTab === 'moitruong'"
+                    ></i>
+
+                    <span class="ms-1 d-none d-sm-inline">Môi trường vận hành</span>
+                  </button>
+                </div>
+              </div>
             </li>
 
             <li v-if="user.chucvu === 'admin'">
@@ -128,10 +212,10 @@
                 class="nav-link px-0 align-middle"
                 @click="
                   this.activeTab = 'user';
-                  show1 = true;
+                  show1 = false;
                   show = false;
                   filterTittle = 'Danh sách tài khoản';
-                  open=false;
+                  open = false;
                 "
               >
                 <div class="button-des">
@@ -148,14 +232,14 @@
                 :class="{ active1: activeTab === 'account' }"
                 class="nav-link px-0 align-middle"
                 @click="
-                  (this.activeTab = 'account'), (show1 = true);
+                  (this.activeTab = 'account'), (show1 = false);
                   show = false;
                   filterTittle = 'Thông tin tài khoản';
-                  open=false;
+                  open = false;
                 "
               >
                 <div class="button-des">
-                  <i class="fa-solid fa-gear" style="padding-right: 0.5vw"></i>
+                  <i class="fa-solid fa-gear" style="padding-right: 0.5vw" @click="show1=false; show=false"></i>
                   <span class="ms-1 d-none d-sm-inline">Tài khoản</span>
                 </div>
               </button>
@@ -226,15 +310,16 @@ export default {
       accountTab: "",
       activeChild: "all",
       show: false,
+      show2:false,
       user: VueJwtDecode.decode(localStorage.getItem("auth")),
       filterTittle: "",
       project: {},
       open: false,
+      open1:false,
     };
   },
 
-  watch: {
-  },
+  watch: {},
 
   mounted() {
     console.log(this.user);
@@ -245,6 +330,8 @@ export default {
       this.filterTittle = "Danh sách dự án";
     } else {
       this.activeTab = "docType";
+      this.cataTab = "loaitailieu"
+      this.show1=true;
       this.filterTittle = "Danh sách loại tài liệu";
     }
     //this.getUser();
@@ -254,7 +341,7 @@ export default {
     async OpenProject(value) {
       this.open = true;
       this.project = value;
-      this.filterTittle='Danh sách tài liệu'
+      this.filterTittle = "Danh sách tài liệu";
     },
     /* async getUser(){
                 this.user = await UserService.get(this.user.id);
