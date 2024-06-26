@@ -353,11 +353,6 @@ export default {
 
   data() {
     const FormSchema = yup.object({
-      manhanvien: yup
-        .string()
-        .required("Mã không được để trống")
-        .max(25, "Mã có nhiều nhất 25 ký tự."),
-
       username: yup.string().required("Username không được để trống"),
 
       email: yup

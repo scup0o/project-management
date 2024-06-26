@@ -50,7 +50,7 @@ async function addTable() {
       else {
         if (result.length == 0) {
           db_con.query(
-            `CREATE TABLE du_an (   GhiChu longtext, Ma varchar(50) NOT NULL,   Ten varchar(100) DEFAULT NULL,   MoTa longtext,   TrangThai varchar(45) DEFAULT NULL,   ThoiGianBatDauDuAn date DEFAULT NULL,   ThoiGianKetThucDuAn date DEFAULT NULL,   ThoiGianBatDauDauThau date DEFAULT NULL,   ThoiGianKetThucDauThau date DEFAULT NULL,   ThoiGianNghiemThu date DEFAULT NULL,   ThoiGianBaoHanh date DEFAULT NULL,   id bigint NOT NULL AUTO_INCREMENT,   ThoiGianChinhSuaLanCuoi datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   id_NguoiTao bigint DEFAULT NULL,   id_NguoiChinhSuaLanCuoi bigint DEFAULT NULL,   loai varchar(45) DEFAULT NULL,   KhachHang varchar(100) DEFAULT NULL,   id_GiaHan bigint DEFAULT NULL,   TB tinyint DEFAULT 1,   ThoiHan int DEFAULT NULL,   LoaiThoiHan varchar(45) DEFAULT NULL,   PRIMARY KEY (id),   UNIQUE KEY id_UNIQUE (id) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            `CREATE TABLE du_an (   GhiChu longtext, Ma varchar(50) NOT NULL,   Ten varchar(100) DEFAULT NULL,   MoTa longtext,   TrangThai varchar(45) DEFAULT NULL,   ThoiGianBatDauDuAn date DEFAULT NULL,   ThoiGianKetThucDuAn date DEFAULT NULL,   ThoiGianBatDauDauThau date DEFAULT NULL,   ThoiGianKetThucDauThau date DEFAULT NULL,   ThoiGianNghiemThu date DEFAULT NULL,   ThoiGianBaoHanh date DEFAULT NULL,   id bigint NOT NULL AUTO_INCREMENT,   ThoiGianChinhSuaLanCuoi datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   id_NguoiTao bigint DEFAULT NULL,   id_NguoiChinhSuaLanCuoi bigint DEFAULT NULL,   loai varchar(45) DEFAULT NULL,   KhachHang varchar(100) DEFAULT NULL,   id_GiaHan bigint DEFAULT NULL,   TB tinyint DEFAULT 1,   ThoiHan int DEFAULT NULL,   LoaiThoiHan varchar(45) DEFAULT NULL,   PRIMARY KEY (id),   UNIQUE KEY id_UNIQUE (id) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 `,
             function (e, result) {
@@ -78,7 +78,7 @@ async function addTable() {
    TenFile longtext,
    stt bigint NOT NULL AUTO_INCREMENT,
    PRIMARY KEY (stt)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 `,
             function (e, result) {
@@ -90,47 +90,48 @@ async function addTable() {
       }
     }
   );
-  //loai_tai_lieu
+  //DANH_MUC
   db_con.query(
-    `SHOW TABLES FROM ${database} LIKE 'LOAI_TAI_LIEU'`,
+    `SHOW TABLES FROM ${database} LIKE 'DANH_MUC'`,
     function (e, result) {
       if (e) throw e;
       else {
         if (result.length == 0) {
           db_con.query(
-            `CREATE TABLE loai_tai_lieu (
+            `CREATE TABLE DANH_MUC (
    id bigint NOT NULL AUTO_INCREMENT,
    ten varchar(45) DEFAULT NULL,
    giaiDoan varchar(45) DEFAULT NULL,
+   loai varchar(45) DEFAULT NULL,
    PRIMARY KEY (id)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
               else {
                 db_con.query(
-                  `INSERT INTO LOAI_TAI_LIEU (ten, giaiDoan) VALUES ('Biên bản yêu cầu','truocdauthau')`
+                  `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Biên bản yêu cầu','truocdauthau','loaitailieu')`
                 );
                 db_con.query(
-                  `INSERT INTO LOAI_TAI_LIEU (ten, giaiDoan) VALUES ('Báo cáo nghiên cứu khả thi','truocdauthau')`
+                  `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Báo cáo nghiên cứu khả thi','truocdauthau','loaitailieu')`
                 );
                 db_con.query(
-                  `INSERT INTO LOAI_TAI_LIEU (ten, giaiDoan) VALUES ('Chủ trương đầu tư','truocdauthau')`
+                  `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Chủ trương đầu tư','truocdauthau','loaitailieu')`
                 );
                 db_con.query(
-                  `INSERT INTO LOAI_TAI_LIEU (ten, giaiDoan) VALUES ('Hồ sơ thầu','truocdauthau')`
+                  `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Hồ sơ thầu','truocdauthau','loaitailieu')`
                 );
                 db_con.query(
-                  `INSERT INTO LOAI_TAI_LIEU (ten, giaiDoan) VALUES ('Thiết kế chi tiết','saudauthau')`
+                  `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Thiết kế chi tiết','saudauthau','loaitailieu')`
                 );
                 db_con.query(
-                  `INSERT INTO LOAI_TAI_LIEU (ten, giaiDoan) VALUES ('Nhật kí thi công','saudauthau')`
+                  `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Nhật kí thi công','saudauthau','loaitailieu')`
                 );
                 db_con.query(
-                  `INSERT INTO LOAI_TAI_LIEU (ten, giaiDoan) VALUES ('Biên bản giấy tờ khác','baohanh')`
+                  `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Biên bản giấy tờ khác','baohanh','loaitailieu')`
                 );
                 db_con.query(
-                  `INSERT INTO LOAI_TAI_LIEU (ten, giaiDoan) VALUES ('Loại tài liệu khác','khac')`
+                  `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Loại tài liệu khác','khac','loaitailieu')`
                 );
               }
             }
@@ -159,7 +160,7 @@ async function addTable() {
    gioitinh varchar(10) DEFAULT NULL,
    khoa tinyint DEFAULT '0',
    PRIMARY KEY (id)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -196,7 +197,7 @@ async function addTable() {
    id_nguoicapnhat bigint DEFAULT NULL,
    capnhat longtext,
    PRIMARY KEY (id)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -220,7 +221,7 @@ async function addTable() {
    id_duan bigint DEFAULT NULL,
    id_nguoichinhsua bigint DEFAULT NULL,
    loaiQuyen varchar(45) DEFAULT NULL
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -244,7 +245,7 @@ async function addTable() {
    id_nguoichinhsua bigint DEFAULT NULL,
    quyen varchar(45) DEFAULT NULL,
    loaiQuyen varchar(45) DEFAULT NULL
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -279,7 +280,7 @@ async function addTable() {
    pmkhac longtext,
    moitruong varchar(100) DEFAULT NULL,
    PRIMARY KEY (id)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -308,7 +309,7 @@ async function addTable() {
    MoTaSuKien longtext,
    id_DuAn bigint DEFAULT NULL,
    PRIMARY KEY (id)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -336,7 +337,7 @@ async function addTable() {
    id bigint unsigned NOT NULL AUTO_INCREMENT,
    LoaiFile varchar(45) DEFAULT NULL,
    PRIMARY KEY (id)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -361,7 +362,7 @@ async function addTable() {
    id_NhanVien bigint NOT NULL,
    id_DuAn bigint NOT NULL,
    PRIMARY KEY (id_NhanVien,id_DuAn)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -383,7 +384,7 @@ async function addTable() {
             `CREATE TABLE tham_gia_sk (
    id_NhanVien bigint NOT NULL,
    id_SuKien bigint DEFAULT NULL
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);
@@ -414,7 +415,7 @@ async function addTable() {
    NoiCaiDatSourceCode varchar(100) DEFAULT NULL,
    id_NguoiCapNhat bigint DEFAULT NULL,
    PRIMARY KEY (id)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 `,
             function (e, result) {
               if (e) console.log(e);

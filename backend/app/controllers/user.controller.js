@@ -100,15 +100,24 @@ exports.create = async (req, res, next) => {
     } else {
       let salt = await bcrypt.genSalt();
       req.body.matkhau = await bcrypt.hash(req.body.matkhau, salt);
-      if (req.body.anhdaidien != "user-img.jpg")
-        req.body.anhdaidien = id + "-pic.png";
       db.query(
         `INSERT INTO NHAN_VIEN (username, matkhau, sodienthoai, email, chucvu, hoten, gioitinh, anhdaidien) VALUES ('${req.body.username}', '${req.body.matkhau}', '${req.body.sodienthoai}','${req.body.email}', '${req.body.chucvu}', '${req.body.hoten}', '${req.body.gioitinh}', '${req.body.anhdaidien}')`,
-        function (e) {
+        function (e,r) {
           if (e) throw e;
+          else{
+            if (req.body.anhdaidien != "user-img.jpg")
+              req.body.anhdaidien = r.insertId + "-pic.png";
+            db.query(
+              `UPDATE NHAN_VIEN SET anhdaidien='${req.body.anhdaidien}'`,
+              function (e,r) {
+                if (e) throw e;
+              }
+            );
+          }
         }
       );
-      return res.send(id);
+      
+      return res.send(true);
     }
   } catch (error) {
     console.log(error);

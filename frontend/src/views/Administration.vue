@@ -128,7 +128,7 @@
               <button
                 @click="
                   this.activeTab = 'docType';
-                  cataTab='loaitailieu'
+                  cataTab = 'loaitailieu';
                   show1 = true;
                   show = false;
                   filterTittle = 'Danh sách loại tài liệu';
@@ -154,7 +154,7 @@
                   <button
                     class="a active2"
                     @click="
-                      cataTab='loaitailieu'
+                      cataTab = 'loaitailieu';
                       open1 = false;
                       filterTittle = 'Danh sách loại tài liệu';
                     "
@@ -182,14 +182,16 @@
                       v-if="cataTab === 'ngonngu'"
                     ></i>
 
-                    <span class="ms-1 d-none d-sm-inline">Ngôn ngữ sử dụng</span>
+                    <span class="ms-1 d-none d-sm-inline"
+                      >Ngôn ngữ sử dụng</span
+                    >
                   </button>
                 </div>
                 <div class="row">
                   <button
                     class="a active2"
                     @click="
-                      cataTab='moitruong';
+                      cataTab = 'moitruong';
                       open1 = false;
                       filterTittle = 'Danh sách Môi trường vận hành';
                     "
@@ -200,7 +202,29 @@
                       v-if="cataTab === 'moitruong'"
                     ></i>
 
-                    <span class="ms-1 d-none d-sm-inline">Môi trường vận hành</span>
+                    <span class="ms-1 d-none d-sm-inline"
+                      >Môi trường vận hành</span
+                    >
+                  </button>
+                </div>
+                <div class="row">
+                  <button
+                    class="a active2"
+                    @click="
+                      cataTab = 'csdl';
+                      open1 = false;
+                      filterTittle = 'Danh sách Cơ sở dữ liệu';
+                    "
+                  >
+                    <i
+                      class="fa-solid fa-chevron-right"
+                      style="padding-right: 1vw"
+                      v-if="cataTab === 'csdl'"
+                    ></i>
+
+                    <span class="ms-1 d-none d-sm-inline"
+                      >Cơ sở dữ liệu</span
+                    >
                   </button>
                 </div>
               </div>
@@ -239,7 +263,14 @@
                 "
               >
                 <div class="button-des">
-                  <i class="fa-solid fa-gear" style="padding-right: 0.5vw" @click="show1=false; show=false"></i>
+                  <i
+                    class="fa-solid fa-gear"
+                    style="padding-right: 0.5vw"
+                    @click="
+                      show1 = false;
+                      show = false;
+                    "
+                  ></i>
                   <span class="ms-1 d-none d-sm-inline">Tài khoản</span>
                 </div>
               </button>
@@ -267,6 +298,7 @@
             <ProjectFile v-if="open === true" :project="this.project">
             </ProjectFile>
             <AdministrationDocType
+              :cataTab="this.cataTab"
               v-if="activeTab === 'docType'"
             ></AdministrationDocType>
 
@@ -310,12 +342,12 @@ export default {
       accountTab: "",
       activeChild: "all",
       show: false,
-      show2:false,
+      show2: false,
       user: VueJwtDecode.decode(localStorage.getItem("auth")),
       filterTittle: "",
       project: {},
       open: false,
-      open1:false,
+      open1: false,
     };
   },
 
@@ -330,8 +362,8 @@ export default {
       this.filterTittle = "Danh sách dự án";
     } else {
       this.activeTab = "docType";
-      this.cataTab = "loaitailieu"
-      this.show1=true;
+      this.cataTab = "loaitailieu";
+      this.show1 = true;
       this.filterTittle = "Danh sách loại tài liệu";
     }
     //this.getUser();

@@ -88,29 +88,23 @@ export default {
             display: inline;
           "
         />
-        <p style="display: inline; margin-left: -10px; margin: auto">
-          {{ account.manhanvien }}
+        <p style="display: inline; margin-left: -15px; margin: auto">
+          {{ account.username }}
         </p>
       </div>
-      <div class="col d-flex" style="margin: auto">
-        {{ account.username }}
-      </div>
-      <div class="col-2" style="margin: auto">
+      <div class="col-4 d-flex justify-content-center" style="margin: auto">
         {{ account.hoten }}
       </div>
-      <div class="col-2" style="margin: auto">
+      <div class="col-3 d-flex justify-content-center" style="margin: auto">
         <div>{{ account.email }}</div>
       </div>
-      <div class="col-3 text-center" style="margin: auto; text-align: center">
+      <div class="col-1 text-center d-flex justify-content-center" style="margin: auto; text-align: center">
         <p style="margin: auto" v-if="account.chucvu === 'admin'">Quản trị</p>
-        <p style="margin: auto" v-if="account.chucvu === 'hc'">
-          Nhân viên hành chính
-        </p>
-        <p style="margin: auto" v-if="account.chucvu === 'kt'">
-          Nhân viên ký thuật
+        <p style="margin: auto" v-else>
+          Nhân viên 
         </p>
       </div>
-      <div class="col text-end" style="margin: auto">
+      <div class="col-2 text-end" style="margin: auto">
         <button
           class="btn btn-outline-secondary"
           @click="lock(account)"

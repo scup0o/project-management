@@ -51,6 +51,7 @@
     :e="true"
     @close="edit = false"
     @refresh="this.$emit('refresh')"
+    :cataTab="'loaitailieu'"
   >
   </DoctypeForm>
 </template>

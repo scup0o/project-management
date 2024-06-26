@@ -7,13 +7,10 @@ router
   .get(doctypeController.get)
   .delete(doctypeController.delete);
 
-router
-  .route("/")
-  .get(doctypeController.getAll)
-  .delete(doctypeController.deleteAll)
-  .put(doctypeController.update)
-  .post(doctypeController.create);
+router.route("/").put(doctypeController.update).post(doctypeController.create);
 
 router.route("/type/:type").get(doctypeController.getType);
+router.route("/all/:type").get(doctypeController.getAll);
+router.route("/dA/:type").delete(doctypeController.deleteAll);
 
 module.exports = router;

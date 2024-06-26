@@ -103,7 +103,7 @@ export default {
 <template>
   <div class="container-fluid">
     <div class="row" style="background-color: var(--bar-color); padding: 6px">
-      <div class="col-2">
+      <div class="col-1">
         <select v-model="filterRoleTab" style="
                         border-width: 1.55px;
                         border-color: var(--secondary-color);
@@ -113,8 +113,7 @@ export default {
                         text-align: center;">
           <option value="">Tất cả</option>
           <option value="admin">Quản trị</option>
-          <option value="hc">Nhân viên hành chính</option>
-          <option value="kt">Nhân viên kỹ thuật</option>
+          <option value="nhanvien">Nhân viên</option>
         </select>
       </div>
       <div class="col">
@@ -143,11 +142,10 @@ export default {
       </div>
     </div>
     <div class="row tt" style="margin: auto">
-      <div class="col text-end">MSNV</div>
-      <div class="col d-flex justify-content-center">Username</div>
-      <div class="col-2 d-flex justify-content-center">Họ tên</div>
-      <div class="col-2 d-flex justify-content-center">Email</div>
-      <div class="col-3 d-flex justify-content-center">Chức vụ</div>
+      <div class="col-2 d-flex justify-content-end">Username</div>
+      <div class="col-4 d-flex justify-content-center">Họ tên</div>
+      <div class="col-3 d-flex justify-content-center">Email</div>
+      <div class="col-2 d-flex justify-content-start">Chức vụ</div>
       <div class="col"></div>
     </div>
 

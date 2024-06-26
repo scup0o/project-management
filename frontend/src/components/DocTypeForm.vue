@@ -9,7 +9,10 @@
             v-if="edit === false"
             >Thêm loại tài liệu</label
           >
-          <label class="" style="margin: auto; font-size: 20px; font-family: RalewayBlack" v-else
+          <label
+            class=""
+            style="margin: auto; font-size: 20px; font-family: RalewayBlack"
+            v-else
             >Chỉnh sửa loại tài liệu</label
           >
         </div>
@@ -20,6 +23,7 @@
                 <div class="row">
                   <div class="col">
                     <label for="ten">Tên loại tài liệu: </label>
+                    <p class="dot">(*)</p>
                   </div>
                   <div class="col-8">
                     <Field
@@ -38,24 +42,30 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row" v-if="cataTab === 'loaitailieu'">
               <div class="form-group">
                 <div class="row">
                   <div class="col">
                     <label for="giaiDoan">Giai đoạn: </label>
+                    <p class="dot">(*)</p>
                   </div>
                   <div class="col-8">
                     <Field
+                      onfocus="this.size=10;"
+                      onblur="this.size=1;"
+                      onchange="this.size=1; this.blur();"
                       name="giaiDoan"
                       as="select"
                       class=""
-                      v-model="giaiDoan"
+                      v-model="doctypeNew.giaiDoan"
                       style="
                         width: 100%;
                         border-width: 1.55px;
                         border-color: var(--secondary-color);
                         box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
-                        height: 5vh;
+                        min-height: 5vh;
+                        max-height: 8vh;
+                        overflow-y: auto;
                         border-radius: 5px 5px 5px 5px;
                         text-align: center;
                       "
@@ -73,8 +83,47 @@
                 </div>
               </div>
             </div>
-
-            
+            <div class="row" style="padding-top:3vh">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col">
+                    <label>Loại: </label>
+                    <p class="dot">(*)</p>
+                  </div>
+                  <div class="col-8">
+                    <Field
+                      onfocus="this.size=10;"
+                      onblur="this.size=1;"
+                      onchange="this.size=1; this.blur();"
+                      name="loai"
+                      as="select"
+                      class=""
+                      v-model="doctypeNew.loai"
+                      style="
+                        width: 100%;
+                        border-width: 1.55px;
+                        border-color: var(--secondary-color);
+                        box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
+                        min-height: 5vh;
+                        max-height: 8vh;
+                        overflow-y: auto;
+                        border-radius: 5px 5px 5px 5px;
+                        text-align: center;
+                      "
+                    >
+                      <option value="loaitailieu">Loại tài liệu</option>
+                      <option value="moitruong">Môi trường</option>
+                      <option value="ngonngu">Ngôn ngữ</option>
+                      <option value="csdl">Cơ sở dữ liệu</option>
+                    </Field>
+                    <ErrorMessage
+                      name="loai"
+                      class="error-feedback"
+                    ></ErrorMessage>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="text-center">
             <button
@@ -82,14 +131,28 @@
               class="btn btn-dark"
               style="margin-right: 10px"
             >
-              Thêm loại tài liệu
+              Thêm
+              <p v-if="cataTab === 'ngonngu'" style="display: inline">
+                ngôn ngữ
+              </p>
+              <p style="display: inline" v-if="cataTab === 'moitruong'">
+                môi trường
+              </p>
+              <p style="display: inline" v-if="cataTab === 'csdl'">
+                cơ sở dữ liệu
+              </p>
             </button>
-            <button
-              v-else
-              class="btn btn-dark"
-              style="margin-right: 10px"
-            >
-              Lưu loại tài liệu
+            <button v-else class="btn btn-dark" style="margin-right: 10px">
+              Lưu
+              <p v-if="cataTab === 'ngonngu'" style="display: inline">
+                ngôn ngữ
+              </p>
+              <p style="display: inline" v-if="cataTab === 'moitruong'">
+                môi trường
+              </p>
+              <p style="display: inline" v-if="cataTab === 'csdl'">
+                cơ sở dữ liệu
+              </p>
             </button>
             <button
               @click="$emit('close'), $emit('refresh')"
@@ -119,6 +182,7 @@ export default {
   props: {
     doctype: { type: Object, required: true },
     e: { type: Boolean, required: true },
+    cataTab: { type: String, required: true },
   },
 
   data() {
@@ -138,18 +202,19 @@ export default {
       images: [],
       nameMessage: "",
       haveData: true,
-      giaiDoan:new String(this.doctype.giaiDoan)
+      giaiDoan: new String(this.doctype.giaiDoan),
     };
   },
 
   mounted() {
-    if (this.edit===false) this.doctypeNew.giaiDoan = 'truocdauthau';
+    if (this.edit === false) {this.doctypeNew.giaiDoan = "truocdauthau"; this.doctypeNew.loai='loaitailieu'}
+    console.log(this.doctypeNew.giaiDoan);
   },
 
   methods: {
     async createDoctype(data) {
       try {
-        console.log('click')
+        console.log("click");
         if (this.edit === false) {
           const check = await DoctypeService.create(data);
           if (check === false) {
@@ -246,10 +311,12 @@ label {
 
 .modal-body {
   margin: 20px 0;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
-  height: 150px;
+  
   background-color: white;
   padding: 20px;
 }
+
+
 </style>
