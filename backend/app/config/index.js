@@ -2,7 +2,8 @@ require('dotenv').config()
 
 const config = {
     app : {
-        port : process.env.PORT
+        port : process.env.PORT,
+        hostname: process.env.HOSTNAME,
     },
 
     db : {
@@ -11,5 +12,4 @@ const config = {
 
     
 };
-
 module.exports = config;

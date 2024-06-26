@@ -5,16 +5,14 @@ let db = require("./app/utils/mysql.util")
 
 async function startServer(){
     try{
-        /*await mongoose.connect(config.db.uri);
-        console.log("Connected to the database!");*/
-
         const PORT = config.app.port;
-        app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}.`);
+        const HOSTNAME = config.app.hostname;
+        app.listen(PORT, HOSTNAME, () => {
+        console.log(`Server is running at http://${HOSTNAME}:${PORT}/`);
         });
     }
     catch(error){
-        console.log("Cannot connect to the database!", error);
+        console.log(error);
         process.exit();
     }
 }
