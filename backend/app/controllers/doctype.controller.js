@@ -103,11 +103,11 @@ exports.update = async (req, res, next) => {
     } else {
       if (req.body.loai === "loaitailieu")
         db.query(
-          `UPDATE DANH_MUC SET ten = '${req.body.ten}', giaiDoan = '${req.body.giaiDoan}' loai='loaitailieu' WHERE id = '${req.body.id}'`
+          `UPDATE DANH_MUC SET ten = '${req.body.ten}', giaiDoan = '${req.body.giaiDoan}' WHERE id = '${req.body.id}'`
         );
       else {
         db.query(
-          `UPDATE DANH_MUC SET ten = '${req.body.ten}', loai='${req.body.loai}' WHERE id = '${req.body.id}'`
+          `UPDATE DANH_MUC SET ten = '${req.body.ten}' WHERE id = '${req.body.id}'`
         );
       }
       return res.send(true);

@@ -242,24 +242,6 @@ export default {
   },
 
   methods: {
-    /*async deleteAll() {
-        if (confirm("Bạn muốn xóa tất cả Loại tài liệu?")) {
-          try {
-            const deleteCount = await ProjectService.deleteAll();
-            if (deleteCount.deletedCount != 0) {
-              this.$toast.open({
-                message: `Xóa ${deleteCount.deletedCount} loại tài liệu thành công`,
-                type: "success",
-                duration: 3000,
-                dismissible: true,
-              });
-              this.retrieveProject();
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      },*/
 
     async OpenProject(value) {
       this.$emit("openproject", value);

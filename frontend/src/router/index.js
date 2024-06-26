@@ -36,7 +36,7 @@ const routes = [
   },
 
   {
-    path: "/forgotpassword/:username",
+    path: "/forgotpassword/:username/",
     name: "forgotpasswordid",
     component: () => import("@/views/ForgotPassword.vue"),
     meta: { userAuth: true, loginAuth: true },
@@ -91,11 +91,10 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.matched.some((record) => record.meta.userAuth)) {
-    let user = to.params.username;
-    console.log(user);
-    let check = await userService.get(user);
-    console.log(to);
-    if (check === "") {
+    let id = to.params.username;
+    let check = await userService.checkLink(id);
+    console.log(id);
+    if (check === false) {
       next("/notfound")
     }
   }

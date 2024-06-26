@@ -507,10 +507,9 @@ export default {
   mounted() {
     if (this.edit === false) {
       this.project.LoaiThoiHan = "tháng";
-    }
-    else{
-      if (this.project.ThoiHan===0){
-        this.date=true;
+    } else {
+      if (this.project.ThoiHan === 0) {
+        this.date = true;
       }
     }
     console.log(this.project);
@@ -568,64 +567,26 @@ export default {
       if (check[1] === 1) this.TenMessage = "Tên dự án đã tồn tại";
       if (check[0] === 0 && check[1] === 0) {
         let c = true;
-        if (
-          (data.ThoiGianBatDauDuAn === null ||
-            data.ThoiGianBatDauDuAn === undefined) &&
-          (data.ThoiGianKetThucDuAn === null ||
-            data.ThoiGianKetThucDuAn === undefined)
-        ) {
-          this.duanMessage = "Thời gian dự án không được để trống";
+        if (data.ThoiGianBatDauDuAn >= data.ThoiGianKetThucDuAn) {
+          this.duanMessage =
+            "Thời gian bắt đầu dự án không thể sau thời gian kết thúc dự án";
           c = false;
-        } else {
-          if (data.ThoiGianBatDauDuAn >= data.ThoiGianKetThucDuAn) {
-            this.duanMessage =
-              "Thời gian bắt đầu dự án không thể sau thời gian kết thúc dự án";
-            c = false;
-          }
         }
-        if (
-          (data.ThoiGianBatDauDauThau === null ||
-            data.ThoiGianBatDauDauThau === undefined) &&
-          (data.ThoiGianKetThucDauThau === null ||
-            data.ThoiGianKetThucDuAn === undefined)
-        ) {
-          this.dauthauMessage = "Thời gian đấu thầu không được để trống";
+        if (data.ThoiGianBatDauDauThau >= data.ThoiGianKetThucDauThau) {
+          this.dauthauMessage =
+            "Thời gian bắt đầu đấu thầu không thể sau thời gian kết thúc đấu thầu";
           c = false;
-        } else {
-          if (data.ThoiGianBatDauDauThau >= data.ThoiGianKetThucDauThau) {
-            this.dauthauMessage =
-              "Thời gian bắt đầu đấu thầu không thể sau thời gian kết thúc đấu thầu";
-            c = false;
-          }
         }
-        if (
-          data.ThoiGianBaoHanh === null ||
-          data.ThoiGianBaoHanh === undefined
-        ) {
-          this.baohanhMessage = "Thời gian bảo hành không được để trống";
-          return;
-        } else {
-          if (data.ThoiGianNghiemThu >= data.ThoiGianBaoHanh) {
-            this.baohanhMessage =
-              "Thời gian bảo hành không thể trước thời gian nghiệm thu";
-            c = false;
-          }
+        if (data.ThoiGianNghiemThu >= data.ThoiGianBaoHanh) {
+          this.baohanhMessage =
+            "Thời gian bảo hành không thể trước thời gian nghiệm thu";
+          c = false;
         }
+
         if (c === true) {
           if (this.edit === true && this.project.id_NguoiTao === this.user.id) {
             console.log("next");
-            let temp = await ProjectService.getQuyen(data.id);
-
-            let i = 0;
-            while (i < temp.DS_TG.length) {
-              temp.DS_TG[i] = await UserService.get(temp.DS_TG[i]);
-              i++;
-            }
-            console.log(temp);
-            this.project.DS_TG = temp.DS_TG;
-            this.project.DS_CS = temp.DS_CS;
-            this.project.QuyenXem = temp.qx;
-            this.project.QuyenChinhSua = temp.qcs;
+            
           }
           if (
             this.edit === false ||

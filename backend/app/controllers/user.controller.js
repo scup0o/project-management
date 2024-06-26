@@ -102,22 +102,21 @@ exports.create = async (req, res, next) => {
       req.body.matkhau = await bcrypt.hash(req.body.matkhau, salt);
       db.query(
         `INSERT INTO NHAN_VIEN (username, matkhau, sodienthoai, email, chucvu, hoten, gioitinh, anhdaidien) VALUES ('${req.body.username}', '${req.body.matkhau}', '${req.body.sodienthoai}','${req.body.email}', '${req.body.chucvu}', '${req.body.hoten}', '${req.body.gioitinh}', '${req.body.anhdaidien}')`,
-        function (e,r) {
+        function (e, r) {
           if (e) throw e;
-          else{
+          else {
             if (req.body.anhdaidien != "user-img.jpg")
               req.body.anhdaidien = r.insertId + "-pic.png";
             db.query(
-              `UPDATE NHAN_VIEN SET anhdaidien='${req.body.anhdaidien}'`,
-              function (e,r) {
+              `UPDATE NHAN_VIEN SET anhdaidien='${req.body.anhdaidien}' WHERE id='${r.insertId}'`,
+              function (e, r) {
                 if (e) throw e;
               }
             );
+            return res.send(req.body.anhdaidien);
           }
         }
       );
-      
-      return res.send(true);
     }
   } catch (error) {
     console.log(error);
@@ -290,6 +289,7 @@ exports.delete = async (req, res, next) => {
 
 exports.changePass = async (req, res, next) => {
   try {
+    console.log(req.body)
     let token;
     let result = await new Promise((rs, rj) => {
       db.query(
@@ -335,7 +335,7 @@ exports.changePass = async (req, res, next) => {
 exports.forgotPass = async (req, res, next) => {
   try {
     //console.log(req.body);
-    let type = "mail";
+    let type = "username";
     let result = await new Promise((resolve, reject) => {
       db.query(
         `SELECT * FROM NHAN_VIEN WHERE username = '${req.body.email}'`,
@@ -348,12 +348,12 @@ exports.forgotPass = async (req, res, next) => {
                 function (e, result) {
                   if (e) reject(e);
                   else {
+                    type = "email";
                     resolve(result);
                   }
                 }
               );
             } else {
-              type = "username";
               resolve(result);
             }
           }
@@ -368,8 +368,25 @@ exports.forgotPass = async (req, res, next) => {
       if (result[0].khoa === 1) {
         return res.send("lock");
       }
-      const message = `link đổi mật khẩu: http://localhost:3002/forgotpassword/${result[0].id}/`;
-      res.send(req.body.email);
+      let salt = await bcrypt.genSalt();
+      db.query(
+        `INSERT INTO id_quenmatkhau (id, id_nhanvien) VALUES ('${salt}', '${result[0].id}')`
+      );
+      const message = `link đổi mật khẩu: http://${process.env.FE_HOST}:${process.env.FE_PORT}/forgotpassword/${salt}/`;
+      let char1 = result[0].email[0];
+      console.log(char1);
+      let char2 = result[0].email.split("@")[0];
+      char2 = char2[char2.length - 1];
+      let j = 0;
+      let email = char1 + "";
+      while (j < result[0].email.length - 12) {
+        email = email + "*";
+        j++;
+      }
+      email = email + char2 + "@gmail.com";
+      console.log(type)
+      if (type ==='username') res.send(email);
+      else res.send("email");
       await sendEmail(result[0].email, "Quên mật khẩu", message);
     }
   } catch (error) {
@@ -383,6 +400,56 @@ exports.lock = async (req, res, next) => {
     if (req.body.w === "lock") i = 1;
     db.query(`UPDATE NHAN_VIEN SET khoa='${i}' WHERE id='${req.body.id}'`);
     return res.send(true);
+  } catch (e) {
+    console.log(e);
+    return res.send(e);
+  }
+};
+
+exports.checklink = async (req, res, next) => {
+  try {
+    console.log(req.params.id);
+    db.query(
+      `SELECT * FROM id_quenmatkhau WHERE id='${req.params.id}'`,
+      function (e, r) {
+        if (e) throw e;
+        else {
+          if (r.length === 0) res.send(false);
+          else {
+            /*const timeZone = "Asia/Ho_Chi_Minh";
+          const date = new Date();
+          const formatter = new Intl.DateTimeFormat("vi-VN", {
+            timeZone,
+            hour12: false, // You can set this to true/false based on your preference
+            day: "numeric",
+            month: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+          });
+
+          const timeInTimeZone = formatter.format(date);*/
+
+            let Difference_In_Time = new Date() - new Date(r[0].thoigiantao);
+            let Difference_In_Minutes = Math.round(
+              ((Difference_In_Time % 86400000) % 3600000) / 60000
+            );
+            console.log(
+              new Date().toISOString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })
+            );
+            console.log(new Date());
+            console.log(new Date(r[0].thoigiantao));
+            console.log(Difference_In_Minutes);
+            if (Difference_In_Minutes >= 15) {
+              return res.send(false);
+            } else {
+              return res.send(r[0]);
+            }
+          }
+        }
+      }
+    );
   } catch (e) {
     console.log(e);
     return res.send(e);

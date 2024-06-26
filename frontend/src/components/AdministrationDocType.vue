@@ -174,7 +174,8 @@
       </div>
     </div>
     <div class="row" v-else>
-      <CataRender v-if="filteredDoctypes.length>0">
+      <CataRender v-if="filteredDoctypes.length>0" :catas="filteredDoctypes" :cataTab="this.cataTab" @close="createForm = false"
+        @refresh="retrieveDoctype()">
 
       </CataRender>
       <p

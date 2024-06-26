@@ -129,7 +129,7 @@ exports.getType = async (req, res, next) => {
     //console.log(req.params.type);
     if (req.params.type != "chia se")
       db.query(
-        `SELECT * FROM DU_AN WHERE loai = '${req.params.type}' AND id_NguoiTao = '${req.body.id}' ORDER BY id DESC`,
+        `SELECT * FROM DU_AN WHERE loai = '${req.params.type}' AND id_NguoiTao = '${req.body.id}' ORDER BY id`,
         async function (e, r) {
           if (e)
             return next(
@@ -139,12 +139,25 @@ exports.getType = async (req, res, next) => {
               )
             );
           else {
+            const timeZone = "Asia/Ho_Chi_Minh";
+            const date = new Date();
+            const formatter = new Intl.DateTimeFormat("vi-VN", {
+              timeZone,
+              hour12: false, // You can set this to true/false based on your preference
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            });
+
+            const timeInTimeZone = formatter.format(date);
+
             let i = 0;
             while (i < r.length) {
               let Difference_In_Time =
-                r[i].ThoiGianBaoHanh.getTime() -
-                new Date().getTime() +
-                12 * 3600000;
+                r[i].ThoiGianBaoHanh.getTime() - timeInTimeZone.getTime();
 
               let Difference_In_Days = Math.round(
                 Difference_In_Time / (1000 * 3600 * 24)
@@ -184,11 +197,25 @@ exports.getType = async (req, res, next) => {
             );
           else {
             let i = 0;
+
+            const timeZone = "Asia/Ho_Chi_Minh";
+            const date = new Date();
+            const formatter = new Intl.DateTimeFormat("vi-VN", {
+              timeZone,
+              hour12: false, // You can set this to true/false based on your preference
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            });
+
+            const timeInTimeZone = formatter.format(date);
+
             while (i < r.length) {
               let Difference_In_Time =
-                r[i].ThoiGianBaoHanh.getTime() -
-                new Date().getTime() +
-                12 * 3600000;
+                r[i].ThoiGianBaoHanh.getTime() - timeInTimeZone.getTime();
               let Difference_In_Days = Math.round(
                 Difference_In_Time / (1000 * 3600 * 24)
               );

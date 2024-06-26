@@ -15,6 +15,10 @@ class UserService {
   async lock(data) {
     return (await this.api.post("/lock", data)).data;
   }
+
+  async checkLink(id) {
+    return (await this.api.post(`/checklink/${id}`)).data;
+  }
   async create(data) {
     return (await this.api.post("/add", data)).data;
   }

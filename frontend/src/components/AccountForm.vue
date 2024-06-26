@@ -476,7 +476,7 @@ export default {
               } else {
                 const headers = { "Content-Type": "multipart/form-data" };
                 if (this.images[0] !== undefined)
-                  await FileService.upload(check + "-pic.png", this.img, {
+                  await FileService.upload(check, this.img, {
                     headers,
                   });
                 this.$toast.open({

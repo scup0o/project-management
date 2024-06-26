@@ -7,13 +7,33 @@
             class=""
             style="margin: auto; font-size: 20px; font-family: RalewayBlack"
             v-if="edit === false"
-            >Thêm loại tài liệu</label
+            >Thêm loại
+            <p v-if="cataTab === 'ngonngu'" style="display: inline">ngôn ngữ</p>
+            <p style="display: inline" v-if="cataTab === 'moitruong'">
+              môi trường
+            </p>
+            <p style="display: inline" v-if="cataTab === 'csdl'">
+              cơ sở dữ liệu
+            </p>
+            <p style="display: inline" v-if="cataTab === 'loaitailieu'">
+              loại tài liệu
+            </p></label
           >
           <label
             class=""
             style="margin: auto; font-size: 20px; font-family: RalewayBlack"
             v-else
-            >Chỉnh sửa loại tài liệu</label
+            >Chỉnh sửa
+            <p v-if="cataTab === 'ngonngu'" style="display: inline">ngôn ngữ</p>
+            <p style="display: inline" v-if="cataTab === 'moitruong'">
+              môi trường
+            </p>
+            <p style="display: inline" v-if="cataTab === 'csdl'">
+              cơ sở dữ liệu
+            </p>
+            <p style="display: inline" v-if="cataTab === 'loaitailieu'">
+              loại tài liệu
+            </p></label
           >
         </div>
         <Form @submit="createDoctype" :validation-schema="FormSchema">
@@ -22,10 +42,28 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col">
-                    <label for="ten">Tên loại tài liệu: </label>
+                    <label for="ten"
+                      >Tên
+                      <p v-if="cataTab === 'ngonngu'" style="display: inline">
+                        ngôn ngữ
+                      </p>
+                      <p style="display: inline" v-if="cataTab === 'moitruong'">
+                        môi trường
+                      </p>
+                      <p style="display: inline" v-if="cataTab === 'csdl'">
+                        cơ sở dữ liệu
+                      </p>
+                      <p
+                        style="display: inline"
+                        v-if="cataTab === 'loaitailieu'"
+                      >
+                        loại tài liệu
+                      </p>
+                      :
+                    </label>
                     <p class="dot">(*)</p>
                   </div>
-                  <div class="col-8">
+                  <div class="col-7">
                     <Field
                       name="ten"
                       type="text"
@@ -49,7 +87,7 @@
                     <label for="giaiDoan">Giai đoạn: </label>
                     <p class="dot">(*)</p>
                   </div>
-                  <div class="col-8">
+                  <div class="col-7">
                     <Field
                       onfocus="this.size=10;"
                       onblur="this.size=1;"
@@ -57,7 +95,7 @@
                       name="giaiDoan"
                       as="select"
                       class=""
-                      v-model="doctypeNew.giaiDoan"
+                      v-model="giaiDoan"
                       style="
                         width: 100%;
                         border-width: 1.55px;
@@ -83,7 +121,7 @@
                 </div>
               </div>
             </div>
-            <div class="row" style="padding-top:3vh">
+            <!--<div class="row" style="padding-top:3vh">
               <div class="form-group">
                 <div class="row">
                   <div class="col">
@@ -105,7 +143,7 @@
                         border-color: var(--secondary-color);
                         box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
                         min-height: 5vh;
-                        max-height: 8vh;
+                        max-height: 10vh;
                         overflow-y: auto;
                         border-radius: 5px 5px 5px 5px;
                         text-align: center;
@@ -122,8 +160,7 @@
                     ></ErrorMessage>
                   </div>
                 </div>
-              </div>
-            </div>
+              </div></div>-->
           </div>
           <div class="text-center">
             <button
@@ -190,8 +227,7 @@ export default {
       ten: yup
         .string()
         .required("Tên không được để trống")
-        .min(2, "Tên phải ít nhất 2 ký tự.")
-        .max(50, "Tên có nhiều nhất 50 ký tự."),
+        .max(45, "Tên có nhiều nhất 45 ký tự."),
     });
 
     return {
@@ -202,26 +238,36 @@ export default {
       images: [],
       nameMessage: "",
       haveData: true,
-      giaiDoan: new String(this.doctype.giaiDoan),
+      giaiDoan: '',
     };
   },
 
   mounted() {
-    if (this.edit === false) {this.doctypeNew.giaiDoan = "truocdauthau"; this.doctypeNew.loai='loaitailieu'}
+    if (this.edit === false && this.cataTab==='loaitailieu') {
+      this.giaiDoan = "truocdauthau";
+    }
+    else{
+      this.giaiDoan = new String(this.doctype.giaiDoan)
+    }
     console.log(this.doctypeNew.giaiDoan);
   },
 
   methods: {
     async createDoctype(data) {
       try {
+        let cata = "ngôn ngữ";
+        if (this.cataTab === "moitruong") cata = "môi trường";
+        if (this.cataTab === "csdl") cata = "cơ sở dữ liệu";
+        if (this.cataTab === "loaitailieu") cata = "loại tài liệu";
+        data.loai = this.cataTab;
         console.log("click");
         if (this.edit === false) {
           const check = await DoctypeService.create(data);
           if (check === false) {
-            this.nameMessage = "Tên thể loại đã tồn tại";
+            this.nameMessage = `Tên ${cata} đã tồn tại`;
           } else {
             this.$toast.open({
-              message: "Thêm loại tài liệu thành công",
+              message: `Thêm ${cata} thành công`,
               type: "success",
               duration: 3000,
               dismissible: true,
@@ -233,10 +279,10 @@ export default {
           data.id = this.doctypeNew.id;
           const check = await DoctypeService.update(data);
           if (check === false) {
-            this.nameMessage = "Tên thể loại đã tồn tại";
+            this.nameMessage = `Tên ${cata} đã tồn tại`;
           } else {
             this.$toast.open({
-              message: "Chỉnh sửa loại tài liệu thành công",
+              message: `Chỉnh sửa ${cata} thành công`,
               type: "success",
               duration: 3000,
               dismissible: true,
@@ -308,15 +354,14 @@ label {
 .modal-header h3 {
   margin-top: 0;
 }
-
+.long {
+  height: 200px;
+}
 .modal-body {
   margin: 20px 0;
   overflow-y: auto;
   overflow-x: hidden;
-  
   background-color: white;
   padding: 20px;
 }
-
-
 </style>

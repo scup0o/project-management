@@ -48,7 +48,7 @@
                 >
                 </Field>
                 <p class="error-feedback">{{ emailMes }}</p>
-                <p style="color:green">{{ emes }}</p>
+                <p style="color: green">{{ emes }}</p>
               </div>
               <button
                 class="btn btn-dark"
@@ -65,7 +65,11 @@
           </div>
         </div>
       </div>
-      <div v-else class="row mx-auto" style="max-width: 650px">
+      <div
+        v-if="id && show === true"
+        class="row mx-auto"
+        style="max-width: 650px"
+      >
         <div
           class="col"
           style="background-color: white; border-radius: 10px 10px 10px 10px"
@@ -179,6 +183,9 @@
           </div>
         </div>
       </div>
+      <div v-if="id && show===false">
+        <p>Link đã hết hạn</p>
+      </div>
     </div>
   </div>
 </template>
@@ -234,15 +241,30 @@ export default {
       showconfirmPassword: false,
       confirmMessage: "",
       passwordMessage: "",
-      emes:''
+      emes: "",
+      show: false,
+      u:null,
     };
   },
 
   mounted() {
     console.log(this.id);
+    if (this.id) this.checkLink();
   },
 
   methods: {
+    async checkLink() {
+      console.log(this.id)
+      let check = await UserService.checkLink(this.id);
+      if (check===false){
+        this.show=false;
+      }
+      else{
+        this.show=true;
+        this.u=check.id_nhanvien;
+        console.log(this.u)
+      }
+    },
     async getPassword(data) {
       try {
         const check = await UserService.forgotPassword(data);
@@ -252,8 +274,10 @@ export default {
           if (check === "lock") {
             return alert("Tài khoản đã bị khóa");
           }
-          if (check!='email') return this.emes=`Link đổi mật khẩu đã được gửi vào email ${check}`
-          this.emes="Link đổi mật khẩu đã được gửi vào email";
+          if (check != "email"){
+            console.log('username')
+            return (this.emes = `Link đổi mật khẩu đã được gửi vào email ${check}`);}
+          else this.emes = "Link đổi mật khẩu đã được gửi vào email";
         }
       } catch (error) {
         console.log(error);
@@ -286,7 +310,7 @@ export default {
       this.confirmMessage = "";
       this.passwordMessage = "";
       data.util = "forgot";
-      data.id = this.id;
+      data.id = this.u;
       let check = await UserService.changePassword(data);
       if (check === "wrong")
         this.confirmMessage =
