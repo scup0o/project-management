@@ -24,7 +24,12 @@
             <div class="row">
               <div class="form-group">
                 <div class="row spacing">
-                  <div class="col"><label for="Ma">Mã dự án: </label></div>
+                  <div class="col">
+                    <label for="Ma"
+                      >Mã dự án:
+                      <p class="dot">(*)</p></label
+                    >
+                  </div>
                   <div class="col-8">
                     <Field
                       name="Ma"
@@ -49,7 +54,12 @@
             <div class="row spacing">
               <div class="form-group">
                 <div class="row">
-                  <div class="col"><label for="Ten">Tên dự án: </label></div>
+                  <div class="col">
+                    <label for="Ten"
+                      >Tên dự án:
+                      <p class="dot">(*)</p></label
+                    >
+                  </div>
                   <div class="col-8">
                     <Field
                       name="Ten"
@@ -137,6 +147,7 @@
                         <option value="dangthuchien">Đang thực hiện</option>
                         <option value="hoanthanh">Hoàn thành</option>
                         <option value="tamdung">Tạm dừng</option>
+                        <option value="huy">Hủy</option>
                       </Field>
                     </div>
                   </div>
@@ -152,6 +163,9 @@
                   <div class="col-8">
                     <div style="margin: auto">
                       <Field
+                        onfocus="this.size=10;"
+                        onblur="this.size=1;"
+                        onchange="this.size=1; this.blur();"
                         name="id_GiaHan"
                         as="select"
                         class=""
@@ -162,7 +176,11 @@
                           border-width: 1.55px;
                           border-color: var(--secondary-color);
                           box-shadow: 0.5px 0.5px 7px 0.5px rgb(226, 227, 232);
-                          height: 5vh;
+                          min-height: 5vh;
+                          max-height: 8vh;
+                          overflow-y: auto;
+                          position: absolute;
+                          width: 22vw;
                           border-radius: 5px 5px 5px 5px;
                           text-align: center;
                         "
@@ -179,10 +197,30 @@
                 </div>
               </div>
             </div>
+            <div class="row spacing">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col"><label for="MoTa">Ghi chú: </label></div>
+                  <div class="col-8">
+                    <Field
+                      name="GhiChu"
+                      as="textarea"
+                      row="3"
+                      class="form-control"
+                      v-model="project.GhiChu"
+                    >
+                    </Field>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="d-flex flex-column flex-md-row spacing">
               <div class="form-group">
                 <div class="row">
-                  <label for="ThoiGianDauThau">Thời gian đấu thầu:</label>
+                  <label for="ThoiGianDauThau"
+                    >Thời gian đấu thầu:
+                    <p class="dot">(*)</p></label
+                  >
                   <div class="row">
                     <div class="col-6">
                       <div class="row">
@@ -237,7 +275,10 @@
             <div class="d-flex flex-column flex-md-row spacing">
               <div class="form-group">
                 <div class="row">
-                  <label for="ThoiGianBatDauDuAn">Thời gian dự án:</label>
+                  <label for="ThoiGianBatDauDuAn"
+                    >Thời gian dự án:
+                    <p class="dot">(*)</p></label
+                  >
                   <div class="row">
                     <div class="col-6">
                       <div class="row">
@@ -293,7 +334,10 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col">
-                    <label for="ThoiGianNghiemThu">Thời gian nghiệm thu:</label>
+                    <label for="ThoiGianNghiemThu"
+                      >Thời gian nghiệm thu:
+                      <p class="dot">(*)</p></label
+                    >
                   </div>
                   <div class="col-7">
                     <Field
@@ -316,7 +360,10 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col">
-                    <label for="ThoiGianBaoHanh">Thời gian bảo hành:</label>
+                    <label for="ThoiGianBaoHanh"
+                      >Thời gian bảo hành:
+                      <p class="dot">(*)</p></label
+                    >
                   </div>
                   <div class="col-3">
                     <Field
@@ -353,12 +400,9 @@
                   <div class="row" style="padding-top: 10px">
                     <div class="col-5"></div>
                     <div class="col">
-                      <ErrorMessage
-                        class="error-feedback"
-                        for="ThoiHan"
-                        name="ThoiHan"
-                        style="padding-left: 10px"
-                      ></ErrorMessage>
+                      <p class="error-feedback" v-if="baohanhMessage != ''">
+                        {{ baohanhMessage }}
+                      </p>
                       <p
                         class="c"
                         style="margin-left: 10px"
@@ -406,6 +450,13 @@
               class="btn btn-dark"
               style="margin-right: 10px; width: 10vw"
               type="submit"
+              @click="
+      dauthauMessage='',
+      duanMessage='',
+      nghiemthuMessage='',
+      baohanhMessage='',
+      TenMessage='',
+      MaMessage=''"
             >
               Tiếp tục
               <!--tên nút -->
@@ -478,10 +529,10 @@ export default {
       Ten: yup.string().required("Tên dự án không được để trống"),
 
       MoTa: yup.string().max(500, "Mô tả tối đa 500 ký tự."),
+      ThoiHan: yup.number().min(1, "Thời hạn phải > 0"),
       ThoiGianNghiemThu: yup
         .date()
         .required("Thời gian nghiệm thu không được để trống"),
-      ThoiHan: yup.number().min(1, "Thời hạn phải > 0"),
     });
 
     return {
@@ -500,6 +551,7 @@ export default {
       duanMessage: "",
       nghiemthuMessage: "",
       baohanhMessage: "",
+
       plist: "",
     };
   },
@@ -522,23 +574,31 @@ export default {
       this.plist = await ProjectService.getType("chia se", this.user);
     },
     async checkData(data) {
-      if (data.LoaiThoiHan === "tháng") {
-        data.ThoiGianBaoHanh = new Date(
-          new Date(data.ThoiGianNghiemThu).getTime() +
-            data.ThoiHan * 30 * 86400000
-        ).toLocaleDateString();
+      console.log(data);
+      if (data.ThoiGianNghiemThu != null) {
+        if (data.LoaiThoiHan === "tháng") {
+          data.ThoiGianBaoHanh = new Date(
+            new Date(data.ThoiGianNghiemThu).getTime() +
+              data.ThoiHan * 30 * 86400000
+          ).toLocaleDateString();
+        }
+        if (data.LoaiThoiHan === "ngày") {
+          data.ThoiGianBaoHanh = new Date(
+            new Date(data.ThoiGianNghiemThu).getTime() + data.ThoiHan * 86400000
+          ).toLocaleDateString();
+        }
+        if (data.LoaiThoiHan === "năm") {
+          data.ThoiGianBaoHanh = new Date(
+            new Date(data.ThoiGianNghiemThu).getTime() +
+              data.ThoiHan * 365 * 86400000
+          ).toLocaleDateString();
+        }
+        data.ThoiGianBaoHanh = moment(data.ThoiGianBaoHanh).format(
+          "YYYY-MM-DD"
+        );
+        this.project.ThoiGianBaoHanh = data.ThoiGianBaoHanh;
       }
-      if (data.LoaiThoiHan === "ngày") {
-        data.ThoiGianBaoHanh = new Date(
-          new Date(data.ThoiGianNghiemThu).getTime() + data.ThoiHan * 86400000
-        ).toLocaleDateString();
-      }
-      if (data.LoaiThoiHan === "năm") {
-        data.ThoiGianBaoHanh = new Date(
-          new Date(data.ThoiGianNghiemThu).getTime() +
-            data.ThoiHan * 365 * 86400000
-        ).toLocaleDateString();
-      }
+
       if (this.date === false) {
         this.project.LoaiThoiHan = data.LoaiThoiHan;
         this.project.ThoiHan = data.ThoiHan;
@@ -548,13 +608,15 @@ export default {
         this.project.LoaiThoiHan = "";
         this.project.ThoiHan = 0;
       }
-      console.log(data.ThoiGianBaoHanh);
-      data.ThoiGianBaoHanh = moment(data.ThoiGianBaoHanh).format("YYYY-MM-DD");
-      this.project.ThoiGianBaoHanh = data.ThoiGianBaoHanh;
+
       if (typeof data.MoTa === "undefined" || data.MoTa === "") {
         data.Mota = "Không có mô tả";
       }
-      console.log(this.edit);
+      if (
+        typeof this.project.GhiChu === "undefined" ||
+        this.project.GhiChu === ""
+      )
+        data.GhiChu = "Không có ghi chú";
       data.step = "check";
       data.TrangThai = this.TrangThai;
       let check;
@@ -567,26 +629,77 @@ export default {
       if (check[1] === 1) this.TenMessage = "Tên dự án đã tồn tại";
       if (check[0] === 0 && check[1] === 0) {
         let c = true;
-        if (data.ThoiGianBatDauDuAn >= data.ThoiGianKetThucDuAn) {
-          this.duanMessage =
-            "Thời gian bắt đầu dự án không thể sau thời gian kết thúc dự án";
+        if (
+          (data.ThoiGianBatDauDuAn === null ||
+            data.ThoiGianBatDauDuAn === undefined) &&
+          (data.ThoiGianKetThucDuAn === null ||
+            data.ThoiGianKetThucDuAn === undefined)
+        ) {
+          this.duanMessage = "Thời gian dự án không thể để trống";
           c = false;
+        } else {
+          if (data.ThoiGianBatDauDuAn >= data.ThoiGianKetThucDuAn) {
+            this.duanMessage =
+              "Thời gian bắt đầu dự án không thể sau thời gian kết thúc dự án";
+            c = false;
+          } else {
+            if (data.ThoiGianBatDauDuAn > data.ThoiGianNghiemThu) {
+              this.duanMessage =
+                "Thời gian bắt đầu dự án không thể sau thời gian nghiệm thu";
+              c = false;
+            }
+          }
         }
-        if (data.ThoiGianBatDauDauThau >= data.ThoiGianKetThucDauThau) {
-          this.dauthauMessage =
-            "Thời gian bắt đầu đấu thầu không thể sau thời gian kết thúc đấu thầu";
+        if (
+          (data.ThoiGianBatDauDauThau === null ||
+            data.ThoiGianBatDauDauThau === undefined) &&
+          (data.ThoiGianKetThucDauThau === null ||
+            data.ThoiGianKetThucDuAn === undefined)
+        ) {
+          this.dauthauMessage = "Thời gian đấu thầu không thể để trống";
           c = false;
+        } else {
+          if (data.ThoiGianBatDauDauThau >= data.ThoiGianKetThucDauThau) {
+            this.dauthauMessage =
+              "Thời gian bắt đầu đấu thầu không thể sau thời gian kết thúc đấu thầu";
+            c = false;
+          }
+          if (data.ThoiGianBatDauDauThau > data.ThoiGianNghiemThu) {
+            this.dauthauMessage =
+              "Thời gian bắt đầu đấu thầu không thể sau thời gian nghiệm thu";
+            c = false;
+          } else {
+            if (
+              data.ThoiGianBatDauDuAn > data.ThoiGianBatDauDauThau ||
+              data.ThoiGianKetThucDuAn < data.ThoiGianKetThucDauThau
+            ) {
+              this.dauthauMessage =
+                "Thời gian đấu thầu phải nằm trong thời gian dự án";
+              c = false;
+            }
+          }
         }
-        if (data.ThoiGianNghiemThu >= data.ThoiGianBaoHanh) {
+        if (
+          data.ThoiGianBaoHanh === null ||
+          data.ThoiGianBaoHanh === undefined
+        ) {
+          this.baohanhMessage = "Thời gian bảo hành không được để trống";
+          return;
+        }
+        if (
+          (new Date(data.ThoiGianBaoHanh) - new Date(data.ThoiGianNghiemThu)) /
+            (1000 * 3600 * 24) /
+            30 <
+          3
+        ) {
           this.baohanhMessage =
-            "Thời gian bảo hành không thể trước thời gian nghiệm thu";
+            "Thời gian bảo hành phải sau thời gian nghiệm thu 3 tháng";
           c = false;
         }
 
         if (c === true) {
           if (this.edit === true && this.project.id_NguoiTao === this.user.id) {
             console.log("next");
-            
           }
           if (
             this.edit === false ||

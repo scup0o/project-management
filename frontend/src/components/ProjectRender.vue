@@ -13,13 +13,14 @@
               <label v-snip="{ lines: 1 }">{{ project.Ten }}</label>
             </div>
             <div
-              class="col-6 file text-end"
+              class="col-6 file text-start"
+              style="font-size: 0.8vw"
               @click="$emit('openproject', project)"
             >
               Xem tài liệu dự án
               <i
                 class="fa-solid fa-chevron-right"
-                style="padding-left: 0.3vw; font-size: 0.8vw"
+                style="padding-left: 0vw; font-size: 0.5vw"
               ></i>
             </div>
           </div>
@@ -38,36 +39,37 @@
               {{ project.MoTa }}
             </p>
           </div>
+          <div class="row">
+            <p
+              v-if="project.Han <= 60 && project.Han > 0 && project.TB === 1 &&format_date(project.ThoiGianBaoHanh)!='0000-01-01'"
+              style="font-size: 0.9vw; color: red"
+              title="Tắt thông báo gia hạn"
+              class="tbclose"
+              @click="tat(project)"
+            >
+              Còn {{ project.Han }} ngày nữa đến hạn bảo hành
+            </p>
+            <p
+              v-if="project.Han === 0 && project.TB === 1 &&format_date(project.ThoiGianBaoHanh)!='0000-01-01'"
+              style="font-size: 0.9vw; color: red"
+              title="Tắt thông báo gia hạn"
+              class="tbclose"
+              @click="tat(project)"
+            >
+              Đã đến hạn bảo hành
+            </p>
+            <p
+              v-if="project.Han < 0 && project.TB === 1 &&format_date(project.ThoiGianBaoHanh)!='0000-01-01'"
+              style="font-size: 0.9vw; color: red"
+              title="Tắt thông báo gia hạn"
+              class="tbclose"
+              @click="tat(project)"
+            >
+              Đã quá hạn bảo hành {{ -project.Han }} ngày
+            </p>
+          </div>
           <div class="row" id="util-button">
-            <div class="col-10">
-              <p
-                v-if="project.Han <= 60 && project.Han > 0 && project.TB === 1"
-                style="font-size: 0.9vw; color: red"
-                title="Tắt thông báo gia hạn"
-                class="tbclose"
-                @click="tat(project)"
-              >
-                Còn {{ project.Han }} ngày nữa đến hạn bảo hành
-              </p>
-              <p
-                v-if="project.Han === 0 && project.TB === 1"
-                style="font-size: 0.9vw; color: red"
-                title="Tắt thông báo gia hạn"
-                class="tbclose"
-                @click="tat(project)"
-              >
-                Đã đến hạn bảo hành
-              </p>
-              <p
-                v-if="project.Han < 0 && project.TB === 1"
-                style="font-size: 0.9vw; color: red"
-                title="Tắt thông báo gia hạn"
-                class="tbclose"
-                @click="tat(project)"
-              >
-                Đã quá hạn bảo hành {{ -project.Han }} ngày
-              </p>
-            </div>
+            <div class="col-10"></div>
             <div class="col-2 d-flex justify-content-end">
               <!--<i
                 @click="$emit('openproject', project)"
@@ -75,7 +77,8 @@
                 id="util-icon"
                 title="Tài liệu dự án"
               ></i>-->
-              <i v-if='this.user.id===project.id_NguoiTao && project.TB===0'
+              <i
+                v-if="this.user.id === project.id_NguoiTao && project.TB === 0"
                 class="fa-solid fa-bell"
                 @click="bat(project)"
                 id="util-icon"
@@ -116,12 +119,28 @@
                 id="util-icon"
                 style="display: inline"
                 title="Thông tin"
-                ><div class="menu" id="child">
+                ><div
+                  class="menu"
+                  id="child"
+                  :class="{ small: project.kt === false }"
+                >
                   <div class="row text-menu" @click="iOpenUp(project)" style="">
                     Thông tin chung
                   </div>
-                  <hr style="width: 100%; padding: 0" />
-                  <div class="row text-menu" @click="ttht=true; editProject=project">Thông tin cài đặt hệ thống</div>
+                  <hr
+                    style="width: 100%; padding: 0"
+                    v-if="project.kt === true"
+                  />
+                  <div
+                    class="row text-menu"
+                    @click="
+                      ttht = true;
+                      editProject = project;
+                    "
+                    v-if="project.kt === true"
+                  >
+                    Thông tin cài đặt hệ thống
+                  </div>
                 </div></i
               >
             </div>
@@ -147,7 +166,11 @@
       this.$emit('refresh');
     "
   ></Event>
-  <Information v-if="ttht===true" @close="ttht=false" :projectprop="editProject"></Information>
+  <Information
+    v-if="ttht === true"
+    @close="ttht = false"
+    :projectprop="editProject"
+  ></Information>
 </template>
 <script>
 import Event from "@/components/Event.vue";
@@ -176,7 +199,7 @@ export default {
 
   data() {
     return {
-      ttht:false,
+      ttht: false,
       projectT: this.projectType,
       editProject: null,
       edit: false,
@@ -199,8 +222,6 @@ export default {
       }
     },
     async iOpenUp(data) {
-      data.NguoiTao = await UserService.get(data.id_NguoiTao);
-      data.NguoiChinhSua = await UserService.get(data.id_NguoiChinhSuaLanCuoi);
       data.ThoiGianBaoHanh = this.format_date(data.ThoiGianBaoHanh);
       data.ThoiGianBatDauDauThau = this.format_date(data.ThoiGianBatDauDauThau);
       data.ThoiGianKetThucDauThau = this.format_date(
@@ -409,6 +430,12 @@ label {
   padding: 10px 20px 15px 20px;
   border-radius: 5px 5px 5px 5px;
   border: 0.1px solid rgb(144, 144, 144);
+}
+
+.small {
+  margin-top: -3.5vw;
+  margin-left: -10vw;
+  width: 10vw;
 }
 
 #child {

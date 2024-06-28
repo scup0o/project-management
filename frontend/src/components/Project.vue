@@ -13,7 +13,7 @@
           @click="createForm = true"
           data-aos="fade-up"
           style="margin-right: 10px"
-          v-if="this.user.chucvu != 'admin'"
+          v-if="this.user.chucvu != 'admin' && this.projectTab==='chia se'"
         >
           Tạo dự án
           <i class="fa-solid fa-square-plus" id="util-icon"></i>
@@ -47,14 +47,16 @@
         @refresh="retrieveProject()"
         :e="false"
         :projectprop="{
+          KhachHang: '',
+          GhiChu:'',
           LoaiThoiHan: 'thang',
-          ThoiHan: 1,
+          ThoiHan: 3,
           Ma: null,
           Ten: null,
           MoTa: '',
           TrangThai: 'dangthuchien',
-          ThoiGianBatDau: null,
-          ThoiGianKetThuc: null,
+          ThoiGianBatDauDuAn: null,
+          ThoiGianKetThucDuAn: null,
           ThoiGianBatDauDauThau: null,
           ThoiGianKetThucDauThau: null,
           ThoiGianNghiemThu: null,
@@ -73,7 +75,7 @@
         padding-left: 1vw;
       "
     >
-      <div class="col-4">
+      <div class="col-3">
         <div class="row">
           <div class="col">Đang thực hiện</div>
           <div class="col text-end">
@@ -81,7 +83,7 @@
           </div>
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <div class="row">
           <div class="col">Hoàn thành</div>
           <div class="col text-end">
@@ -89,7 +91,7 @@
           </div>
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <div class="row">
           <div class="col">Tạm dừng</div>
           <div class="col text-end">
@@ -97,9 +99,17 @@
           </div>
         </div>
       </div>
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Hủy</div>
+          <div class="col text-end">
+            {{ sliceProjectHuy.length }}
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row" style="">
-      <div class="col-4" style="">
+      <div class="col-3" style="">
         <ProjectRender
           @openproject="OpenProject"
           :projectType="projectType"
@@ -120,7 +130,7 @@
           Không có dự án nào.
         </p>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <ProjectRender
           @openproject="OpenProject"
           v-if="sliceProjectHoanThanh.length > 0"
@@ -140,12 +150,32 @@
           Không có dự án nào.
         </p>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <ProjectRender
           @openproject="OpenProject"
           :projects="sliceProjectTamDung"
           :is="sliceProjectTamDung"
           v-if="sliceProjectTamDung.length > 0"
+          @refresh="retrieveProject()"
+        >
+        </ProjectRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
+        >
+          Không có dự án nào.
+        </p>
+      </div>
+      <div class="col-3">
+        <ProjectRender
+          @openproject="OpenProject"
+          :projects="sliceProjectHuy"
+          :is="sliceProjectHuy"
+          v-if="sliceProjectHuy.length > 0"
           @refresh="retrieveProject()"
         >
         </ProjectRender>
@@ -239,10 +269,14 @@ export default {
         (_project, index) => _project.TrangThai === "tamdung"
       );
     },
+    sliceProjectHuy() {
+      return this.filteredProjects.filter(
+        (_project, index) => _project.TrangThai === "huy"
+      );
+    },
   },
 
   methods: {
-
     async OpenProject(value) {
       this.$emit("openproject", value);
     },
@@ -251,10 +285,13 @@ export default {
       try {
         this.projects = [];
         this.projectType = this.projectTab;
-        this.projects = await ProjectService.getType(
-          this.projectType,
-          this.user
-        );
+        if (this.user.chucvu === "admin")
+          this.projects = await ProjectService.getAll(this.projectType);
+        else
+          this.projects = await ProjectService.getType(
+            this.projectType,
+            this.user
+          );
         console.log(this.projects);
       } catch (error) {
         console.log(error);

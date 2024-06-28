@@ -7,7 +7,7 @@
             class=""
             style="margin: auto; font-size: 20px; font-family: RalewayBlack"
             v-if="edit === false"
-            >Thêm loại
+            >Thêm 
             <p v-if="cataTab === 'ngonngu'" style="display: inline">ngôn ngữ</p>
             <p style="display: inline" v-if="cataTab === 'moitruong'">
               môi trường

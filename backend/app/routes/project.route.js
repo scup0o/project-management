@@ -10,17 +10,17 @@ router
 
 router
   .route("/")
-  .get(projectController.getAll)
   .delete(projectController.deleteAll)
   .put(projectController.update)
   .post(projectController.create);
 
 router.route("/type/:type").post(projectController.getType);
 
+router.route("/all/:type").get(projectController.getAll);
+
 router.route("/:da").post(projectController.getQuyen);
 
-router.route("/tb/tat/:id").put(projectController.tat)
-router.route("/tb/bat/:id").put(projectController.bat)
-
+router.route("/tb/tat/:id").put(projectController.tat);
+router.route("/tb/bat/:id").put(projectController.bat);
 
 module.exports = router;

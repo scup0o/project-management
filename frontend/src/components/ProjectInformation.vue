@@ -59,7 +59,7 @@
           <div class="row spacing">
             <div class="col"><label for="Nguoitao">Người tạo: </label></div>
             <div class="col-8">
-              {{ project.NguoiTao.hoten }} ({{ project.NguoiTao.manhanvien }})
+              {{ project.NguoiTao.hoten }} ({{ project.NguoiTao.username }})
             </div>
           </div>
           <div class="row spacing">
@@ -69,7 +69,7 @@
             <div class="col-8">
               Vào lúc {{ format_datetime(project.ThoiGianChinhSuaLanCuoi) }} bởi
               {{ project.NguoiChinhSua.hoten }} ({{
-                project.NguoiChinhSua.manhanvien
+                project.NguoiChinhSua.username
               }})
             </div>
           </div>
@@ -142,8 +142,8 @@
               </p>
             </div>
           </div>
-          <label>Danh sách người tham gia</label>
-          <div
+          <label >Danh sách người tham gia</label>
+          <div v-if="this.project.DS_TG.length>0"
             class="row text-center flex-nowrap"
             style="
               overflow-x: auto;
@@ -153,7 +153,7 @@
             "
           >
             <div
-              v-for="(user, index) in tglist"
+              v-for="(user, index) in this.project.DS_TG"
               :key="user"
               class="col-2"
               style=""
@@ -187,13 +187,23 @@
                         font-size: 0.9vw;
                       "
                     >
-                      ({{ user.manhanvien }})
+                      ({{ user.username }})
                     </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <p
+            v-else
+            style="
+              font-family: 'RalewayItalic';
+              font-size: 2vh;
+              padding-left: 0.6vw;
+            "
+          >
+            Không có người tham gia nào.
+          </p>
           <!--chỉnh view chính tới khúc này-->
         </div>
         <div class="text-center">
@@ -271,20 +281,11 @@ export default {
   },
 
   mounted() {
-    this.getTG();
+    console.log(this.project)
   },
 
   methods: {
     async getTG() {
-      let temp = await ProjectService.getQuyen(this.project.id);
-
-      let i = 0;
-      while (i < temp.DS_TG.length) {
-        temp.DS_TG[i] = await UserService.get(temp.DS_TG[i]);
-        i++;
-      }
-      console.log(temp);
-      this.tglist = temp.DS_TG;
     },
 
     async checkData() {

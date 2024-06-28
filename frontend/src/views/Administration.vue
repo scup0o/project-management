@@ -85,7 +85,7 @@
                     <span class="ms-1 d-none d-sm-inline">Chia sẻ</span>
                   </button>
                 </div>
-                <div class="row">
+                <div class="row" v-if="this.user.chucvu!='admin'">
                   <button
                     class="a active2"
                     @click="
