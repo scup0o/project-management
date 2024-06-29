@@ -613,10 +613,14 @@ export default {
         data.Mota = "Không có mô tả";
       }
       if (
-        typeof this.project.GhiChu === "undefined" ||
-        this.project.GhiChu === ""
-      )
-        data.GhiChu = "Không có ghi chú";
+          typeof data.GhiChu === "undefined" ||
+          data.GhiChu === null ||
+          data.GhiChu === "" ||
+          data.GhiChu.length === 0
+        ) {
+          data.GhiChu = "Không có";
+        }
+        
       data.step = "check";
       data.TrangThai = this.TrangThai;
       let check;

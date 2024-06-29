@@ -158,7 +158,7 @@
             >
               <div class="col-4">
                 <label for="TenTaiLieu" style="margin-left: 3vw"
-                  >Tên tài liệu:
+                  >Tên tài liệu: <p class="dot" style="padding-left:0">(*)</p>
                 </label>
               </div>
               <div class="col-8">
@@ -184,7 +184,7 @@
               v-if="edit === false || ionly === false"
             >
               <div class="col-4">
-                <label name="TaiLieu" style="margin-left: 3vw">Tài liệu:</label>
+                <label name="TaiLieu" style="margin-left: 3vw">Tài liệu:<p class="dot">(*)</p></label>
               </div>
               <div class="col-8">
                 <div class="row" v-if="!filelist[0]">
@@ -591,7 +591,7 @@ label {
 
 .modal-body {
   margin: 20px 0;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 
   background-color: white;

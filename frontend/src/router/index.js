@@ -39,7 +39,7 @@ const routes = [
     path: "/forgotpassword/:username/",
     name: "forgotpasswordid",
     component: () => import("@/views/ForgotPassword.vue"),
-    meta: { userAuth: true, loginAuth: true },
+    meta: { /*userAuth: true,*/ loginAuth: true },
   },
 
   {

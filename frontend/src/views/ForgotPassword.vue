@@ -183,8 +183,9 @@
           </div>
         </div>
       </div>
-      <div v-if="id && show===false">
-        <p>Link đã hết hạn</p>
+      <div v-if="id && show===false" style="padding:30vw; padding-top:5vw">
+        <div style="border: 1px solid red; background-color:lightpink;"><p style="text-align: center; font-family: RalewayItalic; margin:0; padding:10px">Link đã hết hạn</p></div>
+        
       </div>
     </div>
   </div>

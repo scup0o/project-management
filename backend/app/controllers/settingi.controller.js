@@ -306,7 +306,7 @@ exports.getDiary = async (req, res) => {
 exports.addDiary = async (req, res) => {
   try {
     db.query(
-      `INSERT INTO NHAT_KY (loai, ten, khacphuc, ghichu, id_HT, id_nguoitao, id_nguoicapnhat, capnhat) VALUES ('${req.body.loai}', '${req.body.ten}', '${req.body.khacphuc}', '${req.body.ghichu}', '${req.body.id_HT}', '${req.body.id_nguoitao}', '${req.body.id_nguoicapnhat}', '${req.body.capnhat}')`,
+      `INSERT INTO NHAT_KY (loai, ten, khacphuc, ghichu, id_HT, id_nguoitao, id_nguoicapnhat, capnhat, ngayghinhan) VALUES ('${req.body.loai}', '${req.body.ten}', '${req.body.khacphuc}', '${req.body.ghichu}', '${req.body.id_HT}', '${req.body.id_nguoitao}', '${req.body.id_nguoicapnhat}', '${req.body.capnhat}','${req.body.ngayghinhan}')`,
       function (e, r) {
         if (e) throw e;
         else return res.send(true);
@@ -320,7 +320,7 @@ exports.addDiary = async (req, res) => {
 exports.updateDiary = async (req, res) => {
   try {
     db.query(
-      `UPDATE NHAT_KY SET loai='${req.body.loai}', ten='${req.body.ten}', khacphuc='${req.body.khacphuc}', ghichu='${req.body.ghichu}', id_nguoicapnhat='${req.body.id_nguoicapnhat}', capnhat='${req.body.capnhat}' WHERE id='${req.body.id}'`,
+      `UPDATE NHAT_KY SET loai='${req.body.loai}', ten='${req.body.ten}', khacphuc='${req.body.khacphuc}', ghichu='${req.body.ghichu}', id_nguoicapnhat='${req.body.id_nguoicapnhat}', capnhat='${req.body.capnhat}', ngayghinhan='${req.body.ngayghinhan}' WHERE id='${req.body.id}'`,
       function (e, r) {
         if (e) throw e;
         else return res.send(true);

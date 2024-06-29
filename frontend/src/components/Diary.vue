@@ -43,9 +43,8 @@
                     "
                   >
                     <option value="">Tất cả</option>
-                    <option value="loi">Lỗi</option>
-                    <option value="cap nhat">Cập nhật</option>
-                    <option value="khac">Khác</option>
+                    <option value="loi">Lỗi chưa khắc phục</option>
+                    <option value="conlai">Còn lại</option>
                   </select>
                 </div>
               </div>
@@ -86,14 +85,13 @@
                 <div
                   class="row"
                   style="padding-bottom: 5px"
-                  v-for="(i, index) in ilist"
+                  v-for="(i, index) in filterlist"
                   :key="i"
                 >
                   <div
                   v-if="
                               i.ten.toLowerCase()
-                              .includes(this.searchText.toLowerCase()) && i.loai.toLowerCase()
-                              .includes(this.filter)"
+                              .includes(this.searchText.toLowerCase())"
                     @click="editI = i"
                     class="card-render"
                     style=""
@@ -104,7 +102,7 @@
                     }"
                   >
                     <div class="col">
-                      <label style="color:gray; padding-top:0">{{ format_datetime(i.ngaytao) }}</label>
+                      <label style="color:gray; padding-top:0">{{ format_datetime(i.ngayghinhan) }}</label>
                       <div class="row" style="margin-top:-10px"><label>{{ i.ten }}</label></div>
                       <div class="row" style="margin-top:-5px; margin-bottom:-20px">
                         <p v-if="i.loai==='loi'" style="font-family:RalewayItalic">Lỗi (<p v-if="i.khacphuc!=''" style="display: inline;">Đã khắc phục</p><p v-else style="display: inline;">Chưa khắc phục</p>)</p>
@@ -222,11 +220,20 @@
                 <div class="form-group">
                   <div class="row spacing">
                     <div class="col">
+                      <label for="DonViSuDung">Thời gian ghi nhận: </label>
+                    </div>
+                    <div class="col-9"> Vào lúc {{ format_datetime(editI.ngayghinhan) }}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row spacing">
+                    <div class="col">
                       <label for="DonViSuDung">Thời gian tạo: </label>
                     </div>
                     <div class="col-9"> Vào lúc {{ format_datetime(editI.ngaytao) }} bởi
                       {{ editI.NguoiTao.hoten }} ({{
-                        editI.NguoiTao.manhanvien
+                        editI.NguoiTao.username
                       }})
                     </div>
                   </div>
@@ -241,7 +248,7 @@
                     <div class="col-9">
                       Vào lúc {{ format_datetime(editI.ngaycapnhat) }} bởi
                       {{ editI.NguoiCapNhat.hoten }} ({{
-                        editI.NguoiCapNhat.manhanvien
+                        editI.NguoiCapNhat.username
                       }})
                     </div>
                   </div>
@@ -337,6 +344,36 @@ export default {
 
   mounted() {
     this.retrieveI();
+  },
+
+  computed:{
+    filterlist(){
+      let temp=[];
+      if (this.filter==='loi'){
+        let i=0;
+        while(i<this.ilist.length){
+          if (this.ilist[i].loai==='loi' && this.ilist[i].khacphuc===''){
+            temp.push(this.ilist[i]);
+          }
+          i++;
+        }
+      }
+      else{
+        if (this.filter==='conlai'){
+          let i=0;
+        while(i<this.ilist.length){
+          if (this.ilist[i].loai!='loi' || (this.ilist[i].khacphuc!=''&& this.ilist[i].loai==='loi') ){
+            temp.push(this.ilist[i]);
+          }
+          i++;
+        }
+        }
+        else{
+          return this.ilist;
+        }
+      }
+      return temp;
+    }
   },
 
   methods: {

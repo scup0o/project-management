@@ -288,7 +288,7 @@ export default {
           const deleteCount = await DoctypeService.deleteAll(this.cataTab);
           if (deleteCount.deletedCount != 0) {
             this.$toast.open({
-              message: `Xóa ${deleteCount.deletedCount} ${cata} thành công`,
+              message: `Xóa tất cả ${cata} thành công`,
               type: "success",
               duration: 3000,
               dismissible: true,

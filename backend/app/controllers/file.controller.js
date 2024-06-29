@@ -50,6 +50,22 @@ exports.get = async (req, res, next) => {
         }
       );
     });
+    let a = await new Promise((rs, rj) => {
+      db.query(
+        `SELECT * FROM THAM_GIA WHERE id_DuAn = '${req.body.id_da}' AND id_NhanVien='${req.body.id_user}'`,
+        function (e, r) {
+          if (e) throw e;
+          else {
+            rs(r);
+          }
+        }
+      );
+    });
+    console.log(a[0]);
+    let kt = false;
+    if (a.result>0)
+    if (a[0].loai === "kt") kt = true;
+
     let i = 0;
     let j = 0;
     while (i < result.length) {
@@ -59,6 +75,7 @@ exports.get = async (req, res, next) => {
       result[i].DSNguoiChinhSua = [];
       result[i].LichSu = [];
       result[i].NguoiTao = {};
+      result[i].kt = kt;
       let p = await new Promise((rs, rj) => {
         db.query(
           `SELECT * FROM QUYEN_TAILIEU WHERE id_tailieu = '${result[i].id}'`,
@@ -92,44 +109,35 @@ exports.get = async (req, res, next) => {
               if (p[j].quyen === "tuy chinh") {
                 let temp = await new Promise((rs, rj) => {
                   db.query(
-                    `SELECT * FROM QUYEN_TAILIEU WHERE id_tailieu='${result[i].id}' AND loaiQuyen='xem'`,
+                    `SELECT * FROM QUYEN_TAILIEU WHERE id_tailieu='${result[i].id}' AND loaiQuyen='xem' AND id_nguoichinhsua='${req.body.id_user}'`,
                     async function (e, r) {
-                      if (e) throw e;
+                      if (e) console.log(e);
                       else {
                         rs(r);
                       }
                     }
                   );
                 });
-                let index = -1;
-                index = temp.findIndex(
-                  (x) => x.id_nguoichinhsua === req.body.id_user
-                );
-                if (index === -1) {
+                if (temp.length === 0) {
                   result.splice(i, 1);
                   break;
                 } else {
-                  result[i].QuyenXem = "tuy chinh";
-                  let DSNguoiXem = temp;
-
-                  let k = 0;
-                  while (k < DSNguoiXem.length) {
-                    let user = await new Promise((rs, rj) => {
-                      db.query(
-                        `SELECT * FROM NHAN_VIEN WHERE id='${DSNguoiXem[k].id_nguoichinhsua}'`,
-                        function (e, r) {
-                          if (e) throw e;
-                          else rs(r);
+                  result[i].DSNguoiXem = await new Promise((rs, rj) => {
+                    db.query(
+                      `SELECT * FROM QUYEN_TAILIEU tl JOIN NHAN_VIEN nv ON nv.id=tl.id_nguoichinhsua WHERE id_tailieu='${result[i].id}' AND loaiQuyen='xem'`,
+                      async function (e, r) {
+                        if (e) console.log(e);
+                        else {
+                          rs(r);
                         }
-                      );
-                    });
-                    result[i].DSNguoiXem.push(user[0]);
-                    k++;
-                  }
+                      }
+                    );
+                  });
                 }
               }
             }
           }
+          result[i].QuyenXem = p[j].quyen;
         } else if (result[i].QuyenChinhSua === "") {
           if (p[j].quyen === "chi minh toi") {
             result[i].QuyenChinhSua = "chi minh toi";
@@ -147,39 +155,30 @@ exports.get = async (req, res, next) => {
               result[i].QuyenChinhSua = "tuy chinh";
               let temp = await new Promise((rs, rj) => {
                 db.query(
-                  `SELECT * FROM QUYEN_TAILIEU WHERE id_tailieu='${result[i].id}' AND loaiQuyen='chinhsua'`,
-                  function (e, r) {
-                    if (e) throw e;
+                  `SELECT * FROM QUYEN_TAILIEU WHERE id_tailieu='${result[i].id}' AND loaiQuyen='chinhsua' AND id_nguoichinhsua='${req.body.id_user}'`,
+                  async function (e, r) {
+                    if (e) console.log(e);
                     else {
                       rs(r);
                     }
                   }
                 );
               });
-              //console.log(temp);
-              let index = -1;
-              index = temp.findIndex(
-                (x) => x.id_nguoichinhsua === req.body.id_user
-              );
-              if (index === -1) {
+              if (temp.length === 0) {
                 result[i].e = false;
               } else {
                 result[i].e = true;
-              }
-              let DSNguoiChinhSua = temp;
-              let k = 0;
-              while (k < DSNguoiChinhSua.length) {
-                let user = await new Promise((rs, rj) => {
+                result[i].DSNguoiChinhSua = await new Promise((rs, rj) => {
                   db.query(
-                    `SELECT * FROM NHAN_VIEN WHERE id='${DSNguoiChinhSua[k].id_nguoichinhsua}'`,
-                    function (e, r) {
-                      if (e) throw e;
-                      else rs(r);
+                    `SELECT * FROM QUYEN_TAILIEU tl JOIN NHAN_VIEN nv ON nv.id=tl.id_nguoichinhsua WHERE id_tailieu='${result[i].id}' AND loaiQuyen='chinhsua'`,
+                    async function (e, r) {
+                      if (e) console.log(e);
+                      else {
+                        rs(r);
+                      }
                     }
                   );
                 });
-                result[i].DSNguoiChinhSua.push(user[0]);
-                k++;
               }
             }
           }
@@ -189,6 +188,7 @@ exports.get = async (req, res, next) => {
 
       i++;
     }
+    console.log(result);
     i = 0;
     while (i < result.length) {
       let m = await new Promise((rs, rj) => {
@@ -212,6 +212,7 @@ exports.get = async (req, res, next) => {
         );
       });
       result[i].LichSu = t;
+
       i++;
     }
 
@@ -324,11 +325,12 @@ exports.create = async (req, res, next) => {
       });
       let s =
         (await result.insertId.toString()) +
-        temp2[0].manhanvien.toString() +
+        temp2[0].username.toString() +
         temp[0].ThoiGianChinhSua.toISOString();
       //console.log(s);
       s = await s.replace(":", "a");
       s = await s.replace(":", "a");
+      s = await s.split(".")[0];
       let b = new String(s) + req.body.extension;
       db.query(
         `UPDATE LICH_SU SET TenFile='${b}' WHERE id_TaiLieu='${result.insertId}'`
@@ -406,11 +408,12 @@ exports.update = async (req, res, next) => {
       //console.log(temp[temp.length - 1].ThoiGianChinhSua);
       s =
         (await req.body.id.toString()) +
-        temp2[0].manhanvien.toString() +
+        temp2[0].username.toString() +
         temp[temp.length - 1].ThoiGianChinhSua.toISOString();
       //console.log(s);
       s = await s.replace(":", "a");
       s = await s.replace(":", "a");
+      s = await s.split(".")[0];
       let b = new String(s) + req.body.extension;
       db.query(
         `UPDATE LICH_SU SET TenFile='${b}' WHERE id_TaiLieu='${req.body.id}' && stt='${doc.insertId}'`
@@ -419,7 +422,10 @@ exports.update = async (req, res, next) => {
 
     if (req.body.check === "normal-update") {
       db.query(
-        `UPDATE TAI_LIEU SET LoaiFile='${req.body.extension}' WHERE id='${req.body.id}'`
+        `UPDATE TAI_LIEU SET LoaiFile='${req.body.extension}' WHERE id='${req.body.id}'`,
+        function (e, r) {
+          if (e) console.log(e);
+        }
       );
     } else {
       if ((req.body.file = "no")) {
@@ -479,6 +485,7 @@ exports.update = async (req, res, next) => {
     }
     return res.send(s);
   } catch (e) {
+    console.log(e);
     return next(
       new ApiError(500, `Error retrieving project with id = ${req.params.id}`)
     );

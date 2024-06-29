@@ -75,7 +75,7 @@ exports.getAll = async (req, res) => {
   try {
     let event = await new Promise((rs, rj) => {
       db.query(
-        `SELECT * FROM SU_KIEN WHERE id_DuAn='${req.params.id_da}' ORDER BY NgayDienRaSuKien`,
+        `SELECT * FROM SU_KIEN WHERE id_DuAn='${req.params.id_da}' ORDER BY id DESC`,
         function (e, r) {
           if (e) throw e;
           else rs(r);

@@ -10,15 +10,50 @@
 
         <div class="modal-body" style="margin-bottom: 3vh; overflow-y: auto">
           <div class="row" v-for="(f, i) in file.LichSu" :key="f">
-            <div class="col-10">
+            <div class="col-1 d-flex justify-content-center align-items-center">
+              <i
+                class="fa-solid fa-file-word"
+                style="color: #2e58ff; font-size: 1.2vw"
+                v-if="f.TenFile.split('.')[1] === 'docx' || f.TenFile.split('.')[1] === 'doc'"
+              ></i>
+              <i
+                class="fa-solid fa-file-excel"
+                style="color: #197500; font-size: 1.2vw"
+                v-if="f.TenFile.split('.')[1] === 'xlsx' || f.TenFile.split('.')[1] === 'xls'"
+              ></i>
+              <i
+                class="fa-solid fa-file-powerpoint"
+                style="color: #db1a1a; font-size: 1.2vw"
+                v-if="f.TenFile.split('.')[1] === 'ppt' || f.TenFile.split('.')[1] === 'pptx'"
+              ></i>
+              <i
+                class="fa-solid fa-file-pdf"
+                style="color: #fd1212; font-size: 1.1vw"
+                v-if="f.TenFile.split('.')[1] === 'pdf'"
+              ></i>
+              <i
+                class="fa-solid fa-file"
+                style="color: #a1a1a1; font-size: 1.2vw"
+                v-if="
+                  f.TenFile.split('.')[1] != 'pdf' &&
+                  f.TenFile.split('.')[1] != 'ppt' &&
+                  f.TenFile.split('.')[1] != 'pptx' &&
+                  f.TenFile.split('.')[1] != 'xlsx' &&
+                  f.TenFile.split('.')[1] != 'xls' &&
+                  f.TenFile.split('.')[1] != 'docx' &&
+                  f.TenFile.split('.')[1] != 'doc'
+                "
+              ></i>
+            </div>
+            <div class="col-9">
                 <label>{{ format_datetime(f.ThoiGianChinhSua) }}</label>
                 <p style="font-family: RalewayItalic; margin-bottom: 0px; margin-top:-5px" v-if="i===0">Phiên bản hiện tại</p>
-                <p style="  ">Cập nhật bởi <b>{{ f.NguoiChinhSua.hoten }} ({{ f.NguoiChinhSua.manhanvien }})</b></p>
+                <p style="  ">Cập nhật bởi <b>{{ f.NguoiChinhSua.hoten }} ({{ f.NguoiChinhSua.username }})</b></p>
             </div>
             <div class="col">
                 <a
                 :href="`../../src/assets/file/doc${
-                  f.TenFile
+                  f.TenFile.split('.')[1]
                 }`"
                 style="
                 margin:auto;

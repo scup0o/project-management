@@ -35,6 +35,29 @@
                       <div style="padding-bottom: 5px; padding-top:5px">
                         <div class="row card-in" style="width: 98%; margin: 0">
                           <div class="col">
+                            <label
+                              v-if="e.NgayDienRaSuKien != e.NgayKetThucSuKien"
+                              style="
+                                color: gray;
+                                font-family: Raleway;
+                                padding-bottom: 0; width: 100%;
+                              "
+                              ><b
+                                >Từ {{ format_date(e.NgayDienRaSuKien) }} đến
+                                {{ format_date(e.NgayKetThucSuKien) }}</b
+                              ></label
+                            >
+                            <label
+                              v-else
+                              style="
+                                color: gray;
+                                font-family: Raleway;
+                                padding-bottom: 0; width: 100%;
+                              "
+                              ><b
+                                >Ngày {{ format_date(e.NgayDienRaSuKien) }}</b
+                              ></label
+                            >
                             <label style="font-family: Raleway"
                               ><p style="margin-bottom: 0">
                                 <b>{{ e.TenSuKien }}</b>
@@ -158,7 +181,7 @@
                 </div>
                 <div
                   class="col-3 hover-i"
-                  v-if="this.pj.e === true && this.user.chucvu!='admin'"
+                  v-if="this.pj.e === true && this.user.chucvu!='admin' && this.pj.kt===false"
                   @click="form = true"
                 >
                   <div class="row text-center">
@@ -339,7 +362,7 @@
     }"
     :e="false"
     @close="form = false"
-    @refresh="this.getEvent()"
+    @refresh="this.getEvent(); date=new Date()"
   >
   </EventForm>
   <EventInformation
@@ -347,6 +370,7 @@
     :eventprop="editevent"
     @close="ifo = false"
     :e="this.pj.e"
+    :kt="this.pj.kt"
   >
   </EventInformation>
 </template>
@@ -405,6 +429,7 @@ export default {
 
   methods: {
     async getsEvent() {
+      this.sEvent=[]
       let i = 0;
       while (i < this.event.length) {
         if (
@@ -490,6 +515,7 @@ export default {
       this.eventlist = ref(this.event);
       console.log(this.event);
       this.date = this.format_datecp(new Date());
+      this.getsEvent()
     },
 
     async deleteEvent(data) {

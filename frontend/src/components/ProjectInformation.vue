@@ -47,6 +47,15 @@
           </div>
           <div class="row spacing">
             <div class="col">
+              <label for="TrangThai">Ghi chú: </label>
+            </div>
+            <div class="col-8">
+              
+              <p >{{ project.GhiChu }}</p>
+            </div>
+          </div>
+          <div class="row spacing">
+            <div class="col">
               <label for="TrangThai">Gia hạn từ dự án: </label>
             </div>
             <div class="col-8">
@@ -159,7 +168,7 @@
               style=""
             >
               <div class="row text-center">
-                <div class="col-5">
+                <div class="col">
                   <img
                     style="
                       display: inline-block;
@@ -210,7 +219,7 @@
           <button
             v-if="
               (project.e === true || type != 'chia se') &&
-              this.user.chucvu != 'admin'
+              this.user.chucvu != 'admin' && project.kt===false
             "
             class="btn btn-dark"
             style="margin-right: 10px"

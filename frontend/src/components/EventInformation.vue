@@ -87,7 +87,7 @@
                 style=""
               >
                 <div class="row text-center">
-                  <div class="col-5">
+                  <div class="col">
                     <img
                       style="
                         display: inline-block;
@@ -115,7 +115,7 @@
                           font-size: 0.9vw;
                         "
                       >
-                        ({{ user.manhanvien }})
+                        ({{ user.username }})
                       </p>
                     </div>
                   </div>
@@ -136,7 +136,7 @@
         </div>
         <div class="text-center">
           <button
-            v-if="edit === true && this.user.chucvu!='admin'"
+            v-if="edit === true && this.user.chucvu!='admin' && this.kt===false"
             class="btn btn-dark"
             style="margin-right: 10px; width: 150px"
             type="submit"
@@ -186,6 +186,8 @@ export default {
   props: {
     eventprop: { type: Object, required: true },
     e: { type: Boolean, required: true },
+    kt: { type: Boolean, required: true },
+
   },
 
   data() {

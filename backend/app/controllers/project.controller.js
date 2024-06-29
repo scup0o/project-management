@@ -187,7 +187,7 @@ exports.getType = async (req, res, next) => {
     //console.log(da)
     let i = 0;
     while (i < da.length) {
-      console.log(da.length);
+      //console.log(da.length);
       da[i].NguoiTao = {};
       da[i].NguoiChinhSua = {};
       da[i].DuAnGiaHan = {};
@@ -196,7 +196,7 @@ exports.getType = async (req, res, next) => {
       da[i].qx = "";
       da[i].qcs = "";
       da[i].e = true;
-      da[i].kt = true;
+      da[i].kt = false;
 
       let Difference_In_Time = new Date(da[i].ThoiGianBaoHanh) - new Date();
 
@@ -287,7 +287,7 @@ exports.getType = async (req, res, next) => {
 
       let kt = await new Promise((rs, rj) => {
         db.query(
-          `SELECT * FROM THAM_GIA WHERE loai='kt' AND id_NhanVien='${req.body.id}'`,
+          `SELECT * FROM THAM_GIA WHERE loai='kt' AND id_NhanVien='${req.body.id}' AND id_DuAn='${da[i].id}'`,
           function (e, r) {
             if (e) throw e;
             else {
@@ -297,7 +297,7 @@ exports.getType = async (req, res, next) => {
         );
       });
 
-      if (kt.length === 0) da[i].kt = false;
+      if (kt.length != 0) da[i].kt = true;
       let next = true;
       let qx = await new Promise((rs, rj) => {
         db.query(
@@ -315,7 +315,7 @@ exports.getType = async (req, res, next) => {
         } else {
           da.splice(i, 1);
           next = false;
-          console.log(da[i].Ten)
+          //console.log("xoa");
         }
       } else {
         if (qx[0].quyen === "nguoi tham gia") {
@@ -324,20 +324,24 @@ exports.getType = async (req, res, next) => {
               `SELECT * FROM THAM_GIA WHERE id_DuAn='${da[i].id}' AND id_NhanVien='${req.body.id}'`,
               function (e, r) {
                 if (e) console.log(e);
-                else rs(r);
+                else {
+                  console.log(r);
+                  if (r.length === 0) {
+                    //console.log("xoa");
+                    da.splice(i, 1);
+                    next = false;
+                  }
+                  rs(r[0]);
+                }
               }
             );
           });
-          if (tg.length === 0) {
-            console.log(req.body.id, " ", da[i].id);
-            da.splice(i, 1);
-            next = false;console.log(da[i].Ten)
-          }
         }
       }
 
       if (next === true) i++;
     }
+
     return res.send(da);
   } catch (e) {
     return next(
@@ -445,7 +449,9 @@ exports.getAll = async (req, res, next) => {
           }
         );
       });
+      i++;
     }
+
     return res.send(da);
   } catch (e) {
     return next(new ApiError(500, `Error retrieving project`));
@@ -588,7 +594,6 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    
     let error = [0, 0];
     //console.log(req.body);
     if (req.body.step === "check") {
@@ -691,7 +696,7 @@ exports.update = async (req, res, next) => {
       } else {
         //console.log('here')
         db.query(
-          `UPDATE DU_AN SET ThoiHan='${req.body.ThoiHan}',LoaiThoiHan='${req.body.LoaiThoiHan}', id_GiaHan='${req.body.id_GiaHan}', KhachHang='${req.body.KhachHang}',id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
+          `UPDATE DU_AN SET GhiChu='${req.body.GhiChu}',ThoiHan='${req.body.ThoiHan}',LoaiThoiHan='${req.body.LoaiThoiHan}', id_GiaHan='${req.body.id_GiaHan}', KhachHang='${req.body.KhachHang}',id_NguoiChinhSuaLanCuoi = '${req.body.id_NguoiChinhSuaLanCuoi}', Ten = '${req.body.Ten}', Ma = '${req.body.Ma}', MoTa = '${req.body.MoTa}', TrangThai = '${req.body.TrangThai}', ThoiGianBatDauDuAn = '${req.body.ThoiGianBatDauDuAn}', ThoiGianKetThucDuAn='${req.body.ThoiGianKetThucDuAn}', ThoiGianBatDauDauThau='${req.body.ThoiGianBatDauDauThau}', ThoiGianKetThucDauThau='${req.body.ThoiGianKetThucDauThau}', ThoiGianNghiemThu = '${req.body.ThoiGianNghiemThu}', ThoiGianBaoHanh = '${req.body.ThoiGianBaoHanh}' WHERE id = ${req.body.id}`,
           function (e, r) {
             if (e) throw e;
             else return res.send(true);

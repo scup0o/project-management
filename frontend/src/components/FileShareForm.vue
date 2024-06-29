@@ -29,6 +29,7 @@
                     type="radio"
                     value="tat ca"
                     v-model="file.QuyenXem"
+                    @click="this.getCS('tat ca')"
                     style="margin-right: 0.5vw"
                   >
                   </Field>
@@ -40,6 +41,7 @@
                     type="radio"
                     value="chi minh toi"
                     v-model="file.QuyenXem"
+                    @click="this.getCS('chi minh toi')"
                     style="margin-right: 0.5vw"
                   >
                   </Field>
@@ -51,6 +53,7 @@
                     type="radio"
                     value="tuy chinh"
                     v-model="file.QuyenXem"
+                    @click="this.getCS('tuy chinh')"
                     style="margin-right: 0.5vw"
                   >
                   </Field>
@@ -71,7 +74,7 @@
                     placeholder="Nhập tên nhân viên cần tìm"
                     v-model="searchP"
                   />
-                  <button
+                  <!--<button
                     class="btn btn-outline-secondary search-button"
                     type="button"
                     style="
@@ -80,7 +83,7 @@
                       border-radius: 0 25px 25px 0;
                     "
                   >
-                  <!--<Field
+                  <Field
                       name="a"
                       as="select"
                       value="tatca"
@@ -91,9 +94,9 @@
                       <option value="tatca">Tất cả</option>
                       <option value="hc">Nhân viên hành chính</option>
                       <option value="kt">Nhân viên kỹ thuật</option>
-                    </Field>-->
+                    </Field>
                     
-                  </button>
+                  </button>-->
                 </div>
               </div>
               <div
@@ -101,7 +104,7 @@
                 style="
                   overflow-x: auto;
                   padding-top: 2vh;
-                  height: 15vh;
+                  height: 13vh;
                   overflow-y: hidden;
                 "
               >
@@ -112,12 +115,12 @@
                   style=""
                 >
                   <div class="row text-center">
-                    <div class="col-5">
+                    <div class="col">
                       <img
                         style="
                           display: inline-block;
-                          width: 3vw;
-                          height: 3vw;
+                          width: 2vw;
+                          height: 2vw;
                           border-radius: 100%;
                           margin: auto;
                         "
@@ -140,7 +143,7 @@
                             font-size: 0.9vw;
                           "
                         >
-                          ({{ user.manhanvien }})
+                          ({{ user.username }})
                         </p>
                       </div>
                     </div>
@@ -148,73 +151,73 @@
                       <i
                         v-if="index != 0"
                         class="fa-solid fa-circle-xmark"
-                        style="position: relative; display: block"
+                        style="position: relative; display: block; margin-left:-55px"
                         @click="removeP('plist', user, index)"
                       ></i>
                     </div>
                   </div>
                 </div>
               </div>
-              <div
-                class="row"
-                style="overflow-x: auto; height: 20vh; padding: 10px"
-              >
-                <div v-for="(user, index) in us.userList" class="row" style="">
+              <div style="height: 30vh; overflow-y: auto; overflow-x: hidden">
+                <div class="row">
                   <div
-                    class="card"
-                    style=""
-                    :class="{ active: us.checkp[index] === true }"
-                    v-if="
-                      user.hoten
-                        .toLowerCase()
-                        .includes(this.searchP.toLowerCase()) &&
-                      (user.chucvu === filterP || filterP === 'tatca')
-                    "
+                    v-for="(user, index) in us.userList"
+                    class="row"
+                    style="padding-bottom: 2px; padding-left: 2vw"
                   >
-                    <div class="row" style="">
-                      <div class="col-2">
-                        <img
+                    <div
+                      class="card"
+                      style=""
+                      :class="{ active: us.checkp[index] === true }"
+                      v-if="
+                        user.hoten
+                          .toLowerCase()
+                          .includes(this.searchP.toLowerCase()) &&
+                        (user.chucvu === filterP || filterP === 'tatca')
+                      "
+                    >
+                      <div class="row" style="">
+                        <div class="col-2">
+                          <img
+                            style="
+                              width: 1.5vw;
+                              height: 1.5vw;
+                              border-radius: 100%;
+                              margin: auto;
+                            "
+                            :src="`../../src/assets/img/${user.anhdaidien}`"
+                          />
+                        </div>
+                        <div class="col-7">
+                          <div class="row">
+                            {{ user.hoten }} ({{ user.username }})
+                          </div>
+                        </div>
+                        <div
+                          v-if="user.id === plist[0].id"
+                          class="col"
                           style="
-                            width: 3vw;
-                            height: 3vw;
-                            border-radius: 100%;
+                            font-family: RalewayBlack;
+                            color: gray;
                             margin: auto;
                           "
-                          :src="`../../src/assets/img/${user.anhdaidien}`"
-                        />
-                      </div>
-                      <div class="col-7">
-                        <div class="row">
-                          {{ user.hoten }}
+                        >
+                          Chủ sở hữu
                         </div>
-                        <div class="row">
-                          {{ user.manhanvien }}
-                        </div>
-                      </div>
-                      <div
-                        v-if="user.id === plist[0].id"
-                        class="col"
-                        style="
-                          font-family: RalewayBlack;
-                          color: gray;
-                          margin: auto;
-                        "
-                      >
-                        Chủ sở hữu
-                      </div>
-                      <div v-else class="col d-flex">
-                        <div style="margin: auto">
-                          <i
-                            class="fa-solid fa-plus hover-i"
-                            v-if="this.us.checkp[index] === false"
-                            @click="addP(index)"
-                          ></i>
-                          <i
-                            class="fa-solid fa-xmark hover-i"
-                            style="color: #c70000"
-                            @click="removeP('us', user, index)"
-                            v-else
-                          ></i>
+                        <div v-else class="col d-flex">
+                          <div style="margin: auto">
+                            <i
+                              class="fa-solid fa-plus hover-i"
+                              v-if="this.us.checkp[index] === false"
+                              @click="addP(index)"
+                            ></i>
+                            <i
+                              class="fa-solid fa-xmark hover-i"
+                              style="color: #c70000"
+                              @click="removeP('us', user, index)"
+                              v-else
+                            ></i>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -280,7 +283,7 @@
                     placeholder="Nhập tên nhân viên cần tìm"
                     v-model="searchE"
                   />
-                  <button
+                  <!--<button
                     class="btn btn-outline-secondary search-button"
                     type="button"
                     style="
@@ -289,7 +292,7 @@
                       border-radius: 0 25px 25px 0;
                     "
                   >
-                  <!--<Field
+                  <Field
                       name="a"
                       as="select"
                       value="tatca"
@@ -300,9 +303,9 @@
                       <option value="tatca">Tất cả</option>
                       <option value="hc">Nhân viên hành chính</option>
                       <option value="kt">Nhân viên kỹ thuật</option>
-                    </Field>-->
+                    </Field>
                     
-                  </button>
+                  </button>-->
                 </div>
               </div>
               <div
@@ -310,7 +313,7 @@
                 style="
                   overflow-x: auto;
                   padding-top: 2vh;
-                  height: 15vh;
+                  height: 13vh;
                   overflow-y: hidden;
                 "
               >
@@ -321,12 +324,12 @@
                   style=""
                 >
                   <div class="row text-center">
-                    <div class="col-5">
+                    <div class="col">
                       <img
                         style="
                           display: inline-block;
-                          width: 3vw;
-                          height: 3vw;
+                          width: 2vw;
+                          height: 2vw;
                           border-radius: 100%;
                           margin: auto;
                         "
@@ -349,7 +352,7 @@
                             font-size: 0.9vw;
                           "
                         >
-                          ({{ user.manhanvien }})
+                          ({{ user.username }})
                         </p>
                       </div>
                     </div>
@@ -357,73 +360,82 @@
                       <i
                         v-if="index != 0"
                         class="fa-solid fa-circle-xmark"
-                        style="position: relative; display: block"
+                        style="position: relative; display: block; margin-left:-55px"
                         @click="removeE('elist', user, index)"
                       ></i>
                     </div>
                   </div>
                 </div>
               </div>
-              <div
-                class="row"
-                style="overflow-x: auto; height: 20vh; padding: 10px"
-              >
-                <div v-for="(user, index) in us.userList" class="row" style="">
+              <div style="height: 30vh; overflow-y: auto; overflow-x: hidden">
+                <div class="row">
                   <div
-                    class="card"
-                    style=""
-                    :class="{ active: us.checke[index] === true }"
-                    v-if="
-                      user.hoten
-                        .toLowerCase()
-                        .includes(this.searchE.toLowerCase()) &&
-                      (user.chucvu === filterE || filterE === 'tatca')
-                    "
+                    v-for="(user, index) in cslist"
+                    class="row"
+                    style="padding-bottom: 2px; padding-left: 2vw"
                   >
-                    <div class="row" style="">
-                      <div class="col-2">
-                        <img
+                    <div
+                      class="card"
+                      style=""
+                      :class="{
+                        active:
+                          us.checke[getIndex(user)] === true ||
+                          (file.QuyenXem === 'tat ca' &&
+                            us.checke[index] === true),
+                      }"
+                      v-if="
+                        user.hoten
+                          .toLowerCase()
+                          .includes(this.searchE.toLowerCase()) &&
+                        (user.chucvu === filterE || filterE === 'tatca')
+                      "
+                    >
+                      <div class="row" style="">
+                        <div class="col-2">
+                          <img
+                            style="
+                              width: 1.5vw;
+                              height: 1.5vw;
+                              border-radius: 100%;
+                              margin: auto;
+                            "
+                            :src="`../../src/assets/img/${user.anhdaidien}`"
+                          />
+                        </div>
+                        <div class="col-7">
+                          <div class="row">
+                            {{ user.hoten }} ({{ user.username }})
+                          </div>
+                        </div>
+                        <div
+                          v-if="user.id === elist[0].id"
+                          class="col"
                           style="
-                            width: 3vw;
-                            height: 3vw;
-                            border-radius: 100%;
+                            font-family: RalewayBlack;
+                            color: gray;
                             margin: auto;
                           "
-                          :src="`../../src/assets/img/${user.anhdaidien}`"
-                        />
-                      </div>
-                      <div class="col-7">
-                        <div class="row">
-                          {{ user.hoten }}
+                        >
+                          Chủ sở hữu
                         </div>
-                        <div class="row">
-                          {{ user.manhanvien }}
-                        </div>
-                      </div>
-                      <div
-                        v-if="user.id === elist[0].id"
-                        class="col"
-                        style="
-                          font-family: RalewayBlack;
-                          color: gray;
-                          margin: auto;
-                        "
-                      >
-                        Chủ sở hữu
-                      </div>
-                      <div v-else class="col d-flex">
-                        <div style="margin: auto">
-                          <i
-                            class="fa-solid fa-plus hover-i"
-                            v-if="this.us.checke[index] === false"
-                            @click="addE(index)"
-                          ></i>
-                          <i
-                            class="fa-solid fa-xmark hover-i"
-                            style="color: #c70000"
-                            @click="removeE('us', user, index)"
-                            v-else
-                          ></i>
+                        <div v-else class="col d-flex">
+                          <div style="margin: auto">
+                            <i
+                              class="fa-solid fa-plus hover-i"
+                              v-if="
+                                us.checke[getIndex(user)] === false ||
+                                (file.QuyenXem === 'tat ca' &&
+                                  us.checke[index] === false)
+                              "
+                              @click="addE(index)"
+                            ></i>
+                            <i
+                              class="fa-solid fa-xmark hover-i"
+                              style="color: #c70000"
+                              @click="removeE('us', user, index)"
+                              v-else
+                            ></i>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -502,7 +514,7 @@ export default {
         checkp: [],
         checke: [],
       },
-
+      cslist: [],
       searchP: "",
       filterP: "tatca",
       userList: [],
@@ -519,12 +531,38 @@ export default {
       this.file.QuyenXem = "tat ca";
       this.file.QuyenChinhSua = "tat ca";
     } else {
-      this.plist = this.fileprop.DSNguoiXem;
-      this.elist = this.fileprop.DSNguoiChinhSua;
+      if (this.file.DSNguoiXem.length != 0)
+        this.plist = this.fileprop.DSNguoiXem;
+      else this.plist.push(this.file.NguoiTao);
+      if (this.file.DSNguoiChinhSua.length != 0)
+        this.elist = this.file.DSNguoiChinhSua;
+      else this.elist[0] = this.plist[0];
     }
+
   },
 
   methods: {
+    getIndex(data) {
+      let i = 0;
+      while (i < this.us.userList.length) {
+        if (this.us.userList[i].id === data.id) {
+          break;
+        }
+        i++;
+      }
+      return i;
+    },
+    getCS(data) {
+      if (data === "chi minh toi") {
+        this.cslist = [];
+        this.cslist.push(this.plist[0]);
+        return;
+      }
+      if (data === "tat ca") {
+        this.cslist = this.us.userList;
+        console.log(this.us.userList);
+      } else this.cslist = this.plist;
+    },
     async getUser() {
       let s = "admin";
       this.us.userList = await UserService.getAll();
@@ -563,6 +601,7 @@ export default {
           while (j < this.us.userList.length) {
             if (this.us.userList[j].id === this.plist[i].id) {
               this.us.checkp[j] = true;
+              console.log(j)
               break;
             }
             j++;
@@ -586,6 +625,7 @@ export default {
       console.log(this.plist);
       console.log(this.elist);
       console.log(this.us);
+      this.getCS("tat ca");
     },
 
     async addP(data) {
@@ -595,6 +635,7 @@ export default {
 
     async removeP(s, data, index) {
       if (s === "us") {
+        this.removeE("us", data, index);
         this.us.checkp[index] = false;
         let i = 0;
         let c = false;
@@ -608,36 +649,56 @@ export default {
         }
       } else {
         console.log("plist");
+        this.removeE("elist", data, index);
+        let n = 0;
+        while (n < this.elist.length) {
+          if (this.elist[n].id === this.plist[index].id) {
+            let m = 0;
+            this.elist.splice(n, 1);
+            break;
+          }
+          n++;
+        }
         this.plist.splice(index, 1);
         let i = 0;
         while (i < this.us.userList.length) {
           if (this.us.userList[i].id === data.id) {
             this.us.checkp[i] = false;
+            console.log(this.us);
+
             break;
           } else {
             i++;
           }
         }
       }
+      console.log(this.elist);
+      console.log(this.cslist);
     },
 
     async addE(data) {
-      this.elist.push(this.us.userList[data]);
-      this.us.checke[data] = true;
+      this.elist.push(this.cslist[data]);
+      this.us.checke[this.getIndex(this.cslist[data])] = true;
     },
 
     async removeE(s, data, index) {
       if (s === "us") {
-        this.us.checke[index] = false;
         let i = 0;
-        let c = false;
-        while (i < this.elist.length || c === false) {
-          if (this.elist[i].id === data.id) {
-            this.elist.splice(i, 1);
-            c = true;
+        while (i < this.us.userList.length) {
+          if (data.id === this.us.userList[i].id) {
+            this.us.checke[i] = false;
+            break;
           } else {
             i++;
           }
+        }
+        i = 0;
+        while (i < this.elist.length) {
+          if (data.id === this.elist[i].id) {
+            this.elist.splice(i, 1);
+            break;
+          }
+          i++;
         }
       } else {
         this.elist.splice(index, 1);
@@ -678,11 +739,11 @@ export default {
           this.$emit("closeall");
         } else {
           this.file.id_NguoiChinhSua = this.user.id;
-          this.file.DSNguoiThamGia = this.plist;
+          this.file.DSNguoiXem = this.plist;
           this.file.DSNguoiChinhSua = this.elist;
           this.file.check = "update-admin";
           let check = await FileService.update(this.file);
-          
+
           this.$toast.open({
             message: "Chỉnh sửa dự án thành công",
             type: "success",

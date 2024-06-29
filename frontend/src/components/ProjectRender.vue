@@ -163,7 +163,6 @@
     :project="editProject"
     @close="
       event = false;
-      this.$emit('refresh');
     "
   ></Event>
   <Information

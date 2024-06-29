@@ -62,7 +62,7 @@
                 style=""
               >
                 <div class="row text-center">
-                  <div class="col-5">
+                  <div class="col">
                     <img
                       style="
                         display: inline-block;
@@ -99,7 +99,7 @@
                     <i
                       v-if="index != 0"
                       class="fa-solid fa-circle-xmark"
-                      style="position: relative; display: block"
+                      style="position: relative; display: block; margin-left:-55px"
                       @click="removeP('plist', user, index)"
                     ></i>
                   </div>
@@ -354,7 +354,7 @@
                   style=""
                 >
                   <div class="row text-center">
-                    <div class="col-5">
+                    <div class="col">
                       <img
                         style="
                           display: inline-block;
@@ -390,7 +390,7 @@
                       <i
                         v-if="index != 0"
                         class="fa-solid fa-circle-xmark"
-                        style="position: relative; display: block"
+                        style="position: relative; display: block;margin-left:-55px"
                         @click="removeE('elist', user, index)"
                       ></i>
                     </div>
@@ -407,7 +407,11 @@
                     <div
                       class="card"
                       style=""
-                      :class="{ active: us.checke[index] === true }"
+                      :class="{
+                        active:
+                          us.checke[getIndex(user)] === true ||
+                          (QuyenXem === 'tat ca' && us.checke[index] === true),
+                      }"
                       v-if="
                         user.hoten
                           .toLowerCase()
@@ -447,7 +451,11 @@
                           <div style="margin: auto">
                             <i
                               class="fa-solid fa-plus hover-i"
-                              v-if="this.us.checke[index] === false"
+                              v-if="
+                                us.checke[getIndex(user)] === false ||
+                                (QuyenXem === 'tat ca' &&
+                                  us.checke[index] === false)
+                              "
                               @click="addE(index)"
                             ></i>
                             <i
@@ -574,7 +582,23 @@ export default {
     this.getUser();
   },
 
+  computed: {},
+
   methods: {
+    getIndex(data) {
+      let i = 0;
+      while (i < this.us.userList.length) {
+        if (this.us.userList[i].id === data.id) {
+          break;
+        }
+        i++;
+      }
+      console.log(i);
+      console.log(this.cslist);
+      console.log(this.elist);
+      console.log(this.us.checke);
+      return i;
+    },
     async getUser() {
       let s = "admin";
       this.us.userList = await UserService.getAll();
@@ -662,20 +686,12 @@ export default {
 
     async removeP(s, data, index) {
       if (s === "us") {
+        this.removeE("us", data, index);
         this.us.checkp[index] = false;
-        this.us.checke[index] = false;
         let i = 0;
         let c = false;
         while (i < this.plist.length || c === false) {
           if (this.plist[i].id === data.id) {
-            let n = 0;
-            while (n < this.elist.length) {
-              if (this.elist[n].id === this.plist[index].id) {
-                this.elist.splice(n, 1);
-                break;
-              }
-              n++;
-            }
             this.plist.splice(i, 1);
             c = true;
           } else {
@@ -684,7 +700,7 @@ export default {
         }
       } else {
         console.log("plist");
-
+        this.removeE("elist", data, index);
         let n = 0;
         while (n < this.elist.length) {
           if (this.elist[n].id === this.plist[index].id) {
@@ -699,8 +715,7 @@ export default {
         while (i < this.us.userList.length) {
           if (this.us.userList[i].id === data.id) {
             this.us.checkp[i] = false;
-            this.us.checke[i] = false;
-            console.log(this.us)
+            console.log(this.us);
 
             break;
           } else {
@@ -708,26 +723,34 @@ export default {
           }
         }
       }
-      this.getUser()
+      console.log(this.elist);
+      console.log(this.cslist);
     },
 
     async addE(data) {
-      this.elist.push(this.us.userList[data]);
-      this.us.checke[data] = true;
+      this.elist.push(this.cslist[data]);
+      this.us.checke[this.getIndex(this.cslist[data])] = true;
     },
 
     async removeE(s, data, index) {
       if (s === "us") {
-        this.us.checke[index] = false;
+        
         let i = 0;
-        let c = false;
-        while (i < this.elist.length || c === false) {
-          if (this.elist[i].id === data.id) {
-            this.elist.splice(i, 1);
-            c = true;
+        while (i < this.us.userList.length) {
+          if (data.id ===this.us.userList[i].id) {
+            this.us.checke[i]=false;
+            break;
           } else {
             i++;
           }
+        }
+        i=0;
+        while(i<this.elist.length){
+          if (data.id===this.elist[i].id){
+            this.elist.splice(i,1);
+            break;
+          }
+          i++;
         }
       } else {
         this.elist.splice(index, 1);
@@ -776,6 +799,14 @@ export default {
           data.KhachHang.length === 0
         ) {
           data.KhachHang = "Không có";
+        }
+        if (
+          typeof data.GhiChu === "undefined" ||
+          data.GhiChu === null ||
+          data.GhiChu === "" ||
+          data.GhiChu.length === 0
+        ) {
+          data.GhiChu = "Không có";
         }
         data.id_GiaHan = this.project.id_GiaHan;
         if (

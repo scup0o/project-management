@@ -18,7 +18,7 @@
               <div class="col">
                 <label for="ten">Tên Server: </label>
               </div>
-              <div class="col-7">
+              <div class="col-8">
                 {{ server.ten }}
               </div>
             </div>
@@ -28,7 +28,7 @@
               <div class="col">
                 <label for="loai">Loại Server: </label>
               </div>
-              <div class="col-7">
+              <div class="col-8">
                 <p v-if="server.loai === 'csdl'">Cơ sở dữ liệu</p>
                 <p v-if="server.loai === 'web'">Web</p>
                 <p v-if="server.loai === 'app'">App</p>
@@ -46,10 +46,50 @@
                   >Ngôn ngữ sử dụng:
                 </label>
               </div>
-              <div class="col-7">
-                <div v-if="server.loai === 'csdl'">{{ server.csdl }}</div>
+              <div class="col-8">
+                <div v-if="server.loai === 'csdl'">
+                  <p
+                    v-if="
+                      server.csdl.split('()')[0] != 'khac'
+                    "
+                  >
+                    {{ server.csdl.split("()")[0] }}
+                    {{ server.csdl.split("version")[1] }}
+                  </p>
+                  <p v-if="server.csdl.split('()')[0] === 'khac' && server.csdl.split('()')[1].split('version')[0] !== ''">
+                    {{ server.csdl.split("()")[1].split("version")[0] }}
+                    {{ server.csdl.split("version")[1] }}
+                  </p>
+                  <p
+                    v-if="
+                      server.csdl.split('()')[0] === 'khac' &&
+                      server.csdl.split('()')[1].split('version')[0] === ''
+                    "
+                  >
+                    Khác <i>(Không có thông tin)</i>
+                  </p>
+                </div>
                 <div v-if="server.loai != 'csdl' && server.loai != 'khac'">
-                  {{ server.ngonngu }}
+                  <p
+                    v-if="
+                      server.ngonngu.split('()')[0] != 'khac'
+                    "
+                  >
+                    {{ server.ngonngu.split("()")[0] }}
+                    {{ server.ngonngu.split("version")[1] }}
+                  </p>
+                  <p v-if="server.ngonngu.split('()')[0] === 'khac' && server.ngonngu.split('()')[1].split('version')[0] !== ''">
+                    {{ server.ngonngu.split("()")[1].split("version")[0] }}
+                    {{ server.ngonngu.split("version")[1] }}
+                  </p>
+                  <p
+                    v-if="
+                      server.ngonngu.split('()')[0] === 'khac' &&
+                      server.ngonngu.split('()')[1].split('version')[0] === ''
+                    "
+                  >
+                    Khác <i>(Không có thông tin)</i>
+                  </p>
                 </div>
               </div>
             </div>
@@ -59,8 +99,27 @@
               <div class="col">
                 <label>Môi trường vận hành: </label>
               </div>
-              <div class="col-7">
-                {{ server.moitruong }}
+              <div class="col-8">
+                <p
+                    v-if="
+                      server.moitruong.split('()')[0] != 'khac'
+                    "
+                  >
+                    {{ server.moitruong.split("()")[0] }}
+                    {{ server.moitruong.split("version")[1] }}
+                  </p>
+                  <p v-if="server.moitruong.split('()')[0] === 'khac' && server.moitruong.split('()')[1].split('version')[0] !== ''">
+                    {{ server.moitruong.split("()")[1].split("version")[0] }}
+                    {{ server.moitruong.split("version")[1] }}
+                  </p>
+                  <p
+                    v-if="
+                      server.moitruong.split('()')[0] === 'khac' &&
+                      server.moitruong.split('()')[1].split('version')[0] === ''
+                    "
+                  >
+                    Khác <i>(Không có thông tin)</i>
+                  </p>
               </div>
             </div>
           </div>
@@ -69,7 +128,7 @@
               <div class="col">
                 <label>Các framework/ phần mềm sử dụng khác: </label>
               </div>
-              <div class="col-7">{{ server.pmkhac }}</div>
+              <div class="col-8">{{ server.pmkhac }}</div>
             </div>
           </div>
 
@@ -78,7 +137,7 @@
               <div class="col">
                 <label for="IP">IP: </label>
               </div>
-              <div class="col-7">{{ server.IP }}</div>
+              <div class="col-8">{{ server.IP }}</div>
             </div>
           </div>
           <div class="form-group">
@@ -86,7 +145,7 @@
               <div class="col">
                 <label for="hdh">Hệ điều hành: </label>
               </div>
-              <div class="col-7">{{ server.hdh }}</div>
+              <div class="col-8">{{ server.hdh }}</div>
             </div>
           </div>
           <div class="form-group">
@@ -94,7 +153,7 @@
               <div class="col">
                 <label for="ram">RAM: </label>
               </div>
-              <div class="col-7">{{ server.ram }}</div>
+              <div class="col-8">{{ server.ram }}</div>
             </div>
           </div>
           <div class="form-group">
@@ -102,7 +161,7 @@
               <div class="col">
                 <label for="ocung">Ổ cứng: </label>
               </div>
-              <div class="col-7">{{ server.ocung }}</div>
+              <div class="col-8">{{ server.ocung }}</div>
             </div>
           </div>
           <div class="form-group">
@@ -110,7 +169,7 @@
               <div class="col">
                 <label for="cardmanhinh">Card màn hình: </label>
               </div>
-              <div class="col-7">{{ server.cardmanhinh }}</div>
+              <div class="col-8">{{ server.cardmanhinh }}</div>
             </div>
           </div>
 
@@ -119,7 +178,7 @@
               <div class="col">
                 <label for="ghichu">Thông tin ghi chú: </label>
               </div>
-              <div class="col-7">
+              <div class="col-8">
                 {{ server.ghichu }}
               </div>
             </div>
@@ -224,16 +283,16 @@ export default {
   methods: {
     async deleteServer() {
       let check = await SettingiService.deleteServer(this.server.id);
-        if (check === true) {
-          this.$toast.open({
-            message: "Xóa server thành công",
-            type: "success",
-            duration: 3000,
-            dismissible: true,
-          });
-        }
-        this.$emit("refresh");
-        return;
+      if (check === true) {
+        this.$toast.open({
+          message: "Xóa server thành công",
+          type: "success",
+          duration: 3000,
+          dismissible: true,
+        });
+      }
+      this.$emit("refresh");
+      return;
     },
     async updateServer(data) {
       if (this.d === true) {

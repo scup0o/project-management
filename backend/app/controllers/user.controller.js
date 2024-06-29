@@ -3,9 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../utils/nodemailer");
-const db = require("../utils/mysql.util");
+let db = require("../utils/mysql.util");
 require("dotenv").config();
-
 const createToken = (id, username, chucvu) => {
   return jwt.sign({ id, username, chucvu }, process.env.SECRECT_KEY, {
     expiresIn: 3 * 24 * 60 * 60,
@@ -289,7 +288,7 @@ exports.delete = async (req, res, next) => {
 
 exports.changePass = async (req, res, next) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     let token;
     let result = await new Promise((rs, rj) => {
       db.query(
@@ -369,6 +368,10 @@ exports.forgotPass = async (req, res, next) => {
         return res.send("lock");
       }
       let salt = await bcrypt.genSalt();
+      let i;
+      for (i = 0; i < salt.length; i++) {
+        if (salt[i] === "/") salt[i] = "a";
+      }
       db.query(
         `INSERT INTO id_quenmatkhau (id, id_nhanvien) VALUES ('${salt}', '${result[0].id}')`
       );
@@ -384,8 +387,8 @@ exports.forgotPass = async (req, res, next) => {
         j++;
       }
       email = email + char2 + "@gmail.com";
-      console.log(type)
-      if (type ==='username') res.send(email);
+      console.log(type);
+      if (type === "username") res.send(email);
       else res.send("email");
       await sendEmail(result[0].email, "Quên mật khẩu", message);
     }
@@ -441,7 +444,7 @@ exports.checklink = async (req, res, next) => {
             console.log(new Date());
             console.log(new Date(r[0].thoigiantao));
             console.log(Difference_In_Minutes);
-            if (Difference_In_Minutes >= 15) {
+            if (Difference_In_Minutes >= 10) {
               return res.send(false);
             } else {
               return res.send(r[0]);

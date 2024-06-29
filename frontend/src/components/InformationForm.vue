@@ -24,7 +24,7 @@
             <div class="form-group">
               <div class="row spacing">
                 <div class="col">
-                  <label for="DonViSuDung">Đơn vị sử dụng: </label>
+                  <label for="DonViSuDung">Đơn vị sử dụng: <p class="dot">(*)</p></label>
                 </div>
                 <div class="col-7">
                   <Field

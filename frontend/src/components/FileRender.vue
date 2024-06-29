@@ -24,7 +24,7 @@
               style="font-family: RalewayItalic; font-size: 1vw"
             >
               
-            {{ file.NguoiTao.hoten}} ({{ file.NguoiTao.manhanvien }})
+            {{ file.NguoiTao.hoten}} ({{ file.NguoiTao.username }})
             </p>
           </div>
           <div class="row" id="util-button">
@@ -81,7 +81,7 @@
                 "
               ></i>
               <i
-                v-if="file.e === true && this.user.chucvu!='admin'"
+                v-if="file.e === true && this.user.chucvu!='admin' && file.kt===false && this.project.e===true"
                 class="fa-solid fa-upload"
                 @click="(editFile = file), (edit = true), ionly=false"
                 id="util-icon"
@@ -104,7 +104,7 @@
               ></a>
               
               <i
-                v-if="file.id_NguoiTao===user.id"
+                v-if="file.id_NguoiTao===user.id  && file.kt===false"
                 class="fa-solid fa-pen"
                 @click="(editFile = file), (edit = true)"
                 id="util-icon"
@@ -153,6 +153,9 @@ export default {
       type: Array,
       default: [],
     },
+    project:{
+      type:Object, required:true
+    }
   },
 
   data() {

@@ -13,7 +13,7 @@
           @click="createForm = true"
           data-aos="fade-up"
           style="margin-right: 10px"
-          v-if="(this.user.chucvu !='admin' && pj.e === true) || pj.loai!='chia se'"
+          v-if="(this.user.chucvu !='admin' && pj.e === true && pj.kt===false) || pj.loai!='chia se'"
         >
           Thêm tài liệu
           <i class="fa-solid fa-square-plus" id="util-icon"></i>
@@ -100,6 +100,7 @@
       <div class="row" style="">
         <div class="col-3" style="">
           <FileRender
+          :project="this.pj"
             v-if="sliceFileTruocDauThau.length > 0"
             :files="sliceFileTruocDauThau"
             @refresh="retrieveFile()"
@@ -118,6 +119,7 @@
         </div>
         <div class="col-3">
           <FileRender
+          :project="this.pj"
             v-if="sliceFileSauDauThau.length > 0"
             :files="sliceFileSauDauThau"
             @refresh="retrieveFile()"
@@ -136,6 +138,7 @@
         </div>
         <div class="col-3">
           <FileRender
+          :project="this.pj"
             :files="sliceFileBaoHanh"
             v-if="sliceFileBaoHanh.length > 0"
             @refresh="retrieveFile()"
@@ -154,6 +157,7 @@
         </div>
         <div class="col-3">
           <FileRender
+          :project="this.pj"
             :files="sliceFileKhac"
             v-if="sliceFileKhac.length > 0"
             @refresh="retrieveFile()"

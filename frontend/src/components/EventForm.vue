@@ -22,7 +22,7 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col-5">
-                    <label for="TenSuKien">Tên sự kiện: </label>
+                    <label for="TenSuKien">Tên sự kiện: <p class="dot">(*)</p></label>
                   </div>
                   <div class="col-7">
                     <Field
@@ -67,7 +67,7 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col-5">
-                    <label for="NgayDienRaSuKien">Ngày diễn ra sự kiện: </label>
+                    <label for="NgayDienRaSuKien">Ngày diễn ra sự kiện: <p class="dot">(*)</p></label>
                   </div>
                   <div class="col-7">
                     <Field
@@ -150,7 +150,7 @@
                   placeholder="Nhập tên nhân viên cần tìm"
                   v-model="searchP"
                 />
-                <button
+                <!--<button
                   class="btn btn-outline-secondary search-button"
                   type="button"
                   style="
@@ -159,7 +159,7 @@
                     border-radius: 0 25px 25px 0;
                   "
                 >
-                <!--<Field
+                <Field
                     name="a"
                     as="select"
                     value="tatca"
@@ -170,15 +170,15 @@
                     <option value="tatca">Tất cả</option>
                     <option value="hc">Nhân viên hành chính</option>
                     <option value="kt">Nhân viên kỹ thuật</option>
-                  </Field>-->
+                  </Field>
                   
-                </button>
+                </button>-->
               </div>
             </div>
             <div
               v-if="plist.length != 0"
               class="row text-center flex-nowrap"
-              style="overflow-x: auto; height: 13vh; overflow-y: hidden"
+              style="overflow-x: auto; height: 11vh; overflow-y: hidden"
             >
               <div
                 v-for="(user, index) in plist"
@@ -187,12 +187,12 @@
                 style=""
               >
                 <div class="row text-center">
-                  <div class="col-5">
+                  <div class="col">
                     <img
                       style="
                         display: inline-block;
-                        width: 3vw;
-                        height: 3vw;
+                        width: 2vw;
+                        height: 2vw;
                         border-radius: 100%;
                         margin: auto;
                       "
@@ -215,25 +215,25 @@
                           font-size: 0.9vw;
                         "
                       >
-                        ({{ user.manhanvien }})
+                        ({{ user.username }})
                       </p>
                     </div>
                   </div>
                   <div class="col-1">
                     <i
                       class="fa-solid fa-circle-xmark"
-                      style="position: relative; display: block"
+                      style="position: relative; display: block;margin-left:-55px"
                       @click="removeP('plist', user, index)"
                     ></i>
                   </div>
                 </div>
               </div>
             </div>
-            <div
+            <div style="height: 30vh; overflow-y: auto; overflow-x: hidden"><div
               class="row"
-              style="overflow-x: auto; height: 20vh; padding: 10px"
+              
             >
-              <div v-for="(user, index) in us.userList" class="row" style="">
+              <div v-for="(user, index) in us.userList" class="row" style="padding-bottom: 2px; padding-left: 2vw">
                 <div
                   class="card"
                   style=""
@@ -249,8 +249,8 @@
                     <div class="col-2">
                       <img
                         style="
-                          width: 3vw;
-                          height: 3vw;
+                          width: 1.5vw;
+                          height: 1.5vw;
                           border-radius: 100%;
                           margin: auto;
                         "
@@ -259,10 +259,7 @@
                     </div>
                     <div class="col-7">
                       <div class="row">
-                        {{ user.hoten }}
-                      </div>
-                      <div class="row">
-                        {{ user.manhanvien }}
+                        {{ user.hoten }} ({{ user.username }})
                       </div>
                     </div>
 
@@ -284,7 +281,8 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div></div>
+            
           </div>
           <div class="text-center">
             <button
@@ -401,7 +399,7 @@ export default {
           let check = await EventService.create(this.event);
           if (check === true) {
             this.$toast.open({
-              message: "Chỉnh sửa dự án thành công",
+              message: "Tạo sự kiện thành công",
               type: "success",
               duration: 3000,
               dismissible: true,
@@ -413,7 +411,7 @@ export default {
           let check = await EventService.update(this.event);
           if (check === true) {
             this.$toast.open({
-              message: "Tạo sự kiện thành công",
+              message: "Cập nhật sự kiện thành công",
               type: "success",
               duration: 3000,
               dismissible: true,

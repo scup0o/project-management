@@ -54,7 +54,7 @@
                   height: 55vh;
                   direction: rtl;
                   text-align: left;
-                  overflow-y: scroll;
+                  overflow-y: auto;
                   overflow-x: hidden;
                 "
               >
@@ -117,7 +117,7 @@
                       <label for="DonViSuDung">Người tạo: </label>
                     </div>
                     <div class="col-7">
-                      {{ editI.NguoiTao.hoten }} ({{ editI.NguoiTao.manhanvien }})
+                      {{ editI.NguoiTao.hoten }} ({{ editI.NguoiTao.username }})
                     </div>
                   </div>
                 </div>
@@ -127,7 +127,7 @@
                       <label for="DonViSuDung">Thời gian chỉnh sửa thông tin lần cuối: </label>
                     </div>
                     <div class="col-7">
-                      Vào lúc {{ format_datetime(editI.ThoiGianCapNhat) }} bởi {{ editI.NguoiCapNhat.hoten }} ({{ editI.NguoiCapNhat.manhanvien }})
+                      Vào lúc {{ format_datetime(editI.ThoiGianCapNhat) }} bởi {{ editI.NguoiCapNhat.hoten }} ({{ editI.NguoiCapNhat.username }})
                     </div>
                   </div>
                 </div>

@@ -21,7 +21,10 @@
             <div class="form-group">
               <div class="row spacing">
                 <div class="col">
-                  <label>Tên nhật ký:</label>
+                  <label
+                    >Tên nhật ký:
+                    <p class="dot">(*)</p></label
+                  >
                 </div>
                 <div class="col-8">
                   <Field
@@ -35,6 +38,29 @@
                   <ErrorMessage
                     for="ten"
                     name="ten"
+                    class="error-feedback"
+                  ></ErrorMessage>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="row spacing">
+                <div class="col">
+                  <label for="ngayghinhan"
+                    >Ngày ghi nhận:
+                    <p class="dot">(*)</p></label
+                  >
+                </div>
+                <div class="col-8">
+                  <Field
+                    name="ngayghinhan"
+                    type="datetime-local"
+                    class="form-control"
+                    v-model="d.ngayghinhan"
+                  >
+                  </Field>
+                  <ErrorMessage
+                    name="ngayghinhan"
                     class="error-feedback"
                   ></ErrorMessage>
                 </div>
@@ -208,6 +234,7 @@
 import "@/assets/css/base.css";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import moment from "moment";
 
 import VueJwtDecode from "vue-jwt-decode";
 import SettingiService from "@/services/settingi.service";
@@ -227,6 +254,9 @@ export default {
   data() {
     const FormSchema = yup.object({
       ten: yup.string().required("Tên không được để trống"),
+      ngayghinhan: yup
+        .date()
+        .required("Thời gian ghi nhận không được để trống"),
     });
 
     return {
@@ -241,6 +271,7 @@ export default {
 
   mounted() {
     if (this.edit === true) {
+      this.d.ngayghinhan=this.format_datetime(this.d.ngayghinhan)
       if (this.d.loai != "cap nhat" && this.d.loai != "loi") {
         this.Loai = this.d.loai.split("()")[1];
         this.d.loai = "khac";
@@ -254,7 +285,13 @@ export default {
   },
 
   methods: {
+    format_datetime(value) {
+      if (value) {
+        return moment(String(value)).format("YYYY-MM-DDTHH:mm");
+      }
+    },
     async create(data) {
+      console.log(data)
       if (data.loai === "khac") {
         this.d.loai = data.loai + "()" + data.Loai;
         this.d.capnhat = "";
@@ -274,10 +311,10 @@ export default {
         }
       }
       if (this.d.ghichu === "") this.d.ghichu = "Không có thông tin";
-      if (this.edit===false){
-        let check=await SettingiService.addDiary(this.d);
-        if (check===true){
-            this.$toast.open({
+      if (this.edit === false) {
+        let check = await SettingiService.addDiary(this.d);
+        if (check === true) {
+          this.$toast.open({
             message: "Nhật ký đã được cập nhật",
             type: "success",
             duration: 3000,
@@ -285,11 +322,10 @@ export default {
           });
           this.$emit("refresh");
         }
-      }
-      else{
-        let check=await SettingiService.updateDiary(this.d);
-        if (check===true){
-            this.$toast.open({
+      } else {
+        let check = await SettingiService.updateDiary(this.d);
+        if (check === true) {
+          this.$toast.open({
             message: "Nhật ký đã được cập nhật",
             type: "success",
             duration: 3000,
