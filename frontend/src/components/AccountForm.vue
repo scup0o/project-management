@@ -39,7 +39,7 @@
                         images.length === 0
                       "
                       class="hover-e"
-                      :src="`../../src/assets/img/${account.anhdaidien}`"
+                      :src="`../assets/img/${account.anhdaidien}`"
                       style="
                         border-radius: 100%;
                         width: 10vw;
@@ -55,7 +55,7 @@
                         height: 10vw;
                         border: 1px solid black;
                       "
-                      src="../../src/assets/img/user-img.jpg"
+                      src="../assets/img/user-img.jpg"
                     />
                     <div v-for="(image, key) in images" class="col text-center">
                       <div :id="key">
@@ -504,7 +504,7 @@ export default {
           data.id = this.accountNew.id;
           data.util = "admin";
           if (this.images[0] !== undefined)
-            data.anhdaidien = this.accountNew.id + "-pic.png";
+            data.anhdaidien = "image" + this.accountNew.id + "-pic.png";
           else data.anhdaidien = this.accountNew.anhdaidien;
           const check = await UserService.update(data);
           console.log(check);
@@ -523,7 +523,7 @@ export default {
             const headers = { "Content-Type": "multipart/form-data" };
             if (this.images[0] !== undefined)
               await FileService.upload(
-                this.accountNew.id + "-pic.png",
+                "image" + this.accountNew.id + "-pic.png",
                 this.img,
                 { headers }
               );

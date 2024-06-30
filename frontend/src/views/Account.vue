@@ -103,7 +103,7 @@ export default {
       data.id = this.account.id;
       console.log(data);
       if (this.images[0]) {
-        data.anhdaidien = this.account.id + "-pic.png";
+        data.anhdaidien = "image" + this.account.id + "-pic.png";
       } else {
         data.anhdaidien = this.account.anhdaidien;
       }
@@ -116,10 +116,14 @@ export default {
         const headers = { "Content-Type": "multipart/form-data" };
         if (this.images[0]) {
           console.log(this.imgS[0].name);
-          console.log(this.imgS)
-          await FileService.upload(this.account.id + "-pic.png", this.imgS, {
-            headers,
-          });
+          console.log(this.imgS);
+          await FileService.upload(
+            "image" + this.account.id + "-pic.png",
+            this.imgS,
+            {
+              headers,
+            }
+          );
         }
         this.$toast.open({
           message: "Chỉnh sửa thông tin thành công",
@@ -214,7 +218,7 @@ export default {
         <!--trang thong tin-->
         <div v-if="activetab != 'edit'">
           <img
-            :src="`../../src/assets/img/${account.anhdaidien}?cache=${cacheKey}`"
+            :src="`../assets/img/${account.anhdaidien}?cache=${cacheKey}`"
             style="
               border-radius: 100%;
               width: 10vw;
@@ -267,7 +271,6 @@ export default {
                         </div>
                       </div>
                     </div>
-                   
                   </div>
                   <div class="row line" style="">
                     <div class="col">
@@ -276,9 +279,7 @@ export default {
                         <div class="col" v-if="account.chucvu === 'admin'">
                           Quản trị
                         </div>
-                        <div class="col" v-else>
-                          Nhân viên
-                        </div>
+                        <div class="col" v-else>Nhân viên</div>
                       </div>
                     </div>
                     <div class="col">
@@ -303,7 +304,6 @@ export default {
                       {{ account.sodienthoai }}
                     </div>
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -322,7 +322,7 @@ export default {
                   <img
                     v-if="haveData === true"
                     class="hover-e"
-                    :src="`../../src/assets/img/${account.anhdaidien}?cache=${cacheKey}`"
+                    :src="`../assets/img/${account.anhdaidien}?cache=${cacheKey}`"
                     style="
                       border-radius: 100%;
                       width: 10vw;
@@ -408,7 +408,8 @@ export default {
                   <div class="row" style="padding: 5vh; padding-top: 8vh">
                     <div class="row">
                       <div class="form-group" style="">
-                        <label for="hoten">Họ và tên</label><p class="dot">(*)</p>
+                        <label for="hoten">Họ và tên</label>
+                        <p class="dot">(*)</p>
                         <Field
                           style="width: 98%; margin: auto"
                           name="hoten"
@@ -427,7 +428,8 @@ export default {
                     <div class="row">
                       <div class="col">
                         <div class="form-group" style="">
-                          <label for="username">Username</label><p class="dot">(*)</p>
+                          <label for="username">Username</label>
+                          <p class="dot">(*)</p>
                           <Field
                             style="width: 98%; margin: auto"
                             name="username"
@@ -450,14 +452,13 @@ export default {
                           </p>
                         </div>
                       </div>
-                      
                     </div>
-                    <div class="row">
-                    </div>
+                    <div class="row"></div>
                     <div class="row">
                       <div class="col">
                         <div class="form-group" style="">
-                          <label for="sodienthoai">Số điện thoại</label><p class="dot">(*)</p>
+                          <label for="sodienthoai">Số điện thoại</label>
+                          <p class="dot">(*)</p>
                           <Field
                             style="width: 98%; margin: auto"
                             name="sodienthoai"
@@ -475,7 +476,8 @@ export default {
                       </div>
                       <div class="col">
                         <div class="form-group" style="">
-                          <label for="email">Email</label><p class="dot">(*)</p>
+                          <label for="email">Email</label>
+                          <p class="dot">(*)</p>
                           <Field
                             style="width: 98%; margin: auto"
                             name="email"
@@ -518,7 +520,7 @@ export default {
                             (usernameMessage = ''),
                             (emailMessage = ''),
                             (imagesPreview[0] =
-                              '../../src/assets/img/' + this.account.anhdaidien)
+                              '../assets/img/' + this.account.anhdaidien)
                         "
                         style="
                           width: 110px;

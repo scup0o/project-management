@@ -9,5 +9,6 @@ router.route("/:id").delete(fileController.delete);
 router.route("/update/").put(fileController.update)
 router.route("/").post(fileController.create);
 router.route("/doc/").post(fileController.get);
+router.route("/file/export/:id").get(fileController.exportData);
 
 module.exports = router;

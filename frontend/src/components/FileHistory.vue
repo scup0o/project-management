@@ -52,7 +52,7 @@
             </div>
             <div class="col">
                 <a
-                :href="`../../src/assets/file/doc${
+                :href="`../assets/file/doc${
                   f.TenFile.split('.')[1]
                 }`"
                 style="

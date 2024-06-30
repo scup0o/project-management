@@ -32,6 +32,7 @@ exports.login = async (req, res, next) => {
         //console.log('lock')
         return res.send("lock");
       }
+      if (typeof (req.body.matkhau)==='undefined' || req.body.matkhau===null || req.body.matkhau.length===0) return res.send("incorrected")
       //console.log(req.body.matkhau, ",", result[0].matkhau);
       const matkhau = await bcrypt.compare(req.body.matkhau, result[0].matkhau);
       if (!matkhau) {
@@ -105,7 +106,7 @@ exports.create = async (req, res, next) => {
           if (e) throw e;
           else {
             if (req.body.anhdaidien != "user-img.jpg")
-              req.body.anhdaidien = r.insertId + "-pic.png";
+              req.body.anhdaidien = "image"+r.insertId + "-pic.png";
             db.query(
               `UPDATE NHAN_VIEN SET anhdaidien='${req.body.anhdaidien}' WHERE id='${r.insertId}'`,
               function (e, r) {
@@ -375,7 +376,7 @@ exports.forgotPass = async (req, res, next) => {
       db.query(
         `INSERT INTO id_quenmatkhau (id, id_nhanvien) VALUES ('${salt}', '${result[0].id}')`
       );
-      const message = `link đổi mật khẩu: http://${process.env.FE_HOST}:${process.env.FE_PORT}/forgotpassword/${salt}/`;
+      const message = `link đổi mật khẩu: http://${process.env.HOSTNAME}:${process.env.PORT}/forgotpassword/${salt}/`;
       let char1 = result[0].email[0];
       console.log(char1);
       let char2 = result[0].email.split("@")[0];

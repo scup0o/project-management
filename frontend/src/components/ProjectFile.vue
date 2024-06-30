@@ -7,17 +7,23 @@
       class="row"
       style="background-color: var(--bar-color); padding: 7px; height: 7vh"
     >
-      <div class="col">
+      <div
+        class="col-2"
+        v-if="
+          (this.user.chucvu != 'admin' && pj.e === true && pj.kt === false) ||
+          pj.loai != 'chia se'
+        "
+      >
         <button
           class="btn btn-outline-secondary"
           @click="createForm = true"
           data-aos="fade-up"
           style="margin-right: 10px"
-          v-if="(this.user.chucvu !='admin' && pj.e === true && pj.kt===false) || pj.loai!='chia se'"
         >
           Thêm tài liệu
           <i class="fa-solid fa-square-plus" id="util-icon"></i>
         </button>
+
         <!--<button
               class="btn btn-outline-secondary"
               data-aos="fade-up"
@@ -27,6 +33,34 @@
               Xóa tất cả
               <i class="fa-solid fa-trash" id="util-icon"></i>
             </button>-->
+      </div>
+      <div class="col">
+        <div
+          style=""
+          :class="{
+            none:
+              (this.user.chucvu != 'admin' &&
+                pj.e === true &&
+                pj.kt === false) ||
+              pj.loai != 'chia se',
+          }"
+        >
+          <a
+            data-aos="fade-up"
+            :href="'/api/file/file/export/' + this.pj.id"
+            :download="'tai_lieu_du_an_' + this.pj.Ten + '.xlsx'"
+            class="btn btn-outline-secondary"
+            style=""
+            v-if="
+              this.user.chucvu === 'admin' ||
+              this.user.id === this.pj.id_NguoiTao
+            "
+            >Xuất danh sách tài liệu dự án<i
+              class="fa-solid fa-file-export"
+              style="padding-left: 10px"
+            ></i
+          ></a>
+        </div>
       </div>
       <div class="col-4">
         <div class="input-group" style="">
@@ -56,125 +90,125 @@
       </FileInfoForm>
     </div>
     <div
-        class="row"
-        style="
-          padding-top: 3vh;
-          padding-bottom: 3vh;
-          font-size: 2vh;
-          padding-left: 1vw;
-        "
-      >
-        <div class="col-3">
-          <div class="row">
-            <div class="col">Trước đấu thầu</div>
-            <div class="col text-end">
-              {{ sliceFileTruocDauThau.length }}
-            </div>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <div class="col">Sau đấu thầu</div>
-            <div class="col text-end">
-              {{ sliceFileSauDauThau.length }}
-            </div>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <div class="col">Bảo hành, bảo trì</div>
-            <div class="col text-end">
-              {{ sliceFileBaoHanh.length }}
-            </div>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <div class="col">Các tài liệu khác</div>
-            <div class="col text-end">
-              {{ sliceFileKhac.length }}
-            </div>
+      class="row"
+      style="
+        padding-top: 3vh;
+        padding-bottom: 3vh;
+        font-size: 2vh;
+        padding-left: 1vw;
+      "
+    >
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Trước đấu thầu</div>
+          <div class="col text-end">
+            {{ sliceFileTruocDauThau.length }}
           </div>
         </div>
       </div>
-      <div class="row" style="">
-        <div class="col-3" style="">
-          <FileRender
-          :project="this.pj"
-            v-if="sliceFileTruocDauThau.length > 0"
-            :files="sliceFileTruocDauThau"
-            @refresh="retrieveFile()"
-          >
-          </FileRender>
-          <p
-            v-else
-            style="
-              font-family: 'RalewayItalic';
-              font-size: 2vh;
-              padding-left: 0.6vw;
-            "
-          >
-            Không có tài liệu nào.
-          </p>
-        </div>
-        <div class="col-3">
-          <FileRender
-          :project="this.pj"
-            v-if="sliceFileSauDauThau.length > 0"
-            :files="sliceFileSauDauThau"
-            @refresh="retrieveFile()"
-          >
-          </FileRender>
-          <p
-            v-else
-            style="
-              font-family: 'RalewayItalic';
-              font-size: 2vh;
-              padding-left: 0.6vw;
-            "
-          >
-            Không có tài liệu nào.
-          </p>
-        </div>
-        <div class="col-3">
-          <FileRender
-          :project="this.pj"
-            :files="sliceFileBaoHanh"
-            v-if="sliceFileBaoHanh.length > 0"
-            @refresh="retrieveFile()"
-          >
-          </FileRender>
-          <p
-            v-else
-            style="
-              font-family: 'RalewayItalic';
-              font-size: 2vh;
-              padding-left: 0.6vw;
-            "
-          >
-            Không có tài liệu nào.
-          </p>
-        </div>
-        <div class="col-3">
-          <FileRender
-          :project="this.pj"
-            :files="sliceFileKhac"
-            v-if="sliceFileKhac.length > 0"
-            @refresh="retrieveFile()"
-          >
-          </FileRender>
-          <p
-            v-else
-            style="
-              font-family: 'RalewayItalic';
-              font-size: 2vh;
-              padding-left: 0.6vw;
-            "
-          >
-            Không có tài liệu nào.
-          </p>
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Sau đấu thầu</div>
+          <div class="col text-end">
+            {{ sliceFileSauDauThau.length }}
+          </div>
         </div>
       </div>
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Bảo hành, bảo trì</div>
+          <div class="col text-end">
+            {{ sliceFileBaoHanh.length }}
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="row">
+          <div class="col">Các tài liệu khác</div>
+          <div class="col text-end">
+            {{ sliceFileKhac.length }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="">
+      <div class="col-3" style="">
+        <FileRender
+          :project="this.pj"
+          v-if="sliceFileTruocDauThau.length > 0"
+          :files="sliceFileTruocDauThau"
+          @refresh="retrieveFile()"
+        >
+        </FileRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
+        >
+          Không có tài liệu nào.
+        </p>
+      </div>
+      <div class="col-3">
+        <FileRender
+          :project="this.pj"
+          v-if="sliceFileSauDauThau.length > 0"
+          :files="sliceFileSauDauThau"
+          @refresh="retrieveFile()"
+        >
+        </FileRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
+        >
+          Không có tài liệu nào.
+        </p>
+      </div>
+      <div class="col-3">
+        <FileRender
+          :project="this.pj"
+          :files="sliceFileBaoHanh"
+          v-if="sliceFileBaoHanh.length > 0"
+          @refresh="retrieveFile()"
+        >
+        </FileRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
+        >
+          Không có tài liệu nào.
+        </p>
+      </div>
+      <div class="col-3">
+        <FileRender
+          :project="this.pj"
+          :files="sliceFileKhac"
+          v-if="sliceFileKhac.length > 0"
+          @refresh="retrieveFile()"
+        >
+        </FileRender>
+        <p
+          v-else
+          style="
+            font-family: 'RalewayItalic';
+            font-size: 2vh;
+            padding-left: 0.6vw;
+          "
+        >
+          Không có tài liệu nào.
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -196,8 +230,7 @@ export default {
 
   emits: ["refresh"],
 
-  watch: {
-  },
+  watch: {},
 
   data() {
     return {
@@ -211,49 +244,49 @@ export default {
   },
 
   mounted() {
-    console.log(this.pj)
+    console.log(this.pj);
     this.retrieveFile();
   },
 
   computed: {
-      fileStrings() {
-        return this.files.map((file) => {
-          const { TenTaiLieu} = file;
-          return [TenTaiLieu].join("");
-        });
-      },
-  
-      filteredFiles() {
-        if (!this.searchText) return this.files;
-        return this.files.filter((_file, index) =>
-          this.fileStrings[index]
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase())
-        );
-        //console.log(this.filesList);
-      },
-  
-      sliceFileTruocDauThau() {
-        return this.filteredFiles.filter(
-          (_file, index) => _file.GiaiDoan === "truocdauthau"
-        );
-      },
-  
-      sliceFileSauDauThau() {
-        return this.filteredFiles.filter(
-          (_file, index) => _file.GiaiDoan === "saudauthau"
-        );
-      },
-      sliceFileBaoHanh() {
-        return this.filteredFiles.filter(
-          (_file, index) => _file.GiaiDoan === "baohanh"
-        );
-      },
-      sliceFileKhac() {
-        return this.filteredFiles.filter(
-          (_file, index) => _file.GiaiDoan === "khac"
-        );
-      },
+    fileStrings() {
+      return this.files.map((file) => {
+        const { TenTaiLieu } = file;
+        return [TenTaiLieu].join("");
+      });
+    },
+
+    filteredFiles() {
+      if (!this.searchText) return this.files;
+      return this.files.filter((_file, index) =>
+        this.fileStrings[index]
+          .toLowerCase()
+          .includes(this.searchText.toLowerCase())
+      );
+      //console.log(this.filesList);
+    },
+
+    sliceFileTruocDauThau() {
+      return this.filteredFiles.filter(
+        (_file, index) => _file.GiaiDoan === "truocdauthau"
+      );
+    },
+
+    sliceFileSauDauThau() {
+      return this.filteredFiles.filter(
+        (_file, index) => _file.GiaiDoan === "saudauthau"
+      );
+    },
+    sliceFileBaoHanh() {
+      return this.filteredFiles.filter(
+        (_file, index) => _file.GiaiDoan === "baohanh"
+      );
+    },
+    sliceFileKhac() {
+      return this.filteredFiles.filter(
+        (_file, index) => _file.GiaiDoan === "khac"
+      );
+    },
   },
 
   methods: {
@@ -290,8 +323,24 @@ export default {
 };
 </script>
 <style scoped>
+.a-button {
+  text-decoration: none;
+  color: rgb(85, 85, 108);
+  border: 1px solid rgb(85, 85, 108);
+  border-radius: 5px;
+  padding: 8px;
+}
+.a-button:hover {
+  background-color: rgb(85, 85, 108);
+  color: white;
+}
+
 span {
   font-family: "RalewayBold";
   font-size: 25px;
+}
+
+.none {
+  margin-left: -4vw;
 }
 </style>

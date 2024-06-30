@@ -5,6 +5,10 @@ class ProjectService {
     this.api = createApiClient(baseUrl);
   }
 
+  async exportData(){
+    return (await this.api.get(`/da/export`)).data
+  }
+
   async getAll(type) {
     return (await this.api.get(`/all/${type}`)).data;
   }

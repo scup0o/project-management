@@ -25,6 +25,7 @@ db_con.connect(async (error) => {
           console.trace("fatal error: " + e.message);
         } else {
           console.log("Database created");
+          console.log("Reconnecting...")
           var fs = require("fs");
           fs.utimesSync( __filename, new Date(), new Date());
           /*const wait = async (ms) => {
@@ -199,6 +200,15 @@ PRIMARY KEY (id)
                   );
                   db_con.query(
                     `INSERT INTO DANH_MUC (ten, giaiDoan, loai) VALUES ('Loại tài liệu khác','khac','loaitailieu')`
+                  );
+                  db_con.query(
+                    `INSERT INTO DANH_MUC (ten, loai) VALUES ('Java', 'ngonngu')`
+                  );
+                  db_con.query(
+                    `INSERT INTO DANH_MUC (ten, loai) VALUES ('PHP', 'ngonngu')`
+                  );
+                  db_con.query(
+                    `INSERT INTO DANH_MUC (ten, loai) VALUES ('MySQL', 'csdl')`
                   );
                   rs(result);
                 }

@@ -96,7 +96,7 @@
                         border-radius: 100%;
                         margin: auto;
                       "
-                      :src="`../../src/assets/img/${user.anhdaidien}`"
+                      :src="`../assets/img/${user.anhdaidien}`"
                     />
 
                     <div

@@ -1,7 +1,37 @@
 const ApiError = require("../api-error");
 const db = require("../utils/mysql.util");
+var XLSX = require("xlsx");
 
 var fs = require("fs");
+
+exports.exportData = async (req, res, next) => {
+  try {
+    console.log(req.params.id);
+    db.query(
+      `SELECT CONCAT(TenTaiLieu, LoaiFile), LoaiTaiLieu, GiaiDoan FROM TAI_LIEU tl WHERE id_DuAn='${req.params.id}'`,
+      function (e, rows, fields) {
+        if (e) console.log(e);
+        else {
+          const heading = [["Tên tài liệu", "Loại tài liệu", "Giai đoạn"]];
+          const workbook = XLSX.utils.book_new();
+          const worksheet = XLSX.utils.json_to_sheet(rows);
+          XLSX.utils.sheet_add_aoa(worksheet, heading);
+          XLSX.utils.book_append_sheet(workbook, worksheet, "tai_lieu");
+
+          const buffer = XLSX.write(workbook, {
+            bookType: "xlsx",
+            type: "buffer",
+          });
+          console.log(buffer);
+          res.download("data.xlsx");
+          return res.send(buffer);
+        }
+      }
+    );
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 exports.upload = async (req, res) => {
   try {
@@ -15,11 +45,10 @@ exports.upload = async (req, res) => {
       temp = Object.values(fileuploaded);
       console.log(fileuploaded);
       let s = "img";
-      if (!fileuploaded.mimetype.includes("image")) s = "file";
+      if (!req.params.filename.includes("image")) s = "file";
 
       fileuploaded.mv(
-        __dirname +
-          `../../../../frontend/src/assets/${s}/` +
+          `./assets/${s}/` +
           req.params.filename,
         function (err) {
           if (err) {
@@ -63,8 +92,7 @@ exports.get = async (req, res, next) => {
     });
     console.log(a[0]);
     let kt = false;
-    if (a.result>0)
-    if (a[0].loai === "kt") kt = true;
+    if (a.result > 0) if (a[0].loai === "kt") kt = true;
 
     let i = 0;
     let j = 0;

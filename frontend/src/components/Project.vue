@@ -13,11 +13,25 @@
           @click="createForm = true"
           data-aos="fade-up"
           style="margin-right: 10px"
-          v-if="this.user.chucvu != 'admin' && this.projectTab==='chia se'"
+          v-if="this.user.chucvu != 'admin' && this.projectTab === 'chia se'"
         >
           Tạo dự án
           <i class="fa-solid fa-square-plus" id="util-icon"></i>
         </button>
+        <div>
+          <a
+            href="/api/project/da/export"
+            download="du_an.xlsx"
+            class="btn btn-outline-secondary"
+            style=""
+            v-if="this.user.chucvu === 'admin' && this.projectTab === 'chia se'"
+            >Xuất danh sách dự án<i
+              class="fa-solid fa-file-export"
+              style="padding-left: 10px"
+            ></i
+          ></a>
+        </div>
+
         <!--<button
             class="btn btn-outline-secondary"
             data-aos="fade-up"
@@ -48,7 +62,7 @@
         :e="false"
         :projectprop="{
           KhachHang: '',
-          GhiChu:'',
+          GhiChu: '',
           LoaiThoiHan: 'thang',
           ThoiHan: 3,
           Ma: null,
@@ -277,6 +291,12 @@ export default {
   },
 
   methods: {
+    async exportData() {
+      console.log("catch");
+      let a = await ProjectService.exportData();
+      console.log(a);
+    },
+
     async OpenProject(value) {
       this.$emit("openproject", value);
     },
@@ -301,6 +321,18 @@ export default {
 };
 </script>
 <style scoped>
+.a-button {
+  text-decoration: none;
+  color: black;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+}
+.a-button:hover {
+  background-color: var(--main-color);
+  color: white;
+}
+
 span {
   font-family: "RalewayBold";
   font-size: 25px;

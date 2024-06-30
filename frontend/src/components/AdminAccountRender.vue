@@ -14,6 +14,8 @@ export default {
 
   data() {
     return {
+      host: import.meta.env.VITE_BE_HOSTNAME,
+      port: import.meta.env.VITE_BE_PORT,
       editAccount: null,
       edit: false,
       user: VueJwtDecode.decode(localStorage.getItem("auth")),
@@ -80,7 +82,7 @@ export default {
     <div class="box row">
       <div class="col-2 d-flex" style="margin: auto">
         <img
-          :src="`../../src/assets/img/${account.anhdaidien}`"
+          :src="`../assets/img/${account.anhdaidien}`"
           style="
             width: 50px;
             height: 50px;

@@ -137,7 +137,7 @@
                                         height: 2vw;
                                         border-radius: 100%;
                                       "
-                                      :src="`../../src/assets/img/${user.anhdaidien}`"
+                                      :src="`../assets/img/${user.anhdaidien}`"
                                     />
                                   </div>
                                 </div>
@@ -313,7 +313,7 @@
                                         height: 2vw;
                                         border-radius: 100%;
                                       "
-                                      :src="`../../src/assets/img/${user.anhdaidien}`"
+                                      :src="`../assets/img/${user.anhdaidien}`"
                                     />
                                   </div>
                                 </div>

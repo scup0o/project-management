@@ -15,6 +15,7 @@ router
   .post(projectController.create);
 
 router.route("/type/:type").post(projectController.getType);
+router.route("/da/export").get(projectController.exportData);
 
 router.route("/all/:type").get(projectController.getAll);
 

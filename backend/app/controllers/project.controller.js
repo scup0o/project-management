@@ -1,6 +1,55 @@
 const ApiError = require("../api-error");
 const db = require("../utils/mysql.util");
 const bcrypt = require("bcrypt");
+var XLSX = require("xlsx");
+
+exports.exportData = async (req, res, next) => {
+  try {
+    console.log("catch");
+
+    db.query(
+      "SELECT Ma, Ten, TrangThai, KhachHang, MoTa, ThoiGianBatDauDuAn, ThoiGianKetThucDuAn, ThoiGianBatDauDauThau, ThoiGianKetThucDauThau, ThoiGianNghiemThu, ThoiGianBaoHanh, hoten, email, sodienthoai, GhiChu FROM DU_AN da JOIN NHAN_VIEN nv ON da.id_NguoiTao=nv.id",
+      function (e, rows, fields) {
+        if (e) console.log(e);
+        else {
+          const heading = [
+            [
+              "Mã dự án",
+              "Tên dự án",
+              "Trạng thái",
+              "Khách hàng",
+              "Mô tả dự án",
+              "Thời gian bắt đầu",
+              "Thời gian kết thúc",
+              "Thời gian bắt đầu đấu thầu",
+              "Thời gian kết thúc đấu thầu",
+              "Thời gian nghiệm thu",
+              "Thời gian bảo hành",
+              "Người tạo",
+              "Email người tạo",
+              "Số điện thoại người tạo",
+              "Ghi chú",
+            ],
+          ];
+          const workbook = XLSX.utils.book_new();
+          const worksheet = XLSX.utils.json_to_sheet(rows);
+          XLSX.utils.sheet_add_aoa(worksheet, heading);
+          XLSX.utils.book_append_sheet(workbook, worksheet, "du_an");
+
+          const buffer = XLSX.write(workbook, {
+            bookType: "xlsx",
+            type: "buffer",
+          });
+          console.log(buffer);
+          res.download("data.xlsx");
+          return res.send(buffer);
+        }
+      }
+    );
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 exports.get = async (req, res, next) => {
   try {

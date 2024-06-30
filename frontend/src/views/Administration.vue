@@ -133,6 +133,7 @@
                   show = false;
                   filterTittle = 'Danh sách loại tài liệu';
                   open1 = false;
+                  open=false;
                 "
                 :class="{ active1: activeTab === 'docType' }"
                 class="nav-link px-0"
@@ -141,6 +142,7 @@
                   <i
                     class="fa-regular fa-file-lines"
                     style="padding-right: 0.5vw"
+                    
                   ></i>
                   <span class="ms-1 d-none d-sm-inline">Quản lý danh mục</span>
                 </div>

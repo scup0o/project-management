@@ -101,8 +101,8 @@ export default {
                   class="fa-solid fa-gears"
                   title="Quản lý"
                   @click="this.$router.push({ name: 'administration' })"
-                ></i>-->
-                <i class="fa-solid fa-bell" title="Thông báo" click=""></i>
+                ></i>
+                <i class="fa-solid fa-bell" title="Thông báo" click=""></i>-->
                 <!--<i
                   class="fa-solid fa-user"
                   title="Tài khoản"

@@ -5,6 +5,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 var bodyParser = require("body-parser");
+var path = require("path");
 
 app.use(cors());
 app.use(cookieParser());
@@ -29,7 +30,7 @@ app.use("/api/project", projectRouter);
 app.use("/api/file", fileRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/settingi", settingiRouter);
-
+/*
 app.get("/", (req, res) => {
   res.json({ message: "projectmanagement" });
 });
@@ -43,6 +44,21 @@ app.use((err, req, res, next) => {
   return res.status(err.statusCode || 500).json({
     message: err.message || "Internal Server Error",
   });
+});*/
+
+/*app.use(
+  "/static",
+  express.static(path.join(__dirname, "../public/dist/static/"))
+);*/
+
+var serveStatic = require('serve-static')
+
+app.use(express.static('assets'))
+
+app.use(serveStatic(path.join(__dirname, "public/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/dist/index.html"));
 });
 
 module.exports = app;

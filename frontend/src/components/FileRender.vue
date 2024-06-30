@@ -89,7 +89,7 @@
                 title="Cập nhật tài liệu"
               ></i>
               <a
-                :href="`../../src/assets/file/doc${
+                :href="`../assets/file/doc${
                   file.LichSu[0].TenFile
                 }`"
                 style="
